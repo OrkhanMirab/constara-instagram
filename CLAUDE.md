@@ -4,7 +4,7 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 
 ## 🚀 Yeni sessiyanın başlanğıcı
 1. Bu faylı oxu (avtomatik yüklənir). «Yol xəritəsi» bölməsi növbəti işi göstərir (hazırda: **Facebook Page**).
-2. **Tətbiqin məlumatı lazımdırsa** (yeni funksiya postu, video mühərriki, strategiyanın tam mətni), `OrkhanMirab/life-analytics` reposunu
+2. **Tətbiqin məlumatı lazımdırsa** (yeni funksiya postu, video mühərriki, strategiyanın tam mətni), `OrkhanMirab/Constara` reposunu
    `add_repo` ilə **read** girişi ilə qoş və `/home/user/life-analytics` qovluğuna klonla. Adi karusel üçün aşağıdakı qısa məlumat kifayətdir.
 3. Meta tərəfindəki addımları (Business Settings, use case, token) istifadəçi skrinşotlarla addım-addım edir. Hər dəfə bir addım ver,
    skrinşotu gözlə. Token və secret-ləri **heç vaxt** çata yazdırma: onlar yalnız GitHub Secrets-ə və istifadəçinin `.env` faylına gedir.
@@ -13,9 +13,10 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 6. Hər tamamlanmış addımdan sonra bu faylı yenilə (yol xəritəsində ✅). İstifadəçi istənilən an yeni sessiyaya keçə bilər.
 
 ## 🔎 Bilmədiyin şey çıxanda: TƏXMİN ETMƏ, GEDİB BAX
+> Tətbiqin reposu: **`OrkhanMirab/Constara`** (köhnə adı `life-analytics`; klon qovluğu `/home/user/life-analytics` və ya `/home/user/Constara` ola bilər). Aşağıdakı «life-analytics» adları həmin repo deməkdir.
 Söhbət zamanı tətbiq, brend, keçmiş qərarlar və ya marketinq barədə bilmədiyin bir məlumat lazım olsa (istifadəçi bunu açıq istəyib, 2026-11-08):
-1. `/home/user/life-analytics` yoxdursa, `add_repo` (owner `OrkhanMirab`, repo `life-analytics`, access `read`) çağır, sonra
-   `git clone --depth 1 https://github.com/OrkhanMirab/life-analytics /home/user/life-analytics`. Bu, bir dəfəlik işdir. İstifadəçidən icazə soruşma, sadəcə et.
+1. `/home/user/life-analytics` yoxdursa, `add_repo` (owner `OrkhanMirab`, repo `Constara`, access `read`) çağır, sonra
+   `git clone --depth 1 https://github.com/OrkhanMirab/Constara /home/user/life-analytics`. Bu, bir dəfəlik işdir. İstifadəçidən icazə soruşma, sadəcə et.
 2. `grep -rn` ilə axtar və yalnız lazım olan 20–40 sətri oxu. Faylı tam oxuma, çünki repo böyükdür.
 3. **life-analytics-də heç nə dəyişmə** (o, başqa sessiyaların ərazisidir). Orada nəyisə dəyişmək lazımdırsa, istifadəçiyə de.
 
@@ -87,5 +88,5 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 
 ## Constara tətbiqi ilə əlaqə
 - Brend: tünd fon `#0A0E14`, mətn `#D6DEE8` / `#93A1B2`, aksent `#FF6B35`, yaşıl `#26D67F`, qızıl `#F7C04A`. Şrift Inter Display (Bold başlıq, Medium mətn). Dil Azərbaycanca.
-- Video mühərriki və marketinq qaydaları `OrkhanMirab/life-analytics` reposundadır: `marketing/VIDEO-QAYDALARI.md`, `marketing/render.mjs`. Video lazım olanda o reponu sessiyaya qoş (`add_repo`). Tətbiqin yenilikləri: `docs/beyin/00-indi.md`.
+- Video mühərriki və marketinq qaydaları `OrkhanMirab/Constara` reposundadır: `marketing/VIDEO-QAYDALARI.md`, `marketing/render.mjs`. Video lazım olanda o reponu sessiyaya qoş (`add_repo`). Tətbiqin yenilikləri: `docs/beyin/00-indi.md`.
 - Bu sessiyada Claude məzmunu sabit kod ilə yox, hər dəfə Pillow (karusel) və ffmpeg (video, H.264/AAC, səssiz trek ilə) ilə yaradır.
