@@ -246,7 +246,10 @@ def posted_last_24h() -> int:
     n = 0
     for r in POSTED.glob("*/result.json"):
         try:
-            t = datetime.fromisoformat(json.loads(r.read_text())["posted_at"])
+            res = json.loads(r.read_text())
+            if "facebook" in res and "instagram" not in res:
+                continue  # yalniz FB-ye geden post Instagram limitine sayilmir
+            t = datetime.fromisoformat(res["posted_at"])
             n += t > now() - timedelta(hours=24)
         except Exception:
             pass
