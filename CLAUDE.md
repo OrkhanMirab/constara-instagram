@@ -12,6 +12,27 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 5. Hər real postu push etməzdən əvvəl **istifadəçiyə göstər** (montage önizləmə → SendUserFile), çünki API ilə silmək mümkün deyil.
 6. Hər tamamlanmış addımdan sonra bu faylı yenilə (yol xəritəsində ✅). İstifadəçi istənilən an yeni sessiyaya keçə bilər.
 
+## 🔎 Bilmədiyin şey çıxanda: TƏXMİN ETMƏ, GEDİB BAX
+Söhbət zamanı tətbiq, brend, keçmiş qərarlar və ya marketinq barədə bilmədiyin bir məlumat lazım olsa (istifadəçi bunu açıq istəyib, 2026-11-08):
+1. `/home/user/life-analytics` yoxdursa, `add_repo` (owner `OrkhanMirab`, repo `life-analytics`, access `read`) çağır, sonra
+   `git clone --depth 1 https://github.com/OrkhanMirab/life-analytics /home/user/life-analytics`. Bu, bir dəfəlik işdir. İstifadəçidən icazə soruşma, sadəcə et.
+2. `grep -rn` ilə axtar və yalnız lazım olan 20–40 sətri oxu. Faylı tam oxuma, çünki repo böyükdür.
+3. **life-analytics-də heç nə dəyişmə** (o, başqa sessiyaların ərazisidir). Orada nəyisə dəyişmək lazımdırsa, istifadəçiyə de.
+
+| Sual | Harada baxmalı (life-analytics) |
+|---|---|
+| Tətbiqin hazırkı vəziyyəti, yeni funksiyalar | `docs/beyin/00-indi.md` → oradakı mövzu jurnalları `docs/beyin/is-*.md` |
+| Məhsul fikri, auditoriya, qiymət, modullar | `LAYIHE.md` (§1 məhsul, §2 auditoriya, §8 monetizasiya) |
+| Keçmiş qərarlar | `docs/beyin/qerarlar.md` |
+| Sosial/Instagram tarixçəsi, sayt statistikası | `docs/beyin/is-sosial.md`, `marketing/INSTAGRAM-STRATEGIYA.md` |
+| Video hazırlamaq (mühərrik, şablon, üslub) | `marketing/VIDEO-QAYDALARI.md` (§6 başlanğıc), `marketing/render.mjs`, `marketing/sablon/` |
+| Hazır videoların siyahısı | `marketing/videolar/README.md` (MP4-lər git-də yoxdur, istifadəçidədir: `D:\Constara Videolar\`) |
+| Brend (logo, profil, personaj) | `marketing/brand/`, dizayn: `docs/dizayn-qanunlari.md`, rənglər: `src/index.css` (`@theme`) |
+| Tətbiqdəki mətnlər/terminlər (az/tr/en/ru) | `src/i18n/` |
+| Ekran görüntüsü lazımdır | `scripts/ui-tour/` (life-analytics CLAUDE.md «Tələlər»: emulyator + Playwright) |
+
+İstifadəçinin kompüterindəki fayllara (`D:\...`) çıxış yoxdur. Onlar lazımdırsa, istifadəçidən repoya yükləməsini və ya çata atmasını istə.
+
 ## Constara nədir (qısa)
 - Vərdiş + tapşırıq tətbiqi. Fərqi budur: həyatını **qrafiklə** (birja qrafiki kimi) analiz edirsən. Sual «bu gün etdinmi?» yox,
   **«özünə nə qədər sərmayə qoydun, nə qədər itirdin?»**-dır.
