@@ -1,0 +1,44 @@
+name: Instagram paylas
+
+on:
+  schedule:
+    - cron: "23 * * * *"   # saatda bir (GitHub 5-30 deq gecikdire biler, bu teb'idir)
+  push:
+    branches: [main]
+    paths: ["queue/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: instagram-paylas
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  paylas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Novbeden bir post paylas
+        id: run
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        run: python3 paylas.py
+
+      - name: Neticeni commit et
+        if: always()
+        run: |
+          git config user.name "constara-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A queue posted failed 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Deyisiklik yoxdur"; exit 0; fi
+          git commit -m "bot: paylasma neticesi"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
