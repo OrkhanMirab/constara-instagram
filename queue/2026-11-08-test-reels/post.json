@@ -1,0 +1,6 @@
+{
+  "type": "reels",
+  "caption": "Test: avtomatik video paylaşma yoxlanılır 🎬 (bu post silinəcək)",
+  "media": ["video.mp4"],
+  "share_to_feed": true
+}
