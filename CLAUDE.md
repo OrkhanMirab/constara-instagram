@@ -73,8 +73,8 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 
 ## Yol xəritəsi (istifadəçinin qərarı, 2026-11-08)
 1. **İNDİ: Facebook Page avtomatik paylaşma.** Eyni Meta app işlədilir.
-   - ✅ (2026-11-08) Constara FB səhifəsi istifadəçinin şəxsi FB hesabında açıldı (portfolio fərqli Meta hesabındadır — Yol A: şəxsi hesab portfolio-ya admin dəvət olunur, səhifə «Add a Page» ilə əlavə edilir). İstifadəçi «bağladım» dedi — portfolio-da görünməsi yoxlanır.
-   - Səhifə Constara Portfolio-ya əlavə olunmalıdır.
+   - ✅ (2026-11-08) FB səhifəsi **Constara.app**, Page ID `1466216953235938`, portfolio «constara.app»-ya (business_id `2195895974357884`) əlavə olundu; Instagram səhifəyə bağlandı. İstifadəçinin şəxsi FB hesabı (Orxan Mirabov) portfolio-da Full access-dir.
+   - Səhifə Constara Portfolio-ya əlavə olunmalıdır. ✅
    - App-ə «Manage everything on your Page» use case-i əlavə olunur (`pages_manage_posts`, `pages_read_engagement`, `pages_show_list`).
    - System user-ə səhifə aktivi verilir, sonra token yaradılır. `GET /{page-id}?fields=access_token` vaxtı bitməyən Page tokeni qaytarır. Secrets: `FB_PAGE_ID`, `FB_PAGE_TOKEN`.
    - Kod (`paylas.py`, platform modulu kimi):
