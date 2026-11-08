@@ -9,3 +9,7 @@
 - Push-dan sonra nəticəni yoxla: `posted/<ad>/result.json` (permalink) və ya `failed/<ad>/result.json` (xəta).
 - Xətalı postu düzəltmək üçün qovluğu `failed/`-dən `queue/`-ya köçür, `result.json`-ı sil və yenidən push et.
 - Sınaq üçün `paylas.py`-ı urlopen mock ilə lokalda işlət. Real token heç vaxt repoya yazılmasın.
+
+## Post silmək
+- `sil/<ad>.txt` faylına hər sətirdə bir `media_id` yaz (`posted/<ad>/result.json`-dan götürülür), sonra push et.
+- Nəticə `sil-netice/<vaxt>.json` faylına yazılır. Uğurlu silinmədə `posted/<ad>/result.json`-a `deleted_at` əlavə olunur.
