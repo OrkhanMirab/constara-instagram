@@ -73,7 +73,7 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 
 ## Yol xəritəsi (istifadəçinin qərarı, 2026-11-08)
 1. **İNDİ: Facebook Page avtomatik paylaşma.** Eyni Meta app işlədilir.
-   - Constara FB səhifəsi lazımdır. Səhifə varmı, istifadəçidən soruş.
+   - ✅ (2026-11-08) Constara FB səhifəsi istifadəçinin şəxsi FB hesabında açıldı (portfolio fərqli Meta hesabındadır — Yol A: şəxsi hesab portfolio-ya admin dəvət olunur, səhifə «Add a Page» ilə əlavə edilir). İstifadəçi «bağladım» dedi — portfolio-da görünməsi yoxlanır.
    - Səhifə Constara Portfolio-ya əlavə olunmalıdır.
    - App-ə «Manage everything on your Page» use case-i əlavə olunur (`pages_manage_posts`, `pages_read_engagement`, `pages_show_list`).
    - System user-ə səhifə aktivi verilir, sonra token yaradılır. `GET /{page-id}?fields=access_token` vaxtı bitməyən Page tokeni qaytarır. Secrets: `FB_PAGE_ID`, `FB_PAGE_TOKEN`.
