@@ -52,9 +52,13 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 - `queue/YYYY-MM-DD-ad/post.json` + media yaz, sonra `main`-ə push et. Actions özü paylaşır.
 - Şəkil yalnız **JPEG**, karusel 1080×1350. Reels MP4 H.264 + AAC, yuv420p, 1080×1920.
 - `publish_after` təbii saatlara qoyulsun (gündə 1–2 post, eyni dəqiqədə yox).
+- **Limit:** `MAX_PER_24H=4` (öz limitimiz, Meta-nınkı 100). Yalnız Instagram-a gedən postlar sayılır (yalnız FB postu sayılmır). Limitə dəyən post `queue/`-da gözləyir və log «⏸ Son 24 saatda…» yazır. Push `queue/`-ya toxunmursa, workflow-u `actions_run_trigger` (`paylas.yml`, `main`) ilə işə sal.
 - Push-dan sonra nəticəni yoxla: `posted/<ad>/result.json` (permalink) və ya `failed/<ad>/result.json` (xəta).
 - Xətalı postu düzəltmək üçün qovluğu `failed/`-dən `queue/`-ya köçür, `result.json`-ı sil və yenidən push et.
 - Sınaq üçün `paylas.py`-ı urlopen mock ilə lokalda işlət. Real token heç vaxt repoya yazılmasın.
+
+## Paylaşılan videolar
+- **v15** «Scroll addiction: 3 signs you're beating it» (23,7 s, v08 formulası, M ara kadrı yox), 2026-11-08 ~21:08 TR: IG https://www.instagram.com/reel/DffXPO8ie0u/ · FB https://www.facebook.com/reel/2170089730287302/ . Mətnlər `queue`-da yox, `posted/2026-11-08-v15-scroll-signs/post.json`-da; TikTok/YouTube mətni istifadəçiyə `paylasim.md` kimi verildi. Mənbə (`marketing/v15-scroll-signs/`, `sablon/v15_body.html`) Constara reposuna commit OLUNMAYIB (bu sessiyadan yazmaq rədd edildi). Statistikanı ~20 saat sonra `VIDEO-QAYDALARI.md` §4 cədvəlinə yazmaq lazımdır.
 
 ## Post silmək: API ilə MÜMKÜN DEYİL (2026-11-08 sınandı)
 - `DELETE /{media_id}` karuseldə «Unsupported delete request» (code 100/33), Reels-də «Insufficient permissions» (#10) qaytarır.
@@ -72,7 +76,7 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 - Token yalnız GitHub Secrets-də və istifadəçinin kompüterindəki `D:\Ai\instagram-avto\.env` faylındadır. Heç vaxt çata yazdırma.
 
 ## Yol xəritəsi (istifadəçinin qərarı, 2026-11-08)
-1. ✅ **Facebook Page avtomatik paylaşma (2026-11-08 HAZIR).** Tək şəkil real sınandı: https://www.facebook.com/122097036609546687/posts/122097036585546687 . Karusel və Reels FB-də hələ real sınanmayıb (mock ✅) — ilk real postda yoxla.
+1. ✅ **Facebook Page avtomatik paylaşma (2026-11-08 HAZIR).** Tək şəkil real sınandı: https://www.facebook.com/122097036609546687/posts/122097036585546687 . Reels FB-də də real işlədi ✅ (v15, 2026-11-08). Karusel FB-də hələ real sınanmayıb (mock ✅) — ilk real karuseldə yoxla.
    - ✅ (2026-11-08) FB səhifəsi **Constara.app**, Page ID `1466216953235938`, portfolio «constara.app»-ya (business_id `2195895974357884`) əlavə olundu; Instagram səhifəyə bağlandı. İstifadəçinin şəxsi FB hesabı (Orxan Mirabov) portfolio-da Full access-dir.
    - Səhifə Constara Portfolio-ya əlavə olunmalıdır. ✅
    - App-ə «Manage everything on your Page» use case-i əlavə olunur (`pages_manage_posts`, `pages_read_engagement`, `pages_show_list`).
