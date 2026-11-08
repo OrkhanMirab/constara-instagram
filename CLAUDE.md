@@ -76,7 +76,8 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
    - ✅ (2026-11-08) FB səhifəsi **Constara.app**, Page ID `1466216953235938`, portfolio «constara.app»-ya (business_id `2195895974357884`) əlavə olundu; Instagram səhifəyə bağlandı. İstifadəçinin şəxsi FB hesabı (Orxan Mirabov) portfolio-da Full access-dir.
    - Səhifə Constara Portfolio-ya əlavə olunmalıdır. ✅
    - App-ə «Manage everything on your Page» use case-i əlavə olunur (`pages_manage_posts`, `pages_read_engagement`, `pages_show_list`).
-   - System user-ə səhifə aktivi verilir, sonra token yaradılır. `GET /{page-id}?fields=access_token` vaxtı bitməyən Page tokeni qaytarır. Secrets: `FB_PAGE_ID`, `FB_PAGE_TOKEN`.
+   - ✅ Use case «Manage everything on your Page» əlavə olundu. Portfolio-da system user YOXDUR («Add» bağlıdır) → token yolu: Graph API Explorer (user token, «current Pages only» → Constara.app) → Access Token Debugger «Extend» (60 günlük user token) → `GET 1466216953235938?fields=access_token` → vaxtı bitməyən Page tokeni. Secrets: `FB_PAGE_ID`, `FB_PAGE_TOKEN` (istifadəçi əlavə edir).
+   - ✅ Kod yazıldı və mock ilə sınandı (2026-11-08): `publish_instagram` / `publish_facebook`, `platforms` sahəsi, `result.json`-da hər platforma ayrıca. Real FB sınağı gözləyir.
    - Kod (`paylas.py`, platform modulu kimi):
      - şəkil: `POST /{page}/photos`;
      - karusel: hər şəkil `published=false` ilə yüklənir, sonra `POST /{page}/feed` + `attached_media`;

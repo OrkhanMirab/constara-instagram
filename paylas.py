@@ -1,10 +1,10 @@
-"""Constara Instagram avtomatik paylasma.
+"""Constara Instagram + Facebook avtomatik paylasma.
 
 queue/<ad>/post.json olan postlardan VAXTI CATMIS birini paylasir,
 sonra qovlugu posted/<ad>/ (ugurlu) ve ya failed/<ad>/ (xeta) qovluguna kocurur.
 GitHub Actions bunu saatda bir defe ve queue/ deyisende isledir.
 
-Env: IG_ACCESS_TOKEN, IG_USER_ID (GitHub Secrets), GITHUB_REPOSITORY, GITHUB_SHA.
+Env: IG_ACCESS_TOKEN, IG_USER_ID, FB_PAGE_TOKEN, FB_PAGE_ID (GitHub Secrets), GITHUB_REPOSITORY, GITHUB_SHA.
 Yalniz Python standart kitabxanasi.
 
 post.json:
@@ -13,8 +13,11 @@ post.json:
   "caption": "Post metni #hashtag",
   "media": ["1.jpg", "2.jpg"],          // reels ucun: ["video.mp4"]
   "publish_after": "2026-11-09T18:00:00+03:00",   // istege bagli; yoxdursa derhal
-  "share_to_feed": true                 // istege bagli, yalniz reels
+  "share_to_feed": true,                // istege bagli, yalniz reels
+  "platforms": ["instagram", "facebook"] // istege bagli; susmaya gore ikisi de
 }
+Her platform ayrica paylasilir: biri ugursuz olsa, o biri yene paylasilir.
+En azi biri ugurludursa post posted/-a, hamisi ugursuzdursa failed/-e gedir.
 """
 import json
 import os
@@ -32,6 +35,9 @@ QUEUE, POSTED, FAILED = ROOT / "queue", ROOT / "posted", ROOT / "failed"
 HOST = os.environ.get("IG_API_HOST", "graph.facebook.com")
 TOKEN = os.environ.get("IG_ACCESS_TOKEN", "")
 IG = os.environ.get("IG_USER_ID", "")
+FB_TOKEN = os.environ.get("FB_PAGE_TOKEN", "")
+FB_PAGE = os.environ.get("FB_PAGE_ID", "")
+PLATFORMS = ("instagram", "facebook")
 REPO = os.environ.get("GITHUB_REPOSITORY", "OrkhanMirab/constara-instagram")
 SHA = os.environ.get("GITHUB_SHA", "main")
 MAX_PER_24H = int(os.environ.get("MAX_PER_24H", "4"))  # spam kimi gorunmesin
@@ -46,8 +52,8 @@ def now():
     return datetime.now(timezone.utc)
 
 
-def api(method, path, **params):
-    params["access_token"] = TOKEN
+def api(method, path, _token=None, **params):
+    params["access_token"] = _token or TOKEN
     data = urllib.parse.urlencode(params)
     url = f"https://{HOST}/{path}"
     if method == "GET":
@@ -87,15 +93,15 @@ def wait_ready(cid, timeout_s):
     raise PostError(f"konteyner {timeout_s}s erzinde hazir olmadi")
 
 
-def upload_video(cid_resp, path: Path):
+def upload_video(cid_resp, path: Path, token=None):
     """Resumable upload: fayl birbasa runner-den Meta-ya gedir (public URL lazim deyil)."""
-    uri = cid_resp.get("uri")
+    uri = cid_resp.get("uri") or cid_resp.get("upload_url")
     if not uri:
         raise PostError("resumable upload uri qaytarilmadi")
     data = path.read_bytes()
     req = urllib.request.Request(uri, data=data, method="POST", headers={
         **UA,
-        "Authorization": f"OAuth {TOKEN}",
+        "Authorization": f"OAuth {token or TOKEN}",
         "offset": "0",
         "file_size": str(len(data)),
     })
@@ -109,7 +115,8 @@ def upload_video(cid_resp, path: Path):
     print(f"   video yuklendi ({len(data) // 1024} KB)")
 
 
-def build_container(d: Path, post: dict) -> str:
+def validate(d: Path, post: dict):
+    """Platformadan asili olmayan yoxlama. (type, caption, media) qaytarir."""
     typ = post.get("type")
     caption = post.get("caption", "")
     media = [d / m for m in post.get("media", [])]
@@ -118,21 +125,34 @@ def build_container(d: Path, post: dict) -> str:
             raise PostError(f"fayl yoxdur: {m.name}")
     if len(caption) > 2200:
         raise PostError("caption 2200 simvoldan uzundur")
-
     if typ == "image":
         if len(media) != 1 or media[0].suffix.lower() not in (".jpg", ".jpeg"):
             raise PostError("image: tam 1 JPEG lazimdir")
+    elif typ == "carousel":
+        if not 2 <= len(media) <= 10:
+            raise PostError("carousel: 2-10 fayl lazimdir")
+        for m in media:
+            if m.suffix.lower() not in (".jpg", ".jpeg"):
+                raise PostError(f"carousel: yalniz JPEG ({m.name})")
+    elif typ == "reels":
+        if len(media) != 1 or media[0].suffix.lower() not in (".mp4", ".mov"):
+            raise PostError("reels: tam 1 MP4/MOV lazimdir")
+    else:
+        raise PostError(f"namelum type: {typ!r}")
+    return typ, caption, media
+
+
+def build_container(d: Path, post: dict) -> str:
+    typ, caption, media = validate(d, post)
+
+    if typ == "image":
         cid = api("POST", f"{IG}/media", image_url=raw_url(media[0]), caption=caption)["id"]
         wait_ready(cid, 120)
         return cid
 
     if typ == "carousel":
-        if not 2 <= len(media) <= 10:
-            raise PostError("carousel: 2-10 fayl lazimdir")
         children = []
         for m in media:
-            if m.suffix.lower() not in (".jpg", ".jpeg"):
-                raise PostError(f"carousel: yalniz JPEG ({m.name})")
             c = api("POST", f"{IG}/media", image_url=raw_url(m), is_carousel_item="true")["id"]
             children.append(c)
         for c in children:
@@ -143,8 +163,6 @@ def build_container(d: Path, post: dict) -> str:
         return cid
 
     if typ == "reels":
-        if len(media) != 1 or media[0].suffix.lower() not in (".mp4", ".mov"):
-            raise PostError("reels: tam 1 MP4/MOV lazimdir")
         params = dict(media_type="REELS", upload_type="resumable", caption=caption,
                       share_to_feed="true" if post.get("share_to_feed", True) else "false")
         resp = api("POST", f"{IG}/media", **params)
@@ -152,7 +170,69 @@ def build_container(d: Path, post: dict) -> str:
         wait_ready(resp["id"], 900)
         return resp["id"]
 
-    raise PostError(f"namelum type: {typ!r}")
+
+def publish_instagram(d: Path, post: dict) -> dict:
+    if not TOKEN or not IG:
+        raise PostError("IG_ACCESS_TOKEN / IG_USER_ID yoxdur (GitHub Secrets)")
+    cid = build_container(d, post)
+    mid = api("POST", f"{IG}/media_publish", creation_id=cid)["id"]
+    link = api("GET", mid, fields="permalink").get("permalink")
+    return {"media_id": mid, "permalink": link}
+
+
+def fb(method, path, **params):
+    return api(method, path, _token=FB_TOKEN, **params)
+
+
+def fb_link(obj_id):
+    link = fb("GET", obj_id, fields="permalink_url").get("permalink_url") or ""
+    if link.startswith("/"):
+        link = "https://www.facebook.com" + link
+    return link
+
+
+def publish_facebook(d: Path, post: dict) -> dict:
+    if not FB_TOKEN or not FB_PAGE:
+        raise PostError("FB_PAGE_TOKEN / FB_PAGE_ID yoxdur (GitHub Secrets)")
+    typ, caption, media = validate(d, post)
+
+    if typ == "image":
+        r = fb("POST", f"{FB_PAGE}/photos", url=raw_url(media[0]), message=caption)
+        pid = r.get("post_id") or r["id"]
+        return {"post_id": pid, "permalink": fb_link(pid)}
+
+    if typ == "carousel":
+        params = {"message": caption}
+        for i, m in enumerate(media):
+            ph = fb("POST", f"{FB_PAGE}/photos", url=raw_url(m), published="false")["id"]
+            params[f"attached_media[{i}]"] = json.dumps({"media_fbid": ph})
+        pid = fb("POST", f"{FB_PAGE}/feed", **params)["id"]
+        return {"post_id": pid, "permalink": fb_link(pid)}
+
+    # reels
+    start = fb("POST", f"{FB_PAGE}/video_reels", upload_phase="start")
+    vid = start["video_id"]
+    upload_video(start, media[0], token=FB_TOKEN)
+    fin = fb("POST", f"{FB_PAGE}/video_reels", upload_phase="finish", video_id=vid,
+             video_state="PUBLISHED", description=caption)
+    if not fin.get("success", True):
+        raise PostError(f"facebook reels finish ugursuz: {fin}")
+    t0 = time.time()
+    while time.time() - t0 < 900:
+        st = fb("GET", vid, fields="status").get("status", {})
+        vs = st.get("video_status")
+        print(f"   fb {vid}: {vs}")
+        if vs == "error" or (st.get("processing_phase") or {}).get("status") == "error":
+            raise PostError(f"facebook reels emal xetasi: {st}")
+        if vs in ("ready", "published") or (st.get("publishing_phase") or {}).get("status") == "complete":
+            break
+        time.sleep(10)
+    else:
+        raise PostError("facebook reels 900s erzinde hazir olmadi")
+    return {"video_id": vid, "permalink": fb_link(vid)}
+
+
+PUBLISHERS = {"instagram": publish_instagram, "facebook": publish_facebook}
 
 
 def due(post: dict) -> bool:
@@ -199,26 +279,35 @@ def main():
     if not ready:
         print("Paylasilacaq post yoxdur.")
         return 0
-    if not TOKEN or not IG:
-        print("❌ IG_ACCESS_TOKEN / IG_USER_ID yoxdur (GitHub Secrets).")
-        return 1
     if posted_last_24h() >= MAX_PER_24H:
         print(f"⏸ Son 24 saatda {MAX_PER_24H} post paylasilib, novbeti defe.")
         return 0
 
     d, post = ready[0]  # her isde yalniz 1 post (teb'i interval)
-    print(f"▶ {d.name} ({post.get('type')})")
-    try:
-        cid = build_container(d, post)
-        mid = api("POST", f"{IG}/media_publish", creation_id=cid)["id"]
-        link = api("GET", mid, fields="permalink").get("permalink")
-        t = move(d, POSTED, {"media_id": mid, "permalink": link, "posted_at": now().isoformat()})
-        print(f"✅ Paylasildi: {link}  -> {t.relative_to(ROOT)}")
-        return 0
-    except PostError as e:
-        t = move(d, FAILED, {"error": str(e), "failed_at": now().isoformat()})
-        print(f"❌ {e}  -> {t.relative_to(ROOT)}")
-        return 1
+    platforms = post.get("platforms") or list(PLATFORMS)
+    print(f"▶ {d.name} ({post.get('type')}) -> {', '.join(platforms)}")
+    result, ok = {}, 0
+    for p in platforms:
+        try:
+            if p not in PUBLISHERS:
+                raise PostError(f"namelum platform: {p!r}")
+            result[p] = PUBLISHERS[p](d, post)
+            ok += 1
+            print(f"✅ {p}: {result[p].get('permalink')}")
+        except PostError as e:
+            result[p] = {"error": str(e)}
+            print(f"❌ {p}: {e}")
+        except Exception as e:  # bir platformanin gozlenilmez xetasi o birini dayandirmasin
+            result[p] = {"error": f"{type(e).__name__}: {e}"}
+            print(f"❌ {p}: {type(e).__name__}: {e}")
+    if ok:
+        result["posted_at"] = now().isoformat()
+        t = move(d, POSTED, result)
+    else:
+        result["failed_at"] = now().isoformat()
+        t = move(d, FAILED, result)
+    print(f"-> {t.relative_to(ROOT)}")
+    return 0 if ok == len(platforms) else 1
 
 
 if __name__ == "__main__":
