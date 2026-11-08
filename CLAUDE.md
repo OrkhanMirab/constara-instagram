@@ -1,9 +1,9 @@
 # constara-instagram
 
-Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constara.app** Instagram hesabına avtomatik paylaşma işləyir, növbəti mərhələ Facebook Page-dir. İstifadəçi (Orxan) Azərbaycanca yazır və Türkiyədə yaşayır. Cavablar Azərbaycanca və qısa olsun. Format və axın `README.md`-dədir.
+Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constara.app** Instagram hesabına avtomatik paylaşma işləyir, Facebook səhifəsi **Constara.app**-a da (2026-11-08-dən) avtomatik paylaşır. İstifadəçi (Orxan) Azərbaycanca yazır və Türkiyədə yaşayır. Cavablar Azərbaycanca və qısa olsun. Format və axın `README.md`-dədir.
 
 ## 🚀 Yeni sessiyanın başlanğıcı
-1. Bu faylı oxu (avtomatik yüklənir). «Yol xəritəsi» bölməsi növbəti işi göstərir (hazırda: **Facebook Page**).
+1. Bu faylı oxu (avtomatik yüklənir). «Yol xəritəsi» bölməsi növbəti işi göstərir (FB hazırdır; növbəti: yol xəritəsi §2).
 2. **Tətbiqin məlumatı lazımdırsa** (yeni funksiya postu, video mühərriki, strategiyanın tam mətni), `OrkhanMirab/Constara` reposunu
    `add_repo` ilə **read** girişi ilə qoş və `/home/user/life-analytics` qovluğuna klonla. Adi karusel üçün aşağıdakı qısa məlumat kifayətdir.
 3. Meta tərəfindəki addımları (Business Settings, use case, token) istifadəçi skrinşotlarla addım-addım edir. Hər dəfə bir addım ver,
@@ -72,12 +72,12 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 - Token yalnız GitHub Secrets-də və istifadəçinin kompüterindəki `D:\Ai\instagram-avto\.env` faylındadır. Heç vaxt çata yazdırma.
 
 ## Yol xəritəsi (istifadəçinin qərarı, 2026-11-08)
-1. **İNDİ: Facebook Page avtomatik paylaşma.** Eyni Meta app işlədilir.
+1. ✅ **Facebook Page avtomatik paylaşma (2026-11-08 HAZIR).** Tək şəkil real sınandı: https://www.facebook.com/122097036609546687/posts/122097036585546687 . Karusel və Reels FB-də hələ real sınanmayıb (mock ✅) — ilk real postda yoxla.
    - ✅ (2026-11-08) FB səhifəsi **Constara.app**, Page ID `1466216953235938`, portfolio «constara.app»-ya (business_id `2195895974357884`) əlavə olundu; Instagram səhifəyə bağlandı. İstifadəçinin şəxsi FB hesabı (Orxan Mirabov) portfolio-da Full access-dir.
    - Səhifə Constara Portfolio-ya əlavə olunmalıdır. ✅
    - App-ə «Manage everything on your Page» use case-i əlavə olunur (`pages_manage_posts`, `pages_read_engagement`, `pages_show_list`).
    - ✅ Use case «Manage everything on your Page» əlavə olundu. Portfolio-da system user YOXDUR («Add» bağlıdır) → token yolu: Graph API Explorer (user token, «current Pages only» → Constara.app) → Access Token Debugger «Extend» (60 günlük user token) → `GET 1466216953235938?fields=access_token` → vaxtı bitməyən Page tokeni. Secrets: `FB_PAGE_ID`, `FB_PAGE_TOKEN` (istifadəçi əlavə edir). Page tokeni yoxlandı: Type Page, **Expires Never**, amma **Data Access Expires ~2027-02-06** — FB xətası çıxsa (data access expired), eyni 5 addımla yeni Page tokeni al. Token istifadəçinin `.env`-indədir (`FB_PAGE_TOKEN`).
-   - ✅ Kod yazıldı və mock ilə sınandı (2026-11-08): `publish_instagram` / `publish_facebook`, `platforms` sahəsi, `result.json`-da hər platforma ayrıca. Real FB sınağı gözləyir.
+   - ✅ Kod yazıldı və mock ilə sınandı (2026-11-08): `publish_instagram` / `publish_facebook`, `platforms` sahəsi, `result.json`-da hər platforma ayrıca. Real FB sınağı: tək şəkil ✅.
    - Kod (`paylas.py`, platform modulu kimi):
      - şəkil: `POST /{page}/photos`;
      - karusel: hər şəkil `published=false` ilə yüklənir, sonra `POST /{page}/feed` + `attached_media`;
