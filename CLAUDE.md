@@ -68,7 +68,7 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 - Hesab **@constara.app** Instagram Tester kimi əlavə olunub. App Review lazım deyil (development rejimi, öz hesabı).
 - IG User ID `17841438908470809`. API ünvanı **graph.facebook.com**: `graph.instagram.com` bu tokeni qəbul etmir. `/me` boş siyahı, `me/accounts` boş data, `debug_token` isə app tokeni tələb edir. Ona görə ID Secrets-dən götürülür.
 - Paylaşma limiti: 24 saatda 100 post (`content_publishing_limit`).
-- Sınanıb və işləyir: karusel ✅, Reels (resumable upload) ✅. Post silmək ❌ (yuxarıya bax).
+- Sınanıb və işləyir: tək şəkil ✅ (2026-11-08, «stock chart» postu), karusel ✅, Reels (resumable upload) ✅. Post silmək ❌ (yuxarıya bax).
 - Token yalnız GitHub Secrets-də və istifadəçinin kompüterindəki `D:\Ai\instagram-avto\.env` faylındadır. Heç vaxt çata yazdırma.
 
 ## Yol xəritəsi (istifadəçinin qərarı, 2026-11-08)
