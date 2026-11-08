@@ -1,0 +1,17 @@
+{
+  "at": "2026-11-08T10:49:10.065141+00:00",
+  "results": [
+    {
+      "media_id": "18120030053115004",
+      "ok": false,
+      "response": "400: Unsupported delete request. Object with ID '18120030053115004' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api (code 100, sub 33)",
+      "posted_folder": null
+    },
+    {
+      "media_id": "17930475165183848",
+      "ok": false,
+      "response": "400: (#10) Insufficient permissions to access this data (code 10, sub None)",
+      "posted_folder": null
+    }
+  ]
+}
