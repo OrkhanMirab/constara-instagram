@@ -1,6 +1,30 @@
 # constara-instagram
 
-@constara.app hesabına avtomatik paylaşma növbəsi. İstifadəçi Azərbaycanca yazır, cavablar da Azərbaycanca olsun. Format və axın `README.md`-dədir.
+Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constara.app** Instagram hesabına avtomatik paylaşma işləyir, növbəti mərhələ Facebook Page-dir. İstifadəçi (Orxan) Azərbaycanca yazır və Türkiyədə yaşayır. Cavablar Azərbaycanca və qısa olsun. Format və axın `README.md`-dədir.
+
+## 🚀 Yeni sessiyanın başlanğıcı
+1. Bu faylı oxu (avtomatik yüklənir). «Yol xəritəsi» bölməsi növbəti işi göstərir (hazırda: **Facebook Page**).
+2. **Tətbiqin məlumatı lazımdırsa** (yeni funksiya postu, video mühərriki, strategiyanın tam mətni), `OrkhanMirab/life-analytics` reposunu
+   `add_repo` ilə **read** girişi ilə qoş və `/home/user/life-analytics` qovluğuna klonla. Adi karusel üçün aşağıdakı qısa məlumat kifayətdir.
+3. Meta tərəfindəki addımları (Business Settings, use case, token) istifadəçi skrinşotlarla addım-addım edir. Hər dəfə bir addım ver,
+   skrinşotu gözlə. Token və secret-ləri **heç vaxt** çata yazdırma: onlar yalnız GitHub Secrets-ə və istifadəçinin `.env` faylına gedir.
+4. Bu sessiyada Python 3 + Pillow + ffmpeg + Inter Display şrifti (`/usr/share/fonts/opentype/inter/`) var. Karusel Pillow ilə, video ffmpeg ilə hazırlanır.
+5. Hər real postu push etməzdən əvvəl **istifadəçiyə göstər** (montage önizləmə → SendUserFile), çünki API ilə silmək mümkün deyil.
+6. Hər tamamlanmış addımdan sonra bu faylı yenilə (yol xəritəsində ✅). İstifadəçi istənilən an yeni sessiyaya keçə bilər.
+
+## Constara nədir (qısa)
+- Vərdiş + tapşırıq tətbiqi. Fərqi budur: həyatını **qrafiklə** (birja qrafiki kimi) analiz edirsən. Sual «bu gün etdinmi?» yox,
+  **«özünə nə qədər sərmayə qoydun, nə qədər itirdin?»**-dır.
+- Xal sistemi: yaxşı vərdiş +1/−1, pis vərdiş büdrəyəndə −5, tapşırıq +1. Analiz, MindMap (xəritə), xatırlatmalar var. Dillər az/tr/en/ru.
+- Veb: https://life-analytics-jade.vercel.app. Qeydiyyatsız «qonaq rejimi» ilə sınamaq olar. Android (Play Store hələ buraxılmayıb).
+- Free: 3 vərdiş, Pro: limitsiz (~$2, ödəniş hələ qurulmayıb). Hədəf: 20–40 yaş, özünü inkişaf etdirmək istəyən, rəqəmləri sevən istifadəçi.
+
+## Instagram strategiyası: əsas qaydalar
+Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Video qaydaları: `marketing/VIDEO-QAYDALARI.md`.
+- Mövqe: geniş şəxsi inkişaf, amma **bir SİSTEM kimi** (vərdiş, intizam, məhsuldarlıq → ölçmək və qrafik).
+- Güclü siqnallar: izləmə müddəti, reach başına bəyənmə, **göndərmə (DM-də paylaşma)**, saxlama. Reels və Kəşfet yeni auditoriyaya çatır.
+- **Hashtag ən çox 5.** Açar söz caption-un ilk cümləsində və ekrandakı yazıda olsun (Instagram axtarışı onları oxuyur).
+- Yalnız orijinal məzmun. Su nişanı və ya başqasının məzmunu olmasın.
 
 ## Post növbəyə qoymaq
 - `queue/YYYY-MM-DD-ad/post.json` + media yaz, sonra `main`-ə push et. Actions özü paylaşır.
