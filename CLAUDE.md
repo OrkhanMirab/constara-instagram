@@ -86,6 +86,14 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 - **Format müxtəlifliyi (2026-11-09, istifadəçi: «videolar hamısı eyni tərzdədir»):** v15–v18 eyni v08 şablonundandır. Təklif olunan yeni şablonlar: 1) **Xal testi** (canlı +1/−5 sayğacı, izləyici öz xalını sayır, nəticə sonda) — birinci qurulacaq; 2) **Telefon POV** (bildirişlər, ekran vaxtı sayğacı → Constara); 3) **Kinetik qrafik** (personajsız, 12–15 s, loop); 4) **Gün 1 vs Gün 30** (bölünmüş ekran). Rotasiya: «signs» ~40%, qalanları bərabər; ardıcıl iki video eyni formatda olmasın; yeni format 2 videoda sınanır, 3 s ≥50% saxlamırsa düzəlt/at. İstifadəçinin seçimi gözlənilir.
 - **İstifadəçinin qərarı (2026-11-09):** «hamısını avtomatik et, vaxtım yoxdur, xoşuma gəlməsə silərəm» — yeni video/karusel üçün əvvəlcədən təsdiq gözləmə, hazırla və **hazır olan kimi** paylaş (`publish_after` qoyma, istifadəçi gecikdirməni istəmədi); sonra linkləri + TikTok/YouTube mətnini göndər.
 
+- **«LINK yaz» çağırışı (2026-11-09, istifadəçi qərarı, BÜTÜN videolarda):** son diktor cümləsi + son kadrda ekran yazısı
+  `Comment "LINK" and I'll send you the app.` Caption-da «link in bio» yerinə: `Comment LINK 👇 and I'll DM you the free app.` (bio linki yenə qalır).
+  Platformalar: **Instagram** → avtomatik DM (qurulmayana qədər istifadəçi əl ilə yazır); **TikTok** → istifadəçi DM ilə atır; **YouTube** → istifadəçi şərhə cavab yazır
+  (Shorts-da basılan link yoxdur). Səbəb (huni hesabı, 11-09): 3×500 baxış/gün indiki huni ilə ayda ~5–20 qeydiyyat; açar sözlü DM klikləri ~3–5× artırır.
+  Instagram avtomatı üçün iki yol: (a) ManyChat pulsuz plan (kodsuz, ən tez); (b) öz kodumuz — Actions cron şərhləri oxuyur (`instagram_manage_comments`),
+  «LINK» tapanda private reply DM (`instagram_manage_messages`, şərhdən sonra 7 gün ərzində). (b) development rejimində rolsuz istifadəçiyə DM göndərə
+  bilməyə bilər (Advanced Access/App Review) — əvvəl real sınaq.
+
 ## Post silmək: API ilə MÜMKÜN DEYİL (2026-11-08 sınandı)
 - `DELETE /{media_id}` karuseldə «Unsupported delete request» (code 100/33), Reels-də «Insufficient permissions» (#10) qaytarır.
 - Postu yalnız istifadəçi telefondan silə bilər. Paylaşmazdan əvvəl məzmunu istifadəçiyə göstər.
