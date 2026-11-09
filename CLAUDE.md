@@ -88,8 +88,8 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 
 - **«LINK yaz» çağırışı (2026-11-09, istifadəçi qərarı, BÜTÜN videolarda):** son diktor cümləsi + son kadrda ekran yazısı
   `Comment "LINK" and I'll send you the app.` Caption-da «link in bio» yerinə: `Comment LINK 👇 and I'll DM you the free app.` (bio linki yenə qalır).
-  Platformalar: **Instagram** → avtomatik DM (qurulmayana qədər istifadəçi əl ilə yazır); **TikTok** → istifadəçi DM ilə atır; **YouTube** → istifadəçi şərhə cavab yazır
-  (Shorts-da basılan link yoxdur). Səbəb (huni hesabı, 11-09): 3×500 baxış/gün indiki huni ilə ayda ~5–20 qeydiyyat; açar sözlü DM klikləri ~3–5× artırır.
+  Platformalar: **Instagram** → avtomatik DM (qurulmayana qədər istifadəçi əl ilə yazır); **TikTok** → istifadəçi DM ilə atır; **YouTube** → istifadəçi şərhə linkli cavab yazır
+  (2026-11-09 istifadəçi sınadı: Shorts şərhində link mavi/basılır görünür — başqa hesabdan/çıxışlı yoxlanmayıb; spam filtri gizlədə bilər). Səbəb (huni hesabı, 11-09): 3×500 baxış/gün indiki huni ilə ayda ~5–20 qeydiyyat; açar sözlü DM klikləri ~3–5× artırır.
   Instagram avtomatı üçün iki yol: (a) ManyChat pulsuz plan (kodsuz, ən tez); (b) öz kodumuz — Actions cron şərhləri oxuyur (`instagram_manage_comments`),
   «LINK» tapanda private reply DM (`instagram_manage_messages`, şərhdən sonra 7 gün ərzində). (b) development rejimində rolsuz istifadəçiyə DM göndərə
   bilməyə bilər (Advanced Access/App Review) — əvvəl real sınaq.
