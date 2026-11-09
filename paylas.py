@@ -40,7 +40,7 @@ FB_PAGE = os.environ.get("FB_PAGE_ID", "")
 PLATFORMS = ("instagram", "facebook")
 REPO = os.environ.get("GITHUB_REPOSITORY", "OrkhanMirab/constara-instagram")
 SHA = os.environ.get("GITHUB_SHA", "main")
-MAX_PER_24H = int(os.environ.get("MAX_PER_24H", "4"))  # spam kimi gorunmesin
+MAX_PER_24H = int(os.environ.get("MAX_PER_24H", "8"))  # spam kimi gorunmesin
 UA = {"User-Agent": "constara-instagram/1.0"}
 
 

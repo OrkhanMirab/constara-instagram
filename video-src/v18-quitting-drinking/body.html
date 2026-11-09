@@ -1,0 +1,323 @@
+<style>
+/* v16 «Quitting vaping: 3 signs you're actually quitting» (v08 əsasında, M səhnəsi çıxarıldı) — v07-nin davamı, müsbət tərəf. IG datası (2026-11-02): 0-cı kadrda mövzu adı + rəqəmli vəd;
+   açıq döngə («most miss #3») tətbiqə qədər açıq qalır — №3-ün cavabı tətbiqin xalı/qrafikidir. */
+.title { position: absolute; left: 20px; right: 20px; top: 96px; z-index: 16; text-align: center; }
+.title span { display: inline-block; font: 400 52px/1 "Permanent Marker", cursive; color: #FFFDF6; background: #2F6FDE; border: 4px solid #1B1B1B; padding: 14px 20px 10px; border-radius: 6px; white-space: nowrap; }
+.num { position: absolute; left: 30px; top: 92px; width: 92px; height: 92px; border-radius: 50%; background: #F9D24A; border: 4px solid #1B1B1B; font: 400 60px/84px "Permanent Marker", cursive; text-align: center; z-index: 16; opacity: 0; }
+.cap.right { left: 140px; right: 30px; }
+.card { position: absolute; left: 40px; right: 40px; background: #FFFDF6; border: 3px solid #1B1B1B; border-radius: 8px; z-index: 8; }
+.list { top: 330px; height: 330px; padding: 34px 28px; }
+.list .it { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; opacity: 0; }
+.list .it em { font: 400 40px/1 "Permanent Marker", cursive; font-style: normal; width: 34px; }
+.list .bx { width: 46px; height: 46px; border: 3.5px solid #1B1B1B; border-radius: 6px; flex: none; }
+.list .bar { height: 18px; border-radius: 9px; background: #E3D3B8; }
+.score { left: 70px; right: 70px; top: 330px; height: 250px; text-align: center; padding-top: 30px; }
+.score .lb { font: 700 22px "Courier Prime", monospace; letter-spacing: .1em; color: #6B5B45; }
+.score .big { font: 800 120px/1.1 "JetBrains Mono", monospace; color: #1E9E5B; letter-spacing: -.04em; display: inline-block; }
+.stamp { position: absolute; font: 400 52px "Permanent Marker", cursive; color: #1E9E5B; border: 6px solid #1E9E5B; border-radius: 10px; padding: 6px 18px; z-index: 12; opacity: 0; background: rgba(255,253,246,.88); white-space: nowrap; }
+.zz { position: absolute; font: 400 46px "Permanent Marker", cursive; color: #F7EFE2; z-index: 9; opacity: 0; }
+@media (max-width: 572px) { body:not(.render) .stage { zoom: .62; } body:not(.render) .ctrl { width: 100%; } }
+.hand { position: absolute; font: 700 30px "Caveat", cursive; z-index: 10; opacity: 0; white-space: nowrap; }
+</style>
+<div class="stage" id="stage">
+  <div class="paper" id="paper"></div>
+  <div class="cam" id="cam">
+    <svg class="abs" id="pClock" style="left:418px;top:220px;width:88px;z-index:4" viewBox="0 0 100 100" filter="url(#stk)" stroke="#1B1B1B" stroke-width="4" stroke-linecap="round">
+      <circle cx="50" cy="56" r="34" fill="#FFF6E6"/><circle cx="26" cy="22" r="11" fill="#F9D24A"/><circle cx="74" cy="22" r="11" fill="#F9D24A"/>
+      <path id="hand" d="M50 56 V30 M50 56 V40" fill="none"/><path d="M30 88 L24 96 M70 88 L76 96" fill="none"/></svg>
+    <svg class="abs" id="pNotes" style="left:24px;top:812px;width:96px" viewBox="0 0 100 90" filter="url(#stk)" stroke="#1B1B1B" stroke-width="3.5" stroke-linejoin="round">
+      <path d="M10 30 L70 18 L82 70 L22 82 Z" fill="#F4A6B8"/><path d="M16 22 L76 14 L84 64 L24 72 Z" fill="#F9D24A"/><path d="M20 12 L80 8 L84 58 L24 62 Z" fill="#B9E4D2"/></svg>
+    <svg class="abs" id="pCup" style="left:424px;top:820px;width:90px" viewBox="0 0 100 110" filter="url(#stk)" stroke="#1B1B1B" stroke-width="4" stroke-linecap="round">
+      <path id="steam" d="M40 30 C30 20 50 14 40 4 M58 30 C48 20 68 14 58 4" fill="none" stroke-width="3"/>
+      <path d="M18 40 H76 L70 96 H24 Z" fill="#FFF6E6"/><path d="M76 52 C92 52 92 76 72 78" fill="none"/></svg>
+
+    <!-- H + №1: personaj -->
+    <div id="grpP">
+      <div class="peep" id="peep"></div>
+      <div class="phone0 stkr" id="phone0" style="top:700px"><i id="ph0s"></i></div>
+      <div class="hand" id="off" style="left:322px;top:716px;color:#F7EFE2">no cravings</div>
+      <svg class="abs" id="arrow" style="left:398px;top:372px;width:112px;z-index:9;opacity:0" viewBox="0 0 120 100" filter="url(#stk)"><path d="M8 88 L44 52 L64 70 L108 18" fill="none" stroke="#1E9E5B" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><path d="M80 14 H110 V44" fill="none" stroke="#1E9E5B" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="abs" id="moon" style="left:36px;top:300px;width:92px;z-index:5;opacity:0" viewBox="0 0 100 100" filter="url(#stk)"><path d="M64 10 A42 42 0 1 0 90 74 A34 34 0 1 1 64 10 Z" fill="#F9D24A" stroke="#1B1B1B" stroke-width="4"/></svg>
+      <div class="zz" id="z0">z</div><div class="zz" id="z1">z</div><div class="zz" id="z2">Z</div>
+    </div>
+
+    <!-- M: siyahı (№3 gizli) -->
+    <div id="grpM" style="display:none">
+      <div class="card list stkr" id="list"><div class="tape" style="left:160px;top:-18px;transform:rotate(-3deg)"></div></div>
+      <div class="sticker" id="miss" style="background:#F9D24A;font-family:Caveat;font-weight:700;font-size:40px;border-radius:4px">most people miss this</div>
+    </div>
+
+    <!-- №2: istək dalğası -->
+    <div id="grpW" style="display:none">
+      <div class="card stkr" style="top:330px;height:400px">
+        <svg viewBox="0 0 460 400" style="width:100%;height:100%;overflow:visible">
+          <path d="M20 340 H440" stroke="#1B1B1B" stroke-width="3"/>
+          <path id="wave" d="M20 334 C120 334 150 76 230 76 S340 326 440 326" fill="none" stroke="#E5484D" stroke-width="8" stroke-linecap="round"/>
+          <text id="urgeT" x="230" y="52" text-anchor="middle" font-family="Permanent Marker" font-size="34" fill="#E5484D" opacity="0">CRAVING</text>
+          <g font-family="Courier Prime" font-weight="700" font-size="18" fill="#6B5B45" text-anchor="middle"><text x="24" y="372">0</text><text x="230" y="372">10 min</text><text x="436" y="372">20 min</text></g>
+          <circle id="wdot" r="13" fill="#F9D24A" stroke="#1B1B1B" stroke-width="3.5"/>
+          <text id="youT" font-family="Caveat" font-weight="700" font-size="28" fill="#1B1B1B">you</text>
+        </svg>
+      </div>
+      <div class="stamp" id="passed">PASSED ✓</div>
+    </div>
+
+    <!-- №3: sürüşmə — sıfır deyil -->
+    <div id="grpS" style="display:none">
+      <div class="card score stkr" id="score"><div class="lb">SCORE · DAY 12</div><div class="big" id="scBig">+12</div></div>
+      <div class="sticker" id="m5a" style="background:#F9B1B4;color:#B3242A;font-size:46px">−5</div>
+      <div class="sticker" id="zero" style="background:#FFFDF6;font-family:Caveat;font-weight:700;font-size:38px;border-radius:6px">back to day 0?</div>
+      <svg class="abs" id="xx" style="left:70px;top:600px;width:280px;height:90px;z-index:14;overflow:visible" viewBox="0 0 280 90"><path id="x1" d="M10 10 L270 80" stroke="#E5484D" stroke-width="9" stroke-linecap="round" stroke-dasharray="290" stroke-dashoffset="290"/><path id="x2" d="M270 10 L10 80" stroke="#E5484D" stroke-width="9" stroke-linecap="round" stroke-dasharray="290" stroke-dashoffset="290"/></svg>
+      <div class="stamp" id="nz">NOT ZERO</div>
+    </div>
+
+    <!-- P/G/E: telefon + qrafik -->
+    <div class="phone stkr" id="phone" style="display:none;top:300px;height:520px">
+      <div class="ph-row"><b>No alcohol</b><span class="ph-chip" id="chip">Didn’t</span>
+        <svg width="34" height="34" viewBox="0 0 38 38"><circle cx="19" cy="19" r="16" fill="none" stroke="#4a5766" stroke-width="2.5"/><circle id="chkf" cx="19" cy="19" r="16" fill="#26D67F" style="transform-origin:19px 19px;transform:scale(0)"/><path id="chkp" d="M11 19.5l5.5 5.5L27.5 14" fill="none" stroke="#06140c" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24" stroke-dashoffset="24"/></svg></div>
+      <div class="ph-lab"><span>SCORE · DAY <span id="dayN">1</span></span><b id="scN">+0</b></div>
+      <svg viewBox="0 0 270 300" style="width:100%;overflow:visible">
+        <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26D67F" stop-opacity=".38"/><stop offset="1" stop-color="#26D67F" stop-opacity="0"/></linearGradient></defs>
+        <rect id="flash" x="-8" y="-8" width="286" height="300" rx="12" fill="#FF3B4E" opacity="0"/>
+        <path d="M0 280 H270 M0 205 H270 M0 130 H270 M0 55 H270" stroke="#1E2733" stroke-width="1.5"/>
+        <path id="hiL" d="M4 160 H266" stroke="#F9D24A" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
+        <text id="hiT" x="266" y="150" text-anchor="end" font-family="JetBrains Mono" font-weight="800" font-size="13" fill="#F9D24A" opacity="0">OLD HIGH +12</text>
+        <path id="ca" fill="url(#ga)"/>
+        <g fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path id="cg" stroke="#26D67F"/><path id="cr" stroke="#FF3B4E" stroke-width="6"/><path id="cg2" stroke="#26D67F"/></g>
+        <circle id="dring" r="7" fill="none" stroke="#FF3B4E" stroke-width="3" opacity="0"/><circle id="cdip" r="7" fill="#FF3B4E" opacity="0"/>
+        <circle id="hring" r="8" fill="none" stroke="#26D67F" stroke-width="3" opacity="0"/><circle id="chead" r="8" fill="#26D67F" opacity="0"/>
+        <g font-family="JetBrains Mono" font-weight="700" font-size="12" fill="#5E6B7A"><text x="4" y="300">DAY 1</text><text x="112" y="300" text-anchor="middle">13</text><text x="266" y="300" text-anchor="end">30</text></g></svg>
+    </div>
+    <div class="sticker" id="plus1" style="background:#B9E4D2;color:#0E6B3B;font-size:42px">+1</div>
+    <div class="sticker" id="nh" style="background:#F9D24A;font-size:34px">NEW HIGH ↑</div>
+    <div class="sticker" id="minus5" style="background:#F9B1B4;color:#B3242A;font-size:36px">−5 slip</div>
+    <div class="sticker" id="bad1" style="background:#FFFDF6;font-family:Caveat;font-weight:700;font-size:34px;border-radius:6px">1 slip ↗</div>
+    <div class="peep2" id="peep2" style="display:none"></div>
+    <div class="num stkr" id="e1">1</div><div class="num stkr" id="e2">2</div><div class="num stkr" id="e3">3</div>
+
+    <div class="title" id="title"><span style="font-size:36px">QUITTING DRINKING</span></div>
+    <div class="num stkr" id="num">1</div>
+    <div class="tag stkr abs" id="brand" style="right:34px;transform:rotate(3deg);z-index:15;opacity:0;letter-spacing:.3em">CONSTARA</div>
+    <div id="caps"></div>
+  </div>
+  <div class="night" id="night"></div>
+  <canvas class="grain" id="grain" width="135" height="240"></canvas>
+  <div class="vig"></div>
+  <div class="swipe" id="swipe"></div>
+</div>
+<div class="ctrl"><button id="play">▶ Play (sound)</button><input id="scrub" type="range" min="0" max="26" step=".01" value="0"><span id="tm">0.00</span></div>
+
+<script>
+var PEEP = __PEEP__, CUE = __CUES__, VO_B64 = '__VO__';
+(function () {
+  var $ = function (i) { return document.getElementById(i); };
+  var cl = function (x) { return Math.max(0, Math.min(1, x)); }, P = function (t, a, d) { return cl((t - a) / d); };
+  var oc = function (x) { return 1 - Math.pow(1 - x, 3); }, ob = function (x) { var c = 1.70158; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+  var io = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }, lerp = function (a, b, p) { return a + (b - a) * p; };
+  var C = CUE.C, D = CUE.D, DUR = CUE.dur; $('scrub').max = DUR;
+  function c(i, f) { return C[i] + (f || 0) * D[i]; }
+  function pop(id, p, x, y, rot, from) { var e = $(id); e.style.left = x + 'px'; e.style.top = y + 'px'; e.style.opacity = p > 0 ? 1 : 0; e.style.transform = 'rotate(' + rot + 'deg) scale(' + (from ? lerp(from, 1, oc(p)) : ob(p)) + ')'; }
+
+  var OUT = '#1B1B1B', COL = { skinColor: '#F2C1A0', topColor: '#1E2533', outlineColor: OUT };
+  function logo(x, y, s) { return '<g transform="translate(' + x + ' ' + y + ') rotate(-6) scale(' + s + ')"><rect x="-95" y="-95" width="190" height="190" rx="44" fill="none" stroke="#FF6B35" stroke-width="14" transform="rotate(12)"/><path d="M-118 6h52l34-92 64 184 34-92h52" fill="none" stroke="#FF6B35" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/><text x="0" y="190" text-anchor="middle" font-family="Archivo, Arial" font-weight="900" font-size="74" letter-spacing="6" fill="#FF6B35">CONSTARA</text></g>'; }
+  var LOGO = { body: [800, 1060, .42], bodyPoint: [470, 1090, .38] };
+  function g(list, tr) { return '<g transform="' + tr + '">' + list.map(function (p) { return '<path d="' + p[0] + '" fill="' + COL[p[1]] + '"/>'; }).join('') + '</g>'; }
+  function peep(body, headY, faces, idp) {
+    return '<svg viewBox="150 150 1010 1230"><g filter="url(#stkL)">' + g(PEEP[body], 'translate(147 639)') + logo.apply(null, LOGO[body]) +
+      '<g id="' + idp + 'head" transform="translate(0 ' + headY + ')">' + g(PEEP.hair, 'translate(382 190)') +
+      faces.map(function (f) { return '<g id="' + idp + f + '" style="display:none">' + g(PEEP['face_' + f], 'translate(531 366)') + '</g>'; }).join('') + '</g></g></svg>';
+  }
+  var FA = ['Driven', 'Calm'];
+  $('peep').innerHTML = peep('body', 0, FA, 'a');
+  $('peep2').innerHTML = peep('bodyPoint', 30, ['BigSmile'], 'b'); $('bBigSmile').style.display = 'inline';
+  function face(f) { FA.forEach(function (x) { $('a' + x).style.display = x === f ? 'inline' : 'none'; }); }
+
+  // siyahı: 1, 2 boz xətt; 3 — sarı qeydin altında
+  [1, 2, 3].forEach(function (n) { var e = document.createElement('div'); e.className = 'it'; e.innerHTML = '<em>' + n + '</em><div class="bx"></div><div class="bar" style="width:' + [230, 190, 250][n - 1] + 'px"></div>'; $('list').appendChild(e); });
+  var wave = $('wave'), WL = wave.getTotalLength(); wave.style.strokeDasharray = WL;
+
+  // qrafik (gün 13 = −5 sürüşmə)
+  var S = [0], k; for (k = 1; k <= 30; k++) S.push(S[k - 1] + (k === 13 ? -5 : 1));
+  var pts = []; for (k = 1; k <= 30; k++) pts.push([(k - 1) / 29 * 262 + 4, 280 - S[k] / 25 * 250]);
+  // qrafik: 12 gün qalxış → 13-cü gün çöküş (−5) → köhnə zirvəni keçən yeni qalxış
+  var GT = { g0: c(4, .2), g1: c(4, .55), cT: c(4, .62), r0: c(5, .3), r1: c(5, .95) }, tNH = GT.r0 + Math.cbrt((18.6 - 13) / 17 / 4) * (GT.r1 - GT.r0);
+  function dayF(t) { if (t < GT.g0) return 1; if (t < GT.g1) return 1 + 11 * io(P(t, GT.g0, GT.g1 - GT.g0)); if (t < GT.cT) return 12;
+    if (t < GT.r0) return 12 + oc(P(t, GT.cT, .22)); return 13 + 17 * io(P(t, GT.r0, GT.r1 - GT.r0)); }
+  function ptF(f) { var i = Math.floor(f); if (i >= 30) return pts[29]; var a = pts[i - 1], b = pts[i], fr = f - i; return [lerp(a[0], b[0], fr), lerp(a[1], b[1], fr)]; }
+  function seg(f0, f1) { if (f1 <= f0 + .001) return ''; var q = ptF(f0), d = 'M' + q[0].toFixed(1) + ' ' + q[1].toFixed(1); for (var k = Math.floor(f0) + 1; k < f1; k++) d += 'L' + pts[k - 1][0].toFixed(1) + ' ' + pts[k - 1][1].toFixed(1); q = ptF(f1); return d + 'L' + q[0].toFixed(1) + ' ' + q[1].toFixed(1); }
+  function sF(f) { var i = Math.floor(f); return i >= 30 ? S[30] : lerp(S[i], S[i + 1], f - i); }
+  function graph(t, on) {
+    var f = on ? dayF(t) : 1, hd = ptF(f), A = function (id, k, v) { $(id).setAttribute(k, v); };
+    A('cg', 'd', on ? seg(1, Math.min(f, 12)) : ''); A('cr', 'd', f > 12 ? seg(12, Math.min(f, 13)) : ''); A('cg2', 'd', f > 13 ? seg(13, f) : '');
+    A('ca', 'd', on && f > 1.01 ? seg(1, f) + 'L' + hd[0].toFixed(1) + ' 280L' + pts[0][0] + ' 280Z' : '');
+    var dropping = f > 12.01 && t < GT.r0 + .1;
+    A('chead', 'cx', hd[0]); A('chead', 'cy', hd[1]); A('chead', 'opacity', on ? 1 : 0); A('chead', 'fill', dropping ? '#FF3B4E' : '#26D67F');
+    var hr = (t * 1.6) % 1; A('hring', 'cx', hd[0]); A('hring', 'cy', hd[1]); A('hring', 'r', 8 + hr * 16); A('hring', 'opacity', on && f > 13.3 ? (1 - hr) * .8 : 0);
+    A('cdip', 'cx', pts[12][0]); A('cdip', 'cy', pts[12][1]); A('cdip', 'opacity', f >= 13 ? 1 : 0);
+    var dr = P(t, GT.cT + .2, .9); A('dring', 'cx', pts[12][0]); A('dring', 'cy', pts[12][1]); A('dring', 'r', 7 + dr * 28); A('dring', 'opacity', f >= 13 && dr < 1 ? 1 - dr : 0);
+    A('flash', 'opacity', t >= GT.cT ? .32 * (1 - P(t, GT.cT, .55)) : 0);
+    var hiP = P(t, GT.r0 - .25, .3); A('hiL', 'opacity', hiP * .95); A('hiT', 'opacity', hiP);
+    var sv = Math.round(sF(f)); $('dayN').textContent = on ? Math.max(1, Math.ceil(f - .001)) : 1; $('scN').textContent = '+' + (on ? sv : 0);
+    $('scN').style.color = t >= GT.cT && t < GT.r0 + .1 ? '#FF3B4E' : '#26D67F';
+    $('scN').style.display = 'inline-block'; $('scN').style.transform = 'scale(' + (t >= GT.cT ? lerp(1.4, 1, oc(P(t, GT.cT, .4))) : 1) + ')';
+  }
+
+  var gctx = $('grain').getContext('2d'), gim = gctx.createImageData(135, 240);
+  function grain(t) { var s = Math.floor(t * 12) * 7919 + 3; for (var i = 0; i < gim.data.length; i += 4) { s = (s * 16807) % 2147483647; var v = 90 + (s & 127); gim.data[i] = gim.data[i + 1] = gim.data[i + 2] = v; gim.data[i + 3] = 255; } gctx.putImageData(gim, 0, 0); }
+
+  var CAPS = [
+    [0, c(1), '', 250, [['3', -.3, 'grn'], ['signs', -.3], ["you're", -.3], ['\n'], ['actually', -.3], ['quitting.', -.3, 'grn']]],
+    [c(1), c(2), 'night-ink right', 150, [['Friday', c(1, .1), 'or'], ['night.', c(1, .2), 'or'], ['\n'], ['No', c(1, .5)], ['hangover.', c(1, .6), 'grn']]],
+    [c(2), c(3), 'right', 150, [['A', c(2, .12)], ['craving', c(2, .18), 'red'], ['hits.', c(2, .32)], ['\n'], ['You', c(2, .5)], ['let', c(2, .57)], ['it', c(2, .63)], ['pass.', c(2, .72), 'grn']]],
+    [c(3), c(4), 'right', 150, [['You', c(3, .12)], ['slip', c(3, .2), 'red'], ['once.', c(3, .28), 'red'], ['\n'], ['Not', c(3, .62)], ['zero.', c(3, .72), 'grn']]],
+    [c(4), c(5), '', 92, [['Clean', c(4)], ['day', c(4, .1)], ['+1.', c(4, .25), 'grn'], ['\n'], ['Slip', c(4, .55)], ['−5.', c(4, .68), 'red']]],
+    [c(5), c(6), '', 92, [['1', c(5), 'red'], ['slip', c(5, .08), 'red'], ['\n'], ["can't", c(5, .25)], ['erase', c(5, .35)], ['\n'], ['30', c(5, .55), 'grn'], ['clean', c(5, .63), 'grn'], ['days.', c(5, .73), 'grn']]],
+    [c(6), DUR + 1, '', 92, [['Which', c(6)], ['sign', c(6, .2)], ['\n'], ['are', c(6, .4)], ['you', c(6, .5)], ['on?', c(6, .62), 'or']]]
+  ];
+  var capEls = CAPS.map(function (cp) {
+    var el = document.createElement('div'); el.className = 'cap ' + cp[2]; el.style.top = cp[3] + 'px';
+    cp[4].forEach(function (w) { if (w[0] === '\n') { var b = document.createElement('span'); b.className = 'br'; el.appendChild(b); return; }
+      var s = document.createElement('span'); s.className = 'w' + (w[2] ? ' ' + w[2] : ''); s.textContent = w[0]; el.appendChild(s); w.el = s; });
+    $('caps').appendChild(el); return el;
+  });
+  var CUTS = [c(1), c(1), c(2), c(3), c(4), c(5), c(6)];
+
+  function render(t) {
+    grain(t);
+    var sc = t < c(1) ? 'H' : t < c(1) ? 'M' : t < c(2) ? 'N1' : t < c(3) ? 'N2' : t < c(4) ? 'N3' : t < c(5) ? 'P' : t < c(6) ? 'G' : 'E';
+    $('grpP').style.display = sc === 'H' || sc === 'N1' ? 'block' : 'none'; $('grpM').style.display = sc === 'M' ? 'block' : 'none';
+    $('grpW').style.display = sc === 'N2' ? 'block' : 'none'; $('grpS').style.display = sc === 'N3' ? 'block' : 'none';
+    var ph = sc === 'P' || sc === 'G' || sc === 'E'; $('phone').style.display = ph ? 'block' : 'none';
+    var nt = io(P(t, c(1) - .1, .4)) * (1 - io(P(t, c(2) - .2, .5))); $('night').style.opacity = nt;
+    var last = 0; CUTS.forEach(function (x) { if (t >= x) last = x; });
+    var z = (last ? lerp(1.07, 1, oc(P(t, last, .3))) : 1.03 - .02 * P(t, 0, 2)) + (t - last) * .006;
+    var sx = 0, sy = 0; [[0.02, 8], [c(2, .85), 3], [c(3, .3), 8], [c(3, .84), 3], [GT.cT, 8]].forEach(function (s) { var dt = t - s[0]; if (dt >= 0 && dt < .45) { var a = s[1] * Math.exp(-dt * 10); sx += a * Math.sin(dt * 90); sy += a * Math.cos(dt * 70); } });
+    $('cam').style.transform = 'translate(' + sx + 'px,' + sy + 'px) scale(' + z + ')';
+    $('paper').style.transform = 'translate(' + (-t * 3) + 'px,' + (-t * 2) + 'px)';
+    // saat: №1-də böyüyüb 2:00-da dayanır, qalan vaxt fırlanır
+    var big = sc === 'N1' ? oc(P(t, c(1), .35)) : 0;
+    $('pClock').style.transform = 'translate(' + lerp(0, -40, big) + 'px,' + lerp(0, 60, big) + 'px) scale(' + lerp(1, 1.5, big) + ') rotate(' + Math.sin(t * 1.3) * 2 + 'deg)';
+    $('hand').setAttribute('transform', sc === 'N1' ? '' : 'rotate(' + t * 20 + ' 50 56)');
+    $('pNotes').style.transform = 'rotate(' + (Math.sin(t * 1.1) * 2 - 4) + 'deg)'; $('pCup').style.transform = 'rotate(' + Math.sin(t * 1.7) * 2 + 'deg)';
+    $('steam').style.transform = 'translateY(' + (-(t * 8) % 6) + 'px)';
+
+    // başlıq: 0-cı kadrda QUITTING P*RN; sonra kiçilib yuxarıda qalır (№3-ə qədər)
+    var tp = P(t, 0, .25), small = io(P(t, c(1) - .15, .4));
+    $('title').style.opacity = t >= c(4) ? 0 : 1;
+    $('title').style.transform = 'translateY(' + lerp(0, -62, small) + 'px) scale(' + (lerp(1.12, 1, oc(tp)) * lerp(1, .5, small)) + ') rotate(' + lerp(-3, -2, tp) + 'deg)';
+    var nn = sc === 'N1' ? 1 : sc === 'N2' ? 2 : sc === 'N3' ? 3 : 0, ns = [0, c(1), c(2), c(3)][nn] || 0;
+    $('num').textContent = nn; $('num').style.opacity = nn ? 1 : 0; $('num').style.top = '150px';
+    $('num').style.transform = 'rotate(' + (nn % 2 ? -8 : 6) + 'deg) scale(' + (nn ? lerp(2.2, 1, ob(P(t, ns, .3))) : 0) + ')';
+
+    CAPS.forEach(function (cp, i) { var on = t >= cp[0] && t < cp[1]; capEls[i].style.display = on ? 'block' : 'none'; if (!on) return;
+      capEls[i].classList.toggle('night-ink', cp[2].indexOf('night-ink') >= 0 && nt > .3);
+      cp[4].forEach(function (w) { if (!w.el) return; var p = P(t, w[1], .18); w.el.style.opacity = p > 0 ? 1 : 0; w.el.style.transform = 'translateY(' + (1 - oc(p)) * 24 + 'px) rotate(' + (1 - oc(p)) * -8 + 'deg) scale(' + lerp(1.5, 1, ob(p)) + ')'; }); });
+
+    if (sc === 'H' || sc === 'N1') {
+      face(sc === 'H' ? 'Driven' : 'Calm');
+      var br = Math.sin(t * (sc === 'H' ? 2.4 : 1.4)) * .012;
+      $('peep').style.top = '470px';
+      $('peep').style.transform = 'translateY(' + (sc === 'H' ? 70 * (1 - oc(P(t, 0, .6))) : 0) + 'px) scale(' + (1 + br) + ',' + (1 - br) + ')';
+      pop('arrow', sc === 'H' ? P(t, c(0, .7), .3) : 0, 398, 372, -4);
+      $('moon').style.opacity = sc === 'N1' ? oc(P(t, c(1, .1), .3)) : 0; $('moon').style.transform = 'rotate(' + Math.sin(t * 1.2) * 4 + 'deg)';
+      $('ph0s').style.background = sc === 'N1' ? '#1A1F29' : 'rgba(190,215,255,.85)';
+      $('phone0').style.boxShadow = '0 0 0 5px #fff'; $('phone0').style.opacity = 0;
+      $('off').style.opacity = sc === 'N1' ? P(t, c(1, .45), .25) : 0; $('off').style.transform = 'rotate(-6deg)';
+      [0, 1, 2].forEach(function (i) { var e = $('z' + i); if (sc !== 'N1') { e.style.opacity = 0; return; } var ph2 = ((t - c(1)) * .55 + i / 3) % 1;
+        e.style.left = (350 + ph2 * 50) + 'px'; e.style.top = (470 - ph2 * 150) + 'px'; e.style.opacity = Math.sin(ph2 * Math.PI) * P(t, c(1, .3), .3); e.style.transform = 'scale(' + (.7 + ph2 * .6) + ') rotate(' + (ph2 * 20 - 10) + 'deg)'; });
+    }
+    if (sc === 'M') {
+      var rows = $('list').querySelectorAll('.it'); for (var j = 0; j < 3; j++) { var rp = P(t, c(1, .05 + j * .12), .2); rows[j].style.opacity = rp > 0 ? 1 : 0; rows[j].style.transform = 'translateX(' + (1 - oc(rp)) * -40 + 'px)'; }
+      pop('miss', P(t, c(1, .5), .22), 130, 500, -4, 2.2);
+    }
+    if (sc === 'N2') {
+      var wp = io(P(t, c(2, .08), D[2] * .8)); wave.style.strokeDashoffset = WL * (1 - wp);
+      var pt = wave.getPointAtLength(Math.max(.01, WL * wp)); $('wdot').setAttribute('cx', pt.x); $('wdot').setAttribute('cy', pt.y);
+      $('youT').setAttribute('x', pt.x - 18); $('youT').setAttribute('y', pt.y - 24);
+      $('urgeT').setAttribute('opacity', wp > .45 ? 1 : 0);
+      pop('passed', P(t, c(2, .85), .22), 150, 600, -7, 2.6);
+    }
+    if (sc === 'N3') {
+      var sp = P(t, c(3, .05), .25); $('score').style.opacity = sp > 0 ? 1 : 0; $('score').style.transform = 'translateY(' + (1 - ob(sp)) * 60 + 'px)';
+      var hit = t >= c(3, .3); $('scBig').textContent = hit ? '+7' : '+12'; $('scBig').style.transform = 'scale(' + (hit ? lerp(1.25, 1, oc(P(t, c(3, .3), .3))) : 1) + ')';
+      pop('m5a', P(t, c(3, .28), .2), 392, 430, 10, 2.4);
+      pop('zero', P(t, c(3, .42), .2), 90, 612, -3);
+      $('x1').style.strokeDashoffset = 290 * (1 - oc(P(t, c(3, .66), .15))); $('x2').style.strokeDashoffset = 290 * (1 - oc(P(t, c(3, .73), .15)));
+      pop('nz', P(t, c(3, .84), .2), 190, 700, -8, 2.6);
+    }
+    if (ph) {
+      var ent = oc(P(t, c(4), .45)), dn = io(P(t, c(6) - .2, .5)), zc = io(P(t, GT.cT - .3, .3)) * (1 - io(P(t, GT.r0 + .2, .7)));
+      $('phone').style.transform = 'translateY(' + (lerp(520, 0, ent) + 150 * dn) + 'px) rotate(' + lerp(6, 1, ent) + 'deg) scale(' + (1 - .14 * dn + .16 * zc) + ')'; $('phone').style.transformOrigin = '133px 342px';
+      var q = t - c(4, .2), tap = q >= 0;
+      $('chkf').style.transform = 'scale(' + (tap ? ob(cl(q / .22)) : 0) + ')'; $('chkp').style.strokeDashoffset = 24 * (1 - (tap ? oc(P(q, .1, .2)) : 0));
+      $('chip').style.background = tap ? 'rgba(38,214,127,.16)' : '#06080C'; $('chip').style.color = tap ? '#26D67F' : '#8C9AAB';
+      pop('plus1', sc === 'P' ? P(t, c(4, .25), .3) : 0, 30, 342, -8);
+      pop('minus5', sc !== 'E' && t >= GT.cT ? P(t, GT.cT + .12, .22) : 0, 268, 660, 8, 2.4);
+      graph(t, tap);
+      pop('nh', sc !== 'E' ? P(t, tNH, .25) : 0, 150, 462, -6, 2);
+      pop('bad1', sc === 'G' ? P(t, c(5, .02), .22) : 0, 40, 700, -4);
+      var pe = P(t, c(6) - .1, .5); $('peep2').style.display = sc === 'E' ? 'block' : 'none'; $('peep2').style.left = '-20px'; $('peep2').style.top = lerp(1000, 640, ob(pe)) + 'px'; $('peep2').style.transform = 'rotate(' + lerp(-10, -3, pe) + 'deg)';
+      [1, 2, 3].forEach(function (n) { pop('e' + n, sc === 'E' ? P(t, c(6, .45) + (n - 1) * .14, .22) : 0, 60 + (n - 1) * 112, 250, [-8, 4, -3][n - 1], 2); });
+      $('brand').style.opacity = P(t, c(6, .9), .4) * (sc === 'E' ? 1 : 0); $('brand').style.top = '370px';
+    } else { ['plus1', 'minus5', 'nh', 'bad1', 'e1', 'e2', 'e3'].forEach(function (id) { $(id).style.opacity = 0; }); $('peep2').style.display = 'none'; $('brand').style.opacity = 0; }
+    var sw1 = P(t, c(2) - .25, .5), sw2 = P(t, c(4) - .25, .5); $('swipe').style.transform = 'translateX(' + lerp(-120, 120, io(t < c(3) ? sw1 : sw2)) + '%) skewX(-12deg)';
+  }
+
+  function b64buf(b) { var s = atob(b), u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u.buffer; }
+  async function sfx(ctx, out, T) {
+    var vo = await ctx.decodeAudioData(b64buf(VO_B64));
+    var nb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate), nd = nb.getChannelData(0), sd = 9; for (var i = 0; i < nd.length; i++) { sd = (sd * 16807) % 2147483647; nd[i] = sd / 1073741823.5 - 1; }
+    var mus = ctx.createGain(); mus.connect(out);
+    C.forEach(function (s, i) { mus.gain.setTargetAtTime(.5, T + s - .05, .05); mus.gain.setTargetAtTime(1, T + s + D[i] + .05, .2); });
+    function env(gn, t, a, pk, d) { gn.gain.setValueAtTime(.0001, t); gn.gain.exponentialRampToValueAtTime(pk, t + a); gn.gain.exponentialRampToValueAtTime(.0001, t + a + d); }
+    function osc(type, f0, f1, t, d, pk, a) { var o = ctx.createOscillator(), gn = ctx.createGain(); o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + d); env(gn, t, a || .004, pk, d); o.connect(gn).connect(mus); o.start(t); o.stop(t + d + .1); }
+    function noise(t, d, ft, f0, f1, q, pk, a) { var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), gn = ctx.createGain(); s.buffer = nb; s.loop = true; f.type = ft; f.Q.value = q; f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + d); env(gn, t, a || .004, pk, d); s.connect(f).connect(gn).connect(mus); s.start(t); s.stop(t + (a || 0) + d + .1); }
+    function pad(t0, t1, fs, pk) { fs.forEach(function (f) { [-5, 5].forEach(function (dt) { var o = ctx.createOscillator(), gn = ctx.createGain(), lp = ctx.createBiquadFilter(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = dt; lp.type = 'lowpass'; lp.frequency.value = 650; gn.gain.setValueAtTime(.0001, t0); gn.gain.exponentialRampToValueAtTime(pk, t0 + .5); gn.gain.setValueAtTime(pk, t1 - .3); gn.gain.exponentialRampToValueAtTime(.0001, t1); o.connect(lp).connect(gn).connect(mus); o.start(t0); o.stop(t1 + .05); }); }); }
+    var at = function (s) { return T + s; };
+    var pop = function (t, f) { osc('sine', f, f * 2.3, t, .11, .32); };
+    var pluck = function (t, f, k) { osc('triangle', f, f * .995, t, .5, .13 * (k || 1)); osc('sine', f * 2, f * 2, t, .25, .05 * (k || 1)); };
+    var stamp = function (t, k) { osc('sine', 140, 40, t, .35, .6 * k); noise(t, .12, 'lowpass', 1500, 200, .7, .35 * k, .002); };
+    var whoosh = function (t) { noise(t, .4, 'bandpass', 300, 5000, 1.1, .3, .16); };
+    var scratch = function (t) { noise(t, .18, 'bandpass', 2500, 1200, 3, .25, .01); };
+    stamp(at(0), 1.3); pluck(at(.05), 261.6, 1.2); pluck(at(.2), 392, 1);                          // başlıq möhürü
+    pad(at(0), at(c(1) + .3), [87.31, 110, 130.81], .026);
+    pad(at(c(1)), at(c(2) + .3), [55, 65.41, 82.41], .028);                                      // gecə
+    pad(at(c(2)), at(DUR + .3), [87.31, 110, 130.81, 164.81], .022);
+    pop(at(c(0, .7)), 600);
+    var k2;
+    [c(1), c(2), c(3)].forEach(function (s) { whoosh(at(s - .08)); stamp(at(s + .02), .8); });       // nömrə nişanları
+    for (k2 = 0; k2 < 3; k2++) osc('sine', 520 - k2 * 60, 380 - k2 * 60, at(c(1, .35 + k2 * .18)), .35, .07, .05);   // Zzz
+    noise(at(c(2, .08)), D[2] * .4, 'lowpass', 250, 1400, .8, .22, D[2] * .4); noise(at(c(2, .5)), D[2] * .4, 'lowpass', 1400, 250, .8, .18, .05); // dalğa
+    stamp(at(c(2, .85)), 1);
+    stamp(at(c(3, .28)), 1.3); osc('sawtooth', 90, 45, at(c(3, .28)), .5, .12);
+    pop(at(c(3, .42)), 420); scratch(at(c(3, .66))); scratch(at(c(3, .73))); stamp(at(c(3, .84)), 1.1);
+    whoosh(at(c(4) - .3)); pop(at(c(4, .2)), 520); pluck(at(c(4, .25)), 523.3, 1.4); pop(at(c(5, .02)), 300);
+    var seq = [0, 4, 7, 4, 9, 7, 4, 2];
+    for (var s = c(4), n = 0; s < DUR - .4; s += .5, n++) { pluck(at(s), 261.6 * Math.pow(2, seq[n % 8] / 12), .65); osc('sine', 110, 46, at(s), .18, .18); }
+        osc('sawtooth', 320, 55, at(GT.cT), .55, .13); stamp(at(GT.cT + .02), 1.2); noise(at(GT.cT), .5, 'lowpass', 2000, 150, .7, .2, .01);   // çöküş
+    for (var j3 = 0; j3 < 8; j3++) pluck(at(GT.r0 + j3 * (GT.r1 - GT.r0) / 8), 392 * Math.pow(2, [0, 2, 4, 5, 7, 9, 11, 12][j3] / 12), 1);   // yenidən qalxış
+    [0, 4, 7, 12].forEach(function (sm, j) { osc('sine', 1046.5 * Math.pow(2, sm / 12), 1046.5 * Math.pow(2, sm / 12), at(tNH + j * .06), .5, .09); });   // yeni zirvə
+    [0, 1, 2].forEach(function (j) { pop(at(c(6, .45) + j * .14), 500 + j * 120); });
+    [0, 4, 7, 12, 16].forEach(function (sm, j) { osc('sine', 1046.5 * Math.pow(2, sm / 12), 1046.5 * Math.pow(2, sm / 12), at(c(6, .9) + j * .05), .6, .08); });
+    var v = ctx.createBufferSource(), vg = ctx.createGain(); v.buffer = vo; vg.gain.value = 1.2; v.connect(vg).connect(out); v.start(at(0));
+  }
+
+  window.VIDEO = { dur: DUR, render: render };
+  window.VIDEO.audio = async function () {
+    var SR = 44100, ctx = new OfflineAudioContext(2, Math.ceil(SR * (DUR + .4)), SR), m = ctx.createGain(), cp = ctx.createDynamicsCompressor(); m.gain.value = .85; m.connect(cp).connect(ctx.destination); await sfx(ctx, m, 0);
+    var buf = await ctx.startRendering(), L = buf.getChannelData(0), R = buf.getChannelData(1), n = Math.floor(SR * DUR), o = new Int16Array(n * 2), pk = 0, i;
+    for (i = 0; i < n; i++) pk = Math.max(pk, Math.abs(L[i]), Math.abs(R[i])); var k = pk > .89 ? .89 / pk : 1;
+    for (i = 0; i < n; i++) { o[2 * i] = Math.max(-1, Math.min(1, L[i] * k)) * 32767; o[2 * i + 1] = Math.max(-1, Math.min(1, R[i] * k)) * 32767; }
+    var by = new Uint8Array(o.buffer), bin = ''; for (i = 0; i < by.length; i += 8192) bin += String.fromCharCode.apply(null, by.subarray(i, i + 8192)); return btoa(bin);
+  };
+  if (location.hash === '#render') document.body.classList.add('render');
+  var raf = 0, ac = null, t0 = 0;
+  function stop() { cancelAnimationFrame(raf); if (ac) { ac.close(); ac = null; } }
+  function tick() { if (!ac) return; var t = ac.currentTime - t0; if (t >= DUR) { render(DUR - .001); return; } render(Math.max(0, t)); $('scrub').value = t; $('tm').textContent = t.toFixed(2); raf = requestAnimationFrame(tick); }
+  $('play').onclick = async function () { stop(); ac = new AudioContext(); var m = ac.createGain(), cp = ac.createDynamicsCompressor(); m.gain.value = .85; m.connect(cp).connect(ac.destination); t0 = ac.currentTime + .25; await sfx(ac, m, t0); tick(); };
+  $('scrub').oninput = function () { stop(); var t = +this.value; render(t); $('tm').textContent = t.toFixed(2); };
+  render(0);
+})();
+</script>
+</body>
+</html>

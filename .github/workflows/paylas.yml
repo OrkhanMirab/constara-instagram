@@ -2,7 +2,7 @@ name: Instagram paylas
 
 on:
   schedule:
-    - cron: "23 * * * *"   # saatda bir (GitHub 5-30 deq gecikdire biler, bu teb'idir)
+    - cron: "23,53 * * * *"   # saatda iki defe (GitHub 5-30 deq gecikdire biler)
   push:
     branches: [main]
     paths: ["queue/**", "sil/**"]
