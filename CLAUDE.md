@@ -52,7 +52,7 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 - `queue/YYYY-MM-DD-ad/post.json` + media yaz, sonra `main`-ə push et. Actions özü paylaşır.
 - Şəkil yalnız **JPEG**, karusel 1080×1350. Reels MP4 H.264 + AAC, yuv420p, 1080×1920.
 - `publish_after` təbii saatlara qoyulsun (gündə 1–2 post, eyni dəqiqədə yox).
-- **Limit:** `MAX_PER_24H=5` (2026-11-09-da 4-dən qaldırıldı) (öz limitimiz, Meta-nınkı 100). Yalnız Instagram-a gedən postlar sayılır (yalnız FB postu sayılmır). Limitə dəyən post `queue/`-da gözləyir və log «⏸ Son 24 saatda…» yazır. Push `queue/`-ya toxunmursa, workflow-u `actions_run_trigger` (`paylas.yml`, `main`) ilə işə sal.
+- **Limit:** `MAX_PER_24H=8` (2026-11-09: 4 → 5 → 8, istifadəçi gündə çox post istədi). Cron saatda iki dəfə (:23, :53), GitHub 5–30 dəq gecikdirə bilər (öz limitimiz, Meta-nınkı 100). Yalnız Instagram-a gedən postlar sayılır (yalnız FB postu sayılmır). Limitə dəyən post `queue/`-da gözləyir və log «⏸ Son 24 saatda…» yazır. Push `queue/`-ya toxunmursa, workflow-u `actions_run_trigger` (`paylas.yml`, `main`) ilə işə sal.
 - Push-dan sonra nəticəni yoxla: `posted/<ad>/result.json` (permalink) və ya `failed/<ad>/result.json` (xəta).
 - Xətalı postu düzəltmək üçün qovluğu `failed/`-dən `queue/`-ya köçür, `result.json`-ı sil və yenidən push et.
 - Sınaq üçün `paylas.py`-ı urlopen mock ilə lokalda işlət. Real token heç vaxt repoya yazılmasın.
