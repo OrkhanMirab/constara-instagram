@@ -9,8 +9,25 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 3. Meta tərəfindəki addımları (Business Settings, use case, token) istifadəçi skrinşotlarla addım-addım edir. Hər dəfə bir addım ver,
    skrinşotu gözlə. Token və secret-ləri **heç vaxt** çata yazdırma: onlar yalnız GitHub Secrets-ə və istifadəçinin `.env` faylına gedir.
 4. Bu sessiyada Python 3 + Pillow + ffmpeg + Inter Display şrifti (`/usr/share/fonts/opentype/inter/`) var. Karusel Pillow ilə, video ffmpeg ilə hazırlanır.
-5. Hər real postu push etməzdən əvvəl **istifadəçiyə göstər** (montage önizləmə → SendUserFile), çünki API ilə silmək mümkün deyil.
+5. ~~Hər real postu əvvəl göstər~~ → **2026-11-09-dan istifadəçi qərarı: göstərmədən hazırla və dərhal paylaş**, sonra linkləri + MP4 + TikTok/YouTube mətnini göndər (aşağıda «İstifadəçinin qərarı»). İstisna: Meta/token/kod dəyişikliyi kimi riskli işlər.
 6. Hər tamamlanmış addımdan sonra bu faylı yenilə (yol xəritəsində ✅). İstifadəçi istənilən an yeni sessiyaya keçə bilər.
+
+## 📍 Harada qaldıq (2026-11-09 axşam, sessiya bağlandı)
+**Edilənlər:** FB avtomatik paylaşma hazır (şəkil/karusel/Reels hər iki platformada ✅). 2 gündə paylaşılanlar: stock chart şəkli, v15 (scroll), v16 (vape), v17 (şəkər), v18 (içki), 2 karusel (craving wave, discipline signs) — linklər «Paylaşılan videolar»-da.
+**Növbəti işlər (prioritet sırası):**
+1. **Yeni format: «Xal testi» videosu** (istifadəçi «başla» deyəndə; təklif qəbul edilməyib, amma gözlənilir). v15–v18 eyni şablondur — növbəti video fərqli formatda olsun.
+2. **Statistika:** v14–v18 + karusellərin rəqəmləri yoxdur. İstifadəçi ya rəqəmləri göndərir, ya da private repo `constara-stats` açıb `IG_ACCESS_TOKEN`/`IG_USER_ID` secret-lərini qoyur → workflow insights çəkir (yol xəritəsi §2). Rəqəmlər gələndə Constara `marketing/VIDEO-QAYDALARI.md` §4-ə yazılmalıdır — bu sessiyadan Constara-ya yazmaq RƏDD edilir → istifadəçiyə de ki, Constara sessiyasında yazdırsın, ya da cədvəli burada `stats.md`-də saxla.
+3. İstifadəçi səhərki 2 test postunu (test karusel, test Reels, 2026-11-08) telefondan silməlidir — xatırlat.
+4. YouTube/TikTok-a istifadəçi əl ilə yükləyir: ümumi YouTube açıqlaması linksizdir (istifadəçi: «xarici bağlantı hələlik olmayacaq»); başlıq ≤100 simvol, hər videoya ayrıca başlıq.
+
+**Video hazırlamaq (bulud, hər sessiyada, ~5 dəq qurulum):**
+- Constara reposunu read ilə klonla (yuxarıdakı qayda) — `marketing/sablon/build.py`, `marketing/render.mjs`, `head.html`, `peep.json`, `rig.js`, `poses.json` oradadır.
+- Diktor: `pip install kokoro-onnx soundfile` + `kokoro-v1.0.onnx` və `voices-v1.0.bin` (`https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/<fayl>`), səs `am_michael`, speed 0.95. `vo.py` → `vo.b64` + `cues.json`.
+- Şablon: `video-src/v16-quitting-vaping/body.html` (v08 formulası, 7 cue). Yeni mövzu: `video-src/_alet/mk.py <scratch> <ad> <cfg.json>` (nümunə `v17.json`/`v18.json`: başlıq, şrift ölçüsü — uzun başlıqda 36–42px, rəng, tətbiq sətri, №1 caption, 7 diktor cümləsi).
+- Yığ: Constara kökündən `python3 marketing/sablon/build.py <body> <cues.json> <vo.b64> <out/index.html> "<ad>"`. Yoxla: `video-src/_alet/snap.mjs` (qlobal playwright, yolu dəyiş) → montage.
+- Render: `render.mjs`-i scratch qovluğuna köçür (`<scratch>/vid/render.mjs` + `<scratch>/vid/<ad>/index.html`), `NODE_PATH=$(npm root -g) node render.mjs <ad>` (~8 dəq) → ffmpeg crf 24 ilə kiçilt (~4,5 MB).
+- **Tələ:** gözləmə döngəsində `pgrep -f "<fayl adı>"` öz-özünü tapır və sonsuz gözləyir — log faylında «Hazır» sözünü yoxla.
+- Karusel: Pillow, `video-src/carousel-*/car*.py` nümunələri (tünd brend, 1080×1350, 7 slayd, son slayd saxlanılası checklist).
 
 ## 🔎 Bilmədiyin şey çıxanda: TƏXMİN ETMƏ, GEDİB BAX
 > Tətbiqin reposu: **`OrkhanMirab/Constara`** (köhnə adı `life-analytics`; klon qovluğu `/home/user/life-analytics` və ya `/home/user/Constara` ola bilər). Aşağıdakı «life-analytics» adları həmin repo deməkdir.
@@ -58,7 +75,7 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 - Sınaq üçün `paylas.py`-ı urlopen mock ilə lokalda işlət. Real token heç vaxt repoya yazılmasın.
 
 ## Paylaşılan videolar
-- **v15** «Scroll addiction: 3 signs you're beating it» (23,7 s, v08 formulası, M ara kadrı yox), 2026-11-08 ~21:08 TR: IG https://www.instagram.com/reel/DffXPO8ie0u/ · FB https://www.facebook.com/reel/2170089730287302/ . Mətnlər `queue`-da yox, `posted/2026-11-08-v15-scroll-signs/post.json`-da; TikTok/YouTube mətni istifadəçiyə `paylasim.md` kimi verildi. Mənbə (`marketing/v15-scroll-signs/`, `sablon/v15_body.html`) Constara reposuna commit OLUNMAYIB (bu sessiyadan yazmaq rədd edildi). Statistikanı ~20 saat sonra `VIDEO-QAYDALARI.md` §4 cədvəlinə yazmaq lazımdır.
+- **v15** «Scroll addiction: 3 signs you're beating it» (23,7 s, v08 formulası, M ara kadrı yox), 2026-11-08 ~21:08 TR: IG https://www.instagram.com/reel/DffXPO8ie0u/ · FB https://www.facebook.com/reel/2170089730287302/ . Mətnlər `queue`-da yox, `posted/2026-11-08-v15-scroll-signs/post.json`-da; TikTok/YouTube mətni istifadəçiyə `paylasim.md` kimi verildi. Mənbə burada: `video-src/v15-scroll-signs/` (Constara reposuna yazmaq bu sessiyadan rədd edilir). Statistikanı ~20 saat sonra `VIDEO-QAYDALARI.md` §4 cədvəlinə yazmaq lazımdır.
 - **v16** «Quitting vaping: 3 signs you're actually quitting» (21,5 s, v15 şablonu, vape nişi), 2026-11-09 15:38 TR: IG https://www.instagram.com/reel/DfhWQhHDJnm/ · FB https://www.facebook.com/reel/1820290745857449/ . Mənbə: `video-src/v16-quitting-vaping/` (body.html + vo.py; yığmaq üçün Constara `marketing/sablon/build.py`, render `marketing/render.mjs`).
 - **Karusel** «A craving is a wave: the 10-minute rule» (7 slayd, Pillow, `video-src/carousel-craving-wave/car.py`), 2026-11-09 15:40 TR (istifadəçi «hazır olan kimi getsin» dedi): IG https://www.instagram.com/p/DfhWmkSk7lv/ · FB https://www.facebook.com/122097036609546687/posts/122097604197546687 — FB karuseli də real işlədi ✅.
 - **Karusel** «5 signs you're more disciplined than you think» (7 slayd, `video-src/carousel-discipline-signs/car2.py`), istifadəçi «2 saat sonra birdə paylaş» dedi → `publish_after` 17:15 TR (cron :23-də → ~17:25–17:50). Eyni postu təkrar atma (dublikat) — həmişə yeni məzmun.
