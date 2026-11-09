@@ -52,7 +52,7 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 - `queue/YYYY-MM-DD-ad/post.json` + media yaz, sonra `main`-ə push et. Actions özü paylaşır.
 - Şəkil yalnız **JPEG**, karusel 1080×1350. Reels MP4 H.264 + AAC, yuv420p, 1080×1920.
 - `publish_after` təbii saatlara qoyulsun (gündə 1–2 post, eyni dəqiqədə yox).
-- **Limit:** `MAX_PER_24H=4` (öz limitimiz, Meta-nınkı 100). Yalnız Instagram-a gedən postlar sayılır (yalnız FB postu sayılmır). Limitə dəyən post `queue/`-da gözləyir və log «⏸ Son 24 saatda…» yazır. Push `queue/`-ya toxunmursa, workflow-u `actions_run_trigger` (`paylas.yml`, `main`) ilə işə sal.
+- **Limit:** `MAX_PER_24H=5` (2026-11-09-da 4-dən qaldırıldı) (öz limitimiz, Meta-nınkı 100). Yalnız Instagram-a gedən postlar sayılır (yalnız FB postu sayılmır). Limitə dəyən post `queue/`-da gözləyir və log «⏸ Son 24 saatda…» yazır. Push `queue/`-ya toxunmursa, workflow-u `actions_run_trigger` (`paylas.yml`, `main`) ilə işə sal.
 - Push-dan sonra nəticəni yoxla: `posted/<ad>/result.json` (permalink) və ya `failed/<ad>/result.json` (xəta).
 - Xətalı postu düzəltmək üçün qovluğu `failed/`-dən `queue/`-ya köçür, `result.json`-ı sil və yenidən push et.
 - Sınaq üçün `paylas.py`-ı urlopen mock ilə lokalda işlət. Real token heç vaxt repoya yazılmasın.
@@ -61,6 +61,7 @@ Tam mətn: `life-analytics/marketing/INSTAGRAM-STRATEGIYA.md` (2026-11-04). Vide
 - **v15** «Scroll addiction: 3 signs you're beating it» (23,7 s, v08 formulası, M ara kadrı yox), 2026-11-08 ~21:08 TR: IG https://www.instagram.com/reel/DffXPO8ie0u/ · FB https://www.facebook.com/reel/2170089730287302/ . Mətnlər `queue`-da yox, `posted/2026-11-08-v15-scroll-signs/post.json`-da; TikTok/YouTube mətni istifadəçiyə `paylasim.md` kimi verildi. Mənbə (`marketing/v15-scroll-signs/`, `sablon/v15_body.html`) Constara reposuna commit OLUNMAYIB (bu sessiyadan yazmaq rədd edildi). Statistikanı ~20 saat sonra `VIDEO-QAYDALARI.md` §4 cədvəlinə yazmaq lazımdır.
 - **v16** «Quitting vaping: 3 signs you're actually quitting» (21,5 s, v15 şablonu, vape nişi), 2026-11-09 15:38 TR: IG https://www.instagram.com/reel/DfhWQhHDJnm/ · FB https://www.facebook.com/reel/1820290745857449/ . Mənbə: `video-src/v16-quitting-vaping/` (body.html + vo.py; yığmaq üçün Constara `marketing/sablon/build.py`, render `marketing/render.mjs`).
 - **Karusel** «A craving is a wave: the 10-minute rule» (7 slayd, Pillow, `video-src/carousel-craving-wave/car.py`), 2026-11-09 15:40 TR (istifadəçi «hazır olan kimi getsin» dedi): IG https://www.instagram.com/p/DfhWmkSk7lv/ · FB https://www.facebook.com/122097036609546687/posts/122097604197546687 — FB karuseli də real işlədi ✅.
+- **Karusel** «5 signs you're more disciplined than you think» (7 slayd, `video-src/carousel-discipline-signs/car2.py`), istifadəçi «2 saat sonra birdə paylaş» dedi → `publish_after` 17:15 TR (cron :23-də → ~17:25–17:50). Eyni postu təkrar atma (dublikat) — həmişə yeni məzmun.
 - **İstifadəçinin qərarı (2026-11-09):** «hamısını avtomatik et, vaxtım yoxdur, xoşuma gəlməsə silərəm» — yeni video/karusel üçün əvvəlcədən təsdiq gözləmə, hazırla və **hazır olan kimi** paylaş (`publish_after` qoyma, istifadəçi gecikdirməni istəmədi); sonra linkləri + TikTok/YouTube mətnini göndər.
 
 ## Post silmək: API ilə MÜMKÜN DEYİL (2026-11-08 sınandı)
