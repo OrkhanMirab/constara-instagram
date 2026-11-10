@@ -36,7 +36,9 @@ def make_src(cfg, d: Path):
          ("""[['You', c(1, .12)], ['sleep', c(1, .2), 'or'], ['\\n'], ['through', c(1, .3)], ['it.', c(1, .45), 'grn']]""", cfg["n1"]),
          ('.title span { display: inline-block; font: 400 52px/1 "Permanent Marker", cursive; color: #FFFDF6; background: #1E9E5B;',
           '.title span { display: inline-block; font: 400 52px/1 "Permanent Marker", cursive; color: #FFFDF6; background: %s;' % cfg.get("bg", "#1E9E5B")),
-         (OLD_CAP, CTA_CAP)]
+         (OLD_CAP, CTA_CAP),
+         # «Which sign» 1-2-3 nisanlari LINK yazisinin 3-cu setrini ortur -> son kadrda gosterme
+         ("pop('e' + n, sc === 'E' ? P(", "pop('e' + n, false ? P(")]
     for a, b in R:
         assert s.count(a) == 1, a[:60]
         s = s.replace(a, b)
