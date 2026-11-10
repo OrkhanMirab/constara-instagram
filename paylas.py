@@ -9,19 +9,23 @@ Yalniz Python standart kitabxanasi.
 
 post.json:
 {
-  "type": "image" | "carousel" | "reels",
+  "type": "image" | "carousel" | "reels" | "story",
   "caption": "Post metni #hashtag",
   "media": ["1.jpg", "2.jpg"],          // reels ucun: ["video.mp4"]
   "publish_after": "2026-11-09T18:00:00+03:00",   // istege bagli; yoxdursa derhal
   "share_to_feed": true,                // istege bagli, yalniz reels
   "platforms": ["instagram", "facebook"] // istege bagli; susmaya gore ikisi de
 }
+Gundelik plan (plan/YYYY-MM-DD.json + schedule.json, bax plan.py) de burda paylasilir:
+media runner-de gen/ ile hazirlanir, sekiller 'media' budagina (tek commit, force) qoyulur,
+main-e yalniz posted/<id>/post.json + result.json yazilir (repo boyumesin).
 Her platform ayrica paylasilir: biri ugursuz olsa, o biri yene paylasilir.
 En azi biri ugurludursa post posted/-a, hamisi ugursuzdursa failed/-e gedir.
 """
 import json
 import os
 import shutil
+import subprocess
 import sys
 import time
 import urllib.error
@@ -40,7 +44,7 @@ FB_PAGE = os.environ.get("FB_PAGE_ID", "")
 PLATFORMS = ("instagram", "facebook")
 REPO = os.environ.get("GITHUB_REPOSITORY", "OrkhanMirab/constara-instagram")
 SHA = os.environ.get("GITHUB_SHA", "main")
-MAX_PER_24H = int(os.environ.get("MAX_PER_24H", "8"))  # spam kimi gorunmesin
+MAX_PER_24H = int(os.environ.get("MAX_PER_24H", "45"))  # spam kimi gorunmesin
 UA = {"User-Agent": "constara-instagram/1.0"}
 
 
@@ -74,7 +78,12 @@ def api(method, path, _token=None, **params):
         raise PostError(f"{method} {path} -> {msg}") from None
 
 
+URL_OVERRIDE = {}  # runner-de hazirlanan sekiller: Path -> media budagindaki raw URL
+
+
 def raw_url(path: Path):
+    if path in URL_OVERRIDE:
+        return URL_OVERRIDE[path]
     rel = path.relative_to(ROOT).as_posix()
     return f"https://raw.githubusercontent.com/{REPO}/{SHA}/{urllib.parse.quote(rel)}"
 
@@ -137,6 +146,9 @@ def validate(d: Path, post: dict):
     elif typ == "reels":
         if len(media) != 1 or media[0].suffix.lower() not in (".mp4", ".mov"):
             raise PostError("reels: tam 1 MP4/MOV lazimdir")
+    elif typ == "story":
+        if len(media) != 1 or media[0].suffix.lower() not in (".jpg", ".jpeg"):
+            raise PostError("story: tam 1 JPEG lazimdir")
     else:
         raise PostError(f"namelum type: {typ!r}")
     return typ, caption, media
@@ -147,6 +159,11 @@ def build_container(d: Path, post: dict) -> str:
 
     if typ == "image":
         cid = api("POST", f"{IG}/media", image_url=raw_url(media[0]), caption=caption)["id"]
+        wait_ready(cid, 120)
+        return cid
+
+    if typ == "story":
+        cid = api("POST", f"{IG}/media", media_type="STORIES", image_url=raw_url(media[0]))["id"]
         wait_ready(cid, 120)
         return cid
 
@@ -176,7 +193,8 @@ def publish_instagram(d: Path, post: dict) -> dict:
         raise PostError("IG_ACCESS_TOKEN / IG_USER_ID yoxdur (GitHub Secrets)")
     cid = build_container(d, post)
     mid = api("POST", f"{IG}/media_publish", creation_id=cid)["id"]
-    link = api("GET", mid, fields="permalink").get("permalink")
+    link = api("GET", mid, fields="permalink").get("permalink") or (
+        "https://www.instagram.com/stories/constara.app/" if post.get("type") == "story" else None)
     return {"media_id": mid, "permalink": link}
 
 
@@ -200,6 +218,11 @@ def publish_facebook(d: Path, post: dict) -> dict:
         r = fb("POST", f"{FB_PAGE}/photos", url=raw_url(media[0]), message=caption)
         pid = r.get("post_id") or r["id"]
         return {"post_id": pid, "permalink": fb_link(pid)}
+
+    if typ == "story":
+        ph = fb("POST", f"{FB_PAGE}/photos", url=raw_url(media[0]), published="false")["id"]
+        r = fb("POST", f"{FB_PAGE}/photo_stories", photo_id=ph)
+        return {"post_id": r.get("post_id") or ph, "permalink": f"https://www.facebook.com/{FB_PAGE}"}
 
     if typ == "carousel":
         params = {"message": caption}
@@ -266,7 +289,114 @@ def move(d: Path, dest_root: Path, info: dict):
     return target
 
 
+def publish_post(d: Path, post: dict):
+    """Butun platformalara paylasir. (result, ok_sayi, platformalar) qaytarir."""
+    platforms = post.get("platforms") or list(PLATFORMS)
+    print(f"▶ {d.name} ({post.get('type')}) -> {', '.join(platforms)}")
+    result, ok = {}, 0
+    for p in platforms:
+        try:
+            if p not in PUBLISHERS:
+                raise PostError(f"namelum platform: {p!r}")
+            result[p] = PUBLISHERS[p](d, post)
+            ok += 1
+            print(f"✅ {p}: {result[p].get('permalink')}")
+        except PostError as e:
+            result[p] = {"error": str(e)}
+            print(f"❌ {p}: {e}")
+        except Exception as e:  # bir platformanin gozlenilmez xetasi o birini dayandirmasin
+            result[p] = {"error": f"{type(e).__name__}: {e}"}
+            print(f"❌ {p}: {type(e).__name__}: {e}")
+    return result, ok, platforms
+
+
+def git(*args, inp=None):
+    return subprocess.run(["git", *args], cwd=ROOT, input=inp, capture_output=True, text=True, check=True).stdout.strip()
+
+
+def push_media(item_id: str, files):
+    """Sekilleri 'media' budagina tek (valideynsiz) commit kimi force-push edir, raw URL-leri yazir.
+    Tarixce yigilmir: her defe yalniz cari postun sekilleri qalir."""
+    entries = []
+    for f in files:
+        blob = git("hash-object", "-w", str(f))
+        entries.append(f"100644 blob {blob}\t{f.name}")
+    sub = git("mktree", inp="\n".join(entries) + "\n")
+    tree = git("mktree", inp=f"040000 tree {sub}\t{item_id}\n")
+    sha = git("-c", "user.name=constara-bot", "-c", "user.email=bot@users.noreply.github.com",
+              "commit-tree", tree, "-m", f"media {item_id}")
+    git("push", "-f", "origin", f"{sha}:refs/heads/media")
+    for f in files:
+        URL_OVERRIDE[f] = f"https://raw.githubusercontent.com/{REPO}/{sha}/{item_id}/{urllib.parse.quote(f.name)}"
+
+
+def render_item(typ, content, out: Path):
+    sys.path.insert(0, str(ROOT / "gen"))
+    import carousel, reel, story  # noqa: E402  (Pillow yalniz plan isleyende lazimdir)
+    return {"carousel": carousel, "reels": reel, "story": story}[typ].render(content, out)
+
+
+def run_plan(budget: int) -> int:
+    """Vaxti catmis plan elementlerini paylasir. Paylasilan sayini qaytarir."""
+    import plan as planmod
+    sch = planmod.load_schedule()
+    pf = ROOT / "plan" / f"{planmod.today(sch).isoformat()}.json"
+    if not pf.exists():
+        print(f"Plan yoxdur: {pf.relative_to(ROOT)}")
+        return 0
+    late = timedelta(minutes=sch.get("max_late_min", 120))
+    done = 0
+    for item_id, typ, slot, content in planmod.items_for(pf, sch):
+        if (POSTED / item_id).exists() or (FAILED / item_id).exists():
+            continue
+        if slot > now():
+            continue
+        if now() - slot > late:
+            d = FAILED / item_id
+            d.mkdir(parents=True, exist_ok=True)
+            (d / "result.json").write_text(json.dumps({"skipped": f"vaxt kecdi (slot {slot.isoformat()})",
+                                                      "failed_at": now().isoformat()}) + "\n")
+            print(f"⏭ {item_id}: slot {slot:%H:%M} cox kecib, atlandi")
+            continue
+        if done >= budget:
+            print(f"⏸ {item_id}: bu run-da limit ({budget}), novbeti run-da")
+            break
+        if posted_last_24h() >= MAX_PER_24H:
+            print(f"⏸ Son 24 saatda {MAX_PER_24H} post, {item_id} gozleyir")
+            break
+        build = ROOT / "_build" / item_id
+        post = {"type": typ, "caption": content.get("caption", ""), "slot": slot.isoformat(),
+                "platforms": content.get("platforms") or list(PLATFORMS), "content": content}
+        try:
+            names = render_item(typ, content, build)
+            post["media"] = names
+            if typ != "reels":
+                push_media(item_id, [build / n for n in names])
+            result, ok, platforms = publish_post(build, post)
+        except Exception as e:
+            result, ok, platforms = {"error": f"hazirlama: {type(e).__name__}: {e}"}, 0, []
+            print(f"❌ {item_id}: {result['error']}")
+        dest = POSTED / item_id if ok else FAILED / item_id
+        dest.mkdir(parents=True, exist_ok=True)
+        post.pop("media", None)
+        (dest / "post.json").write_text(json.dumps(post, ensure_ascii=False, indent=2) + "\n")
+        result["posted_at" if ok else "failed_at"] = now().isoformat()
+        (dest / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+        shutil.rmtree(build, ignore_errors=True)
+        done += 1
+        print(f"-> {dest.relative_to(ROOT)}")
+    return done
+
+
 def main():
+    sch_budget = 3
+    try:
+        sch_budget = json.loads((ROOT / "schedule.json").read_text()).get("max_per_run", 3)
+    except Exception:
+        pass
+    plan_done = run_plan(sch_budget)
+    if plan_done:
+        return 0
     items = sorted(p.parent for p in QUEUE.glob("*/post.json")) if QUEUE.exists() else []
     ready = []
     for d in items:
@@ -287,22 +417,7 @@ def main():
         return 0
 
     d, post = ready[0]  # her isde yalniz 1 post (teb'i interval)
-    platforms = post.get("platforms") or list(PLATFORMS)
-    print(f"▶ {d.name} ({post.get('type')}) -> {', '.join(platforms)}")
-    result, ok = {}, 0
-    for p in platforms:
-        try:
-            if p not in PUBLISHERS:
-                raise PostError(f"namelum platform: {p!r}")
-            result[p] = PUBLISHERS[p](d, post)
-            ok += 1
-            print(f"✅ {p}: {result[p].get('permalink')}")
-        except PostError as e:
-            result[p] = {"error": str(e)}
-            print(f"❌ {p}: {e}")
-        except Exception as e:  # bir platformanin gozlenilmez xetasi o birini dayandirmasin
-            result[p] = {"error": f"{type(e).__name__}: {e}"}
-            print(f"❌ {p}: {type(e).__name__}: {e}")
+    result, ok, platforms = publish_post(d, post)
     if ok:
         result["posted_at"] = now().isoformat()
         t = move(d, POSTED, result)

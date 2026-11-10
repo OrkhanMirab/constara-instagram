@@ -2,10 +2,10 @@ name: Instagram paylas
 
 on:
   schedule:
-    - cron: "23,53 * * * *"   # saatda iki defe (GitHub 5-30 deq gecikdire biler)
+    - cron: "7,22,37,52 * * * *"   # 15 deqiqeden bir (GitHub 5-30 deq gecikdire biler); plan saatlari schedule.json-da
   push:
     branches: [main]
-    paths: ["queue/**", "sil/**"]
+    paths: ["queue/**", "sil/**", "plan/**"]
   workflow_dispatch:
 
 concurrency:
@@ -22,12 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Generator paketleri (Pillow, ffmpeg)
+        run: pip install --quiet pillow imageio-ffmpeg
+
       - name: Silme emrleri (sil/*.txt)
         env:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
         run: python3 sil.py
 
-      - name: Novbeden bir post paylas
+      - name: Plan + novbeden paylas
         if: always()
         id: run
         env:

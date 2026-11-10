@@ -1,0 +1,10 @@
+{
+  "_izah": "Gundelik plan (plan/YYYY-MM-DD.json) bu saatlara paylanir. Vaxt Turkiye (UTC+3). Tezliyi burda deyis.",
+  "tz": "+03:00",
+  "end": "23:00",
+  "reels": {"start": "10:00", "every_min": 90},
+  "carousels": {"start": "10:15", "every_min": 30},
+  "stories": {"times": ["12:40", "20:40"]},
+  "max_per_run": 3,
+  "max_late_min": 120
+}
