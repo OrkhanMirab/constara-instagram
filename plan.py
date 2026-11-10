@@ -54,7 +54,11 @@ def items_for(plan_file: Path, sch):
     for key, typ in KINDS.items():
         frm = p.get(f"{key}_from") or p.get("from")  # meselen "reels_from": "17:00"
         start = _at(date, frm, tz) if frm else None
-        free = [s for s in slots(date, key, sch) if not start or s >= start]
+        if p.get(f"{key}_times"):  # plana xas saatlar (meselen "reels_times": ["15:25", "17:00"])
+            all_slots = [_at(date, t, tz) for t in p[f"{key}_times"]]
+        else:
+            all_slots = slots(date, key, sch)
+        free = [s for s in all_slots if not start or s >= start]
         for i, (content, slot) in enumerate(zip(p.get(key, []), free)):
             # diktorlu Reels (video_branch) ayrica ID: kohne kinetik reels-NN ile toqqusmasin
             pre = "vreel" if content.get("video_branch") else typ
