@@ -34,7 +34,7 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 - **Tezlik:** `schedule.json` (TR saatı). Reels 10:00-dan 90 dəq-dən bir (9), karusel 10:15-dən 30 dəq-dən bir (26), story 12:40 və 20:40. Azaltmaq üçün yalnız bu faylı dəyiş.
 - **Məzmun = data:** `plan/YYYY-MM-DD.json` (`reels` / `carousels` / `stories` siyahıları; format `plan.py` və `gen/*.py` başında). i-ci element o növün i-ci slotuna düşür. `"from": "HH:MM"` ondan əvvəlki slotları boş saxlayır.
 - **Generatorlar** (`gen/`): `carousel.py` (kind list/myth/steps, 2–10 slayd), `story.py`, `reel.py` (kinetik qrafik, ~14 s, səssiz trek, sonda «Comment LINK»). Media runner-də hazırlanır (git-ə düşmür); şəkillər `media` budağına tək commit kimi force-push olunur (raw URL), main-ə yalnız `posted/<id>/post.json + result.json`.
-- **Paylaşma:** `paylas.yml` 15 dəq-dən bir; hər run ən çox 3 plan elementi; slotdan 120 dəq-dən çox gecikən element atlanır (`failed/<id>` «vaxt keçdi»). `MAX_PER_24H=45`. Köhnə `queue/` yolu da işləyir.
+- **Paylaşma:** `paylas.yml` bir run ~5,5 saat dövrədə işləyir, hər 2 dəq-dən bir yoxlayır (GitHub cron saatlarla gəlmir — 11-10 səhər 04:48-dən sonra run yox idi); cron (:07, :37) yalnız dövrəni yenidən başladır; hər run ən çox 3 plan elementi; slotdan 120 dəq-dən çox gecikən element atlanır (`failed/<id>` «vaxt keçdi»). `MAX_PER_24H=45`. Köhnə `queue/` yolu da işləyir.
 - **Gündəlik sessiya:** hər gecə scheduled task yeni sessiya açır → həmin günün planını yazır (`video-src/_alet/gun-plani.md` təlimatı), lokalda render edib baxır, `main`-ə push edir. Plan yoxdursa o gün heç nə paylaşılmır.
 - Sınaq: `python3 plan.py plan/<tarix>.json` (cədvəl); generatoru lokalda `python3 gen/carousel.py c.json out/`.
 
