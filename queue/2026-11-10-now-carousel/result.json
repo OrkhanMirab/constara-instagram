@@ -1,9 +1,0 @@
-{
-  "instagram": {
-    "error": "POST 17841438908470809/media -> 400: API access blocked. (code 200, sub None)"
-  },
-  "facebook": {
-    "error": "POST 1466216953235938/photos -> 400: Any of the pages_read_engagement, pages_manage_metadata,\n        pages_read_user_content, pages_manage_ads, pages_show_list or\n        pages_messaging permission(s) must be granted before impersonating a\n        user's page. (code 190, sub None)"
-  },
-  "failed_at": "2026-11-10T11:00:51.432216+00:00"
-}
