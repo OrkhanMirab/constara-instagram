@@ -3,19 +3,16 @@
  "from": "14:30",
  "reels": [
   {
-   "hook": [
-    "You're not lazy.",
-    "You're untracked."
-   ],
-   "beats": [
-    "Day 1: you show up. +1",
-    "Day 13: you slip. −5",
-    "Day 30: you're higher than ever."
-   ],
-   "end": "Your life as a stock chart.",
-   "accent": "orange",
-   "dip": true,
-   "caption": "You're not lazy, you're untracked. 📈\n\nEvery day you show up is +1. A slip is −5, not zero. Come back the next day and the line keeps climbing.\n\nComment LINK 👇 and I'll DM you the free app.\n\n#habittracker #selfimprovement #discipline #productivity #growthmindset"
+   "video_branch": "reels/2026-11-10",
+   "video": "r01.mp4",
+   "title": "QUITTING JUNK FOOD",
+   "caption": "Quitting junk food: 3 signs you're actually doing it 🍔\n\n1️⃣ Midnight comes, and you skip the snack.\n2️⃣ A craving hits, you wait 10 minutes, and it passes.\n3️⃣ You slip once, and you don't start over. One slip is −5, not zero.\n\nWhich sign are you on? 👇\nComment LINK 👇 and I'll DM you the free app.\n\n#junkfood #healthyhabits #cravings #selfimprovement #habittracker"
+  },
+  {
+   "video_branch": "reels/2026-11-10",
+   "video": "r02.mp4",
+   "title": "QUITTING SMOKING",
+   "caption": "Quitting smoking: 3 signs you're actually doing it 🚭\n\n1️⃣ The night ends, and you didn't need that last cigarette.\n2️⃣ A craving hits, you wait 10 minutes, and it passes.\n3️⃣ You slip once, and you don't start over. One slip is −5, not zero.\n\nWhich sign are you on? 👇\nComment LINK 👇 and I'll DM you the free app.\n\n#quitsmoking #smokefree #nicotinefree #selfimprovement #habittracker"
   }
  ],
  "carousels": [
@@ -698,5 +695,6 @@
    "cta": "Reply YES or NOT YET",
    "accent": "orange"
   }
- ]
+ ],
+ "reels_from": "17:00"
 }
