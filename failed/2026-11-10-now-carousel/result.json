@@ -1,0 +1,9 @@
+{
+  "instagram": {
+    "error": "POST 17841438908470809/media -> 400: Only photo or video can be accepted as media type. (code 9004, sub 2207052) | Medya şu URI'den alınamadı: https://raw.githubusercontent.com/OrkhanMirab/constara-instagram/1a6537b9db68fb137cc7ab193c8d3e422983b3bd/queue/2026-11-10-now-carousel/1.jpg.Daha fazla bilgi için lütfen geliştirme belgelerimizdeki kısıtlamalar kısmını kontrol edin: https://developers.facebook.com/docs/instagram-platform/instagram-graph-api/reference/ig-user/media#creating"
+  },
+  "facebook": {
+    "error": "POST 1466216953235938/photos -> 400: Missing or invalid image file (code 324, sub 2069019) | Make sure your Page post includes an image that can be used in an ad."
+  },
+  "failed_at": "2026-11-10T11:29:02.573495+00:00"
+}
