@@ -36,6 +36,7 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 - **Generatorlar** (`gen/`): `carousel.py` (kind list/myth/steps, 2–10 slayd), `story.py`, `reel.py` (kinetik qrafik, ~14 s, səssiz trek, sonda «Comment LINK»). Media runner-də hazırlanır (git-ə düşmür); şəkillər `media` budağına tək commit kimi force-push olunur (raw URL), main-ə yalnız `posted/<id>/post.json + result.json`.
 - **Paylaşma:** `paylas.yml` bir run ~5,5 saat dövrədə işləyir, hər 2 dəq-dən bir yoxlayır (GitHub cron saatlarla gəlmir — 11-10 səhər 04:48-dən sonra run yox idi); cron (:07, :37) yalnız dövrəni yenidən başladır; hər run ən çox 3 plan elementi; slotdan 120 dəq-dən çox gecikən element atlanır (`failed/<id>` «vaxt keçdi»). `MAX_PER_24H=45`. Köhnə `queue/` yolu da işləyir.
 - **Gündəlik sessiya:** hər gecə scheduled task yeni sessiya açır → həmin günün planını yazır (`video-src/_alet/gun-plani.md` təlimatı), lokalda render edib baxır, `main`-ə push edir. Plan yoxdursa o gün heç nə paylaşılmır.
+- **⛔ BLOKER (2026-11-10 14:00 TR):** ilk real cəhddə IG `API access blocked` (code 200) + FB token `code 190` (ikisi birdən). Repo kökündə `PAUSE` faylı var — paylaşma dayanıb. İstifadəçi Meta tərəfini yoxlayır (app Alerts / hesab təhlükəsizliyi / yeni token). Düzələndən sonra: Secrets yenilə → `PAUSE`-u sil → push. `queue/`-da 3 «now» postu gözləyir.
 - Sınaq: `python3 plan.py plan/<tarix>.json` (cədvəl); generatoru lokalda `python3 gen/carousel.py c.json out/`.
 
 ## 🔎 Bilmədiyin şey çıxanda: TƏXMİN ETMƏ, GEDİB BAX
