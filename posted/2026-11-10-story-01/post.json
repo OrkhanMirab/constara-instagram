@@ -1,0 +1,16 @@
+{
+  "type": "story",
+  "caption": "",
+  "slot": "2026-11-10T20:40:00+03:00",
+  "platforms": [
+    "instagram",
+    "facebook"
+  ],
+  "content": {
+    "kicker": "Quick check",
+    "title": "Did you keep one small promise to yourself today?",
+    "body": "Ten minutes counts. One glass of water counts. It's still +1.",
+    "cta": "Reply YES or NOT YET",
+    "accent": "orange"
+  }
+}
