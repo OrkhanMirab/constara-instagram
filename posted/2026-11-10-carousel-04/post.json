@@ -1,0 +1,50 @@
+{
+  "type": "carousel",
+  "caption": "Signs you're growing, even if it feels slow.\n\nGrowth is quiet. You usually notice it only when you look back at the chart.\n\nComment LINK 👇 and I'll DM you the free app.\n\n#personalgrowth #selfimprovement #mindset #growthmindset #selfawareness",
+  "slot": "2026-11-10T16:15:00+03:00",
+  "platforms": [
+    "instagram",
+    "facebook"
+  ],
+  "content": {
+    "kind": "list",
+    "accent": "blue",
+    "cover": [
+      "Signs you're",
+      "growing (even if",
+      "it feels slow)."
+    ],
+    "hook": "Count how many fit you →",
+    "items": [
+      {
+        "h": "Old problems feel smaller.",
+        "b": "Things that used to wreck your day now just annoy you for an hour."
+      },
+      {
+        "h": "You notice your excuses.",
+        "b": "You still make them sometimes, but now you catch yourself."
+      },
+      {
+        "h": "You need less motivation.",
+        "b": "You start because it's Tuesday, not because you feel inspired."
+      },
+      {
+        "h": "You're okay being a beginner.",
+        "b": "Being bad at something new doesn't scare you as much."
+      }
+    ],
+    "cta": {
+      "title": [
+        "How many",
+        "fit you?"
+      ],
+      "note": "Send this to someone who's growing and can't see it."
+    },
+    "caption": "Signs you're growing, even if it feels slow.\n\nGrowth is quiet. You usually notice it only when you look back at the chart.\n\nComment LINK 👇 and I'll DM you the free app.\n\n#personalgrowth #selfimprovement #mindset #growthmindset #selfawareness",
+    "chart": {
+      "title": "Growth looks flat up close.",
+      "body": "Zoom out and the line is going up.",
+      "dip": true
+    }
+  }
+}
