@@ -1,5 +1,5 @@
 {
-  "_izah": "Gundelik plan (plan/YYYY-MM-DD.json) bu saatlara paylanir. Vaxt Turkiye (UTC+3). Reels gunde 4, 21:00-a qeder (istifadeci 2026-11-10). Tezliyi burda deyis.",
+  "_izah": "Gundelik plan bu saatlara paylanir (TR, UTC+3). Istifadeci 2026-11-10: gunde 3 karusel, 4 Reels (21:00-a qeder), 2 story.",
   "tz": "+03:00",
   "end": "23:00",
   "reels": {
@@ -11,8 +11,11 @@
     ]
   },
   "carousels": {
-    "start": "10:15",
-    "every_min": 30
+    "times": [
+      "13:00",
+      "16:00",
+      "19:00"
+    ]
   },
   "stories": {
     "times": [

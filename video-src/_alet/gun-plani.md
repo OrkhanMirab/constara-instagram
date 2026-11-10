@@ -1,10 +1,10 @@
 # Gündəlik plan təlimatı (avtomatik sessiya üçün)
 
 1. Tarix: Türkiyə saatı ilə bugün (UTC+3). Fayl: `plan/<tarix>.json`. Varsa — toxunma, yalnız yoxla.
-2. Say: 26 karusel, 2 story, **4 diktorlu Reels** (11:30, 14:30, 17:30, 20:30). Kinetik `gen/reel.py` RƏDD edilib (istifadəçi 11-10) — işlətmə.
+2. Say: **3 karusel** (13:00, 16:00, 19:00), 2 story, **4 diktorlu Reels** (11:30, 14:30, 17:30, 20:30). Kinetik `gen/reel.py` RƏDD edilib (istifadəçi 11-10) — işlətmə.
 3. **Təkrar YOX:** `ls posted/` + son 3 günün `plan/*.json`-larını oxu (başlıqlar) — eyni başlıq/mövzu olmasın.
    Mövzular: vərdiş, intizam, məhsuldarlıq, pis vərdişi buraxmaq (vape, şəkər, scroll, içki), yuxu, səhər/axşam rejimi, motivasiya, izləmə (tracking), burnout.
-   Format qarışığı: karusellərin ~1/3-i `myth`, ~1/3-i `steps`, qalanı `list`; rənglər növbələşsin; 7–8 karuseldə `chart` slaydı.
+   Format qarışığı: karusellərin ~1/3-i `myth`, ~1/3-i `steps`, qalanı `list`; rənglər növbələşsin; 1 karuseldə `chart` slaydı; 3 karusel 3 fərqli kind (list, myth, steps) olsun.
 4. Mətn İngiliscə, qısa və konkret (slaydda başlıq ≤ 8 söz, izah ≤ 25 söz). Elmi iddia uydurma (rəqəm verirsənsə ehtiyatlı: «around», «often»).
 5. Caption: açar söz ilk cümlədə, 1–2 cümlə izah, sonra `Comment LINK 👇 and I'll DM you the free app.`, sonra ən çox 5 hashtag.
 6. **Reels (diktorlu, v16 «3 signs» şablonu):** `video-src/_alet/reels.py`-ın başındakı formatla 4 cfg yaz (`/tmp/.../reels.json`).
