@@ -1,0 +1,48 @@
+{
+  "type": "carousel",
+  "caption": "How to restart your habits after a bad week (without waiting for Monday).\n\nA bad week is a dip, not the end. These 5 steps get you back on the line.\n\nComment LINK 👇 and I'll DM you the free app.\n\n#habits #motivation #selfimprovement #discipline #consistency",
+  "slot": "2026-11-10T15:15:00+03:00",
+  "platforms": [
+    "instagram",
+    "facebook"
+  ],
+  "content": {
+    "kind": "steps",
+    "accent": "green",
+    "cover": [
+      "How to restart",
+      "after a bad week."
+    ],
+    "hook": "5 steps, no guilt →",
+    "items": [
+      {
+        "h": "Don't wait for Monday.",
+        "b": "Restart with the next small action, today. The calendar doesn't decide when you begin."
+      },
+      {
+        "h": "Shrink the habit.",
+        "b": "Ten push-ups become two. One page instead of a chapter. Win the day first."
+      },
+      {
+        "h": "Pick only one habit.",
+        "b": "Bring back the one that makes the others easier. Usually sleep or movement."
+      },
+      {
+        "h": "Look at the whole chart.",
+        "b": "A bad week is a dip on a long line. You didn't lose the points you earned before."
+      },
+      {
+        "h": "Plan the next slip.",
+        "b": "Decide now what you'll do on a bad day. A plan beats willpower."
+      }
+    ],
+    "cta": {
+      "title": [
+        "Bad week?",
+        "Start here."
+      ],
+      "note": "Save this for the next time you fall off."
+    },
+    "caption": "How to restart your habits after a bad week (without waiting for Monday).\n\nA bad week is a dip, not the end. These 5 steps get you back on the line.\n\nComment LINK 👇 and I'll DM you the free app.\n\n#habits #motivation #selfimprovement #discipline #consistency"
+  }
+}
