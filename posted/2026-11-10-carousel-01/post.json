@@ -1,0 +1,55 @@
+{
+  "type": "carousel",
+  "caption": "4 habit myths that keep you stuck (number 1 surprises most people).\n\nThe 21-day rule, the perfect streak, the motivation trap. Here's what actually works.\n\nComment LINK 👇 and I'll DM you the free app.\n\n#habits #selfimprovement #productivity #habittracker #mindset",
+  "slot": "2026-11-10T14:45:00+03:00",
+  "platforms": [
+    "instagram",
+    "facebook"
+  ],
+  "content": {
+    "kind": "myth",
+    "accent": "orange",
+    "cover": [
+      "4 habit myths",
+      "that keep you stuck."
+    ],
+    "hook": "Which one did you believe? →",
+    "items": [
+      {
+        "h": "It takes 21 days to build a habit.",
+        "b": "It often takes around two months, and it varies a lot. Don't quit on day 22."
+      },
+      {
+        "h": "Missing one day ruins it.",
+        "b": "One missed day barely changes the long-term curve. Missing two in a row is what kills habits."
+      },
+      {
+        "h": "You need more motivation.",
+        "b": "You need a smaller first step. Two minutes is enough to start."
+      },
+      {
+        "h": "Tracking is for obsessive people.",
+        "b": "Tracking is how you see progress you'd otherwise forget."
+      }
+    ],
+    "cta": {
+      "title": [
+        "Save this",
+        "for day 22."
+      ],
+      "note": "Send it to a friend who restarts every Monday.",
+      "list": [
+        "21 days is a myth",
+        "One miss is fine",
+        "Start smaller",
+        "Track it"
+      ]
+    },
+    "caption": "4 habit myths that keep you stuck (number 1 surprises most people).\n\nThe 21-day rule, the perfect streak, the motivation trap. Here's what actually works.\n\nComment LINK 👇 and I'll DM you the free app.\n\n#habits #selfimprovement #productivity #habittracker #mindset",
+    "chart": {
+      "title": "One bad day is a dip, not a crash.",
+      "body": "Your line keeps climbing if you come back tomorrow.",
+      "dip": true
+    }
+  }
+}
