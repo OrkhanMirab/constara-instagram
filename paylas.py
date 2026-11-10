@@ -389,6 +389,9 @@ def run_plan(budget: int) -> int:
 
 
 def main():
+    if (ROOT / "PAUSE").exists():  # token/Meta problemi zamani: hec ne paylasma, hec ne atlama
+        print("⏸ PAUSE fayli var, paylasma dayandirilib:", (ROOT / "PAUSE").read_text().strip())
+        return 0
     sch_budget = 3
     try:
         sch_budget = json.loads((ROOT / "schedule.json").read_text()).get("max_per_run", 3)
