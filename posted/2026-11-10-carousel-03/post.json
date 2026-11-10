@@ -1,0 +1,53 @@
+{
+  "type": "carousel",
+  "caption": "5 tiny habits that compound over a year.\n\nNone of these take more than 15 minutes. All of them add up.\n\nComment LINK 👇 and I'll DM you the free app.\n\n#tinyhabits #habits #selfimprovement #productivity #morningroutine",
+  "slot": "2026-11-10T15:45:00+03:00",
+  "platforms": [
+    "instagram",
+    "facebook"
+  ],
+  "content": {
+    "kind": "list",
+    "accent": "gold",
+    "cover": [
+      "5 tiny habits",
+      "that compound."
+    ],
+    "hook": "Small now, huge in a year →",
+    "items": [
+      {
+        "h": "Make your bed.",
+        "b": "It's a finished task before 8 AM, and it sets the tone for the rest of the day."
+      },
+      {
+        "h": "Read 10 pages.",
+        "b": "That's about 15 books a year from a habit that takes 15 minutes."
+      },
+      {
+        "h": "Walk after dinner.",
+        "b": "Ten minutes helps digestion, sleep, and clears your head."
+      },
+      {
+        "h": "Write one line at night.",
+        "b": "What went well today? Your brain starts looking for wins."
+      },
+      {
+        "h": "Phone outside the bedroom.",
+        "b": "Better sleep starts with what's on your nightstand."
+      }
+    ],
+    "cta": {
+      "title": [
+        "Pick one.",
+        "Start tonight."
+      ],
+      "note": "Comment the one you'll start with."
+    },
+    "caption": "5 tiny habits that compound over a year.\n\nNone of these take more than 15 minutes. All of them add up.\n\nComment LINK 👇 and I'll DM you the free app.\n\n#tinyhabits #habits #selfimprovement #productivity #morningroutine",
+    "chart": {
+      "title": "+1 a day adds up.",
+      "body": "365 small wins look like this on a chart.",
+      "dip": true
+    }
+  }
+}
