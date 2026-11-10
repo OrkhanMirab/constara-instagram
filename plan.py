@@ -50,12 +50,15 @@ def items_for(plan_file: Path, sch):
     p = json.loads(plan_file.read_text(encoding="utf-8"))
     date = datetime.strptime(p["date"], "%Y-%m-%d").date()
     tz = _tz(sch)
-    start = _at(date, p["from"], tz) if p.get("from") else None
     out = []
     for key, typ in KINDS.items():
+        frm = p.get(f"{key}_from") or p.get("from")  # meselen "reels_from": "17:00"
+        start = _at(date, frm, tz) if frm else None
         free = [s for s in slots(date, key, sch) if not start or s >= start]
         for i, (content, slot) in enumerate(zip(p.get(key, []), free)):
-            out.append((f"{p['date']}-{typ}-{i + 1:02d}", typ, slot, content))
+            # diktorlu Reels (video_branch) ayrica ID: kohne kinetik reels-NN ile toqqusmasin
+            pre = "vreel" if content.get("video_branch") else typ
+            out.append((f"{p['date']}-{pre}-{i + 1:02d}", typ, slot, content))
     return sorted(out, key=lambda x: x[2])
 
 

@@ -340,6 +340,14 @@ def push_media(item_id: str, files):
 
 
 def render_item(typ, content, out: Path):
+    if typ == "reels" and content.get("video_branch"):  # hazir diktorlu video (video-src/_alet/reels.py)
+        out.mkdir(parents=True, exist_ok=True)
+        br = content["video_branch"]
+        git("fetch", "-q", "--depth", "1", "origin", f"+refs/heads/{br}:refs/remotes/origin/{br}")
+        data = subprocess.run(["git", "show", f"origin/{br}:{content['video']}"], cwd=ROOT,
+                              capture_output=True, check=True).stdout
+        (out / "video.mp4").write_bytes(data)
+        return ["video.mp4"]
     sys.path.insert(0, str(ROOT / "gen"))
     import carousel, reel, story  # noqa: E402  (Pillow yalniz plan isleyende lazimdir)
     return {"carousel": carousel, "reels": reel, "story": story}[typ].render(content, out)
