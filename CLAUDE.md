@@ -39,6 +39,11 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 - **⛔ BLOKER (2026-11-10 14:00 TR):** ilk real cəhddə IG `API access blocked` (code 200) + FB token `code 190` (ikisi birdən). Repo kökündə `PAUSE` faylı var — paylaşma dayanıb. İstifadəçi Meta tərəfini yoxlayır (app Alerts / hesab təhlükəsizliyi / yeni token). Düzələndən sonra: Secrets yenilə → `PAUSE`-u sil → push. `queue/`-da 3 «now» postu gözləyir.
 - Sınaq: `python3 plan.py plan/<tarix>.json` (cədvəl); generatoru lokalda `python3 gen/carousel.py c.json out/`.
 
+## 🧠 Analiz agenti (2026-11-10, istifadəçi istədi: «hər 3–4 videodan bir Instagram-ı və videoları analiz etsin, videoları, animasiyaları, ssenariləri inkişaf etdirsin») — QURULACAQ
+1. **Rəqəm toplayıcı:** Actions job (gündə 1–2 dəfə) hər post üçün insights çəkir (`instagram_manage_insights` icazəsi var): reach, plays/views, ortalama izləmə vaxtı (`ig_reels_avg_watch_time`), saxlama (`saved`), göndərmə (`shares`), şərh, bəyənmə, follows. Statistika **private** repoda (`constara-stats`) saxlanır — bu repo public-dir; istifadəçi private repo açıb `IG_ACCESS_TOKEN`/`IG_USER_ID` secret qoymalıdır (və ya bu repoda yalnız ümumiləşdirilmiş cədvəl).
+2. **Analiz sessiyası:** scheduled task hər 4 Reels-dən sonra (≈ hər gün gecə planından əvvəl) yeni sessiya açır → son postların rəqəmlərini oxuyur, format/mövzu/hook/uzunluq/rəng müqayisəsi edir (hansı 3 s-də saxlayır, hansı göndərilir) → `analiz/YYYY-MM-DD.md` hesabat → nəticələri **`video-src/_alet/gun-plani.md` qaydalarına və Reels cfg şablonlarına** yazır (məs. «X tipli hook-lar 2× reach» → növbəti planda üstünlük). Böyük dəyişiklik (yeni animasiya şablonu, format) — təklif kimi istifadəçiyə; kiçik (mövzu, hook, caption, rəng, uzunluq) — avtomatik.
+3. Sıra: əvvəl diktorlu Reels pipeline-ı (reels.py) işləsin → sonra toplayıcı → sonra analiz sessiyası. Ən azı ~10 post rəqəmi yığılmadan nəticə çıxarma.
+
 ## 🔎 Bilmədiyin şey çıxanda: TƏXMİN ETMƏ, GEDİB BAX
 > Tətbiqin reposu: **`OrkhanMirab/Constara`** (köhnə adı `life-analytics`; klon qovluğu `/home/user/life-analytics` və ya `/home/user/Constara` ola bilər). Aşağıdakı «life-analytics» adları həmin repo deməkdir.
 Söhbət zamanı tətbiq, brend, keçmiş qərarlar və ya marketinq barədə bilmədiyin bir məlumat lazım olsa (istifadəçi bunu açıq istəyib, 2026-11-08):
