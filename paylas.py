@@ -43,7 +43,16 @@ FB_TOKEN = os.environ.get("FB_PAGE_TOKEN", "")
 FB_PAGE = os.environ.get("FB_PAGE_ID", "")
 PLATFORMS = ("instagram", "facebook")
 REPO = os.environ.get("GITHUB_REPOSITORY", "OrkhanMirab/constara-instagram")
-SHA = os.environ.get("GITHUB_SHA", "main")
+def _head_sha():
+    # Dovre run-u yeni commit-leri pull edir, GITHUB_SHA ise kohne qalir -> raw URL-de cari HEAD lazimdir
+    try:
+        return subprocess.run(["git", "rev-parse", "HEAD"], cwd=Path(__file__).resolve().parent,
+                              capture_output=True, text=True, check=True).stdout.strip()
+    except Exception:
+        return os.environ.get("GITHUB_SHA", "main")
+
+
+SHA = _head_sha()
 MAX_PER_24H = int(os.environ.get("MAX_PER_24H", "45"))  # spam kimi gorunmesin
 UA = {"User-Agent": "constara-instagram/1.0"}
 
