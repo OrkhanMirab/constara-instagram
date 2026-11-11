@@ -1,14 +1,24 @@
 # Gündəlik plan təlimatı (avtomatik sessiya üçün)
 
+0. **ƏVVƏL ANALİZ** (hər gecə, planı yazmazdan əvvəl):
+   a. `/home/user/constara-stats` yoxdursa: `add_repo` (OrkhanMirab/constara-stats, push) → `git clone --depth 1 https://github.com/OrkhanMirab/constara-stats /home/user/constara-stats`; varsa `git pull`.
+   b. `cedvel.md` başlığındakı vaxt 4 saatdan köhnədirsə: `actions_run_trigger` (constara-stats, `topla.yml`, `main`) → ~1 dəq sonra `git pull`.
+   c. `python3 analiz.py 14` oxu. Dünənki postları (q=erkən olsa da) bazayla müqayisə et: mövzu, format, hook, saat, share/save.
+   d. `analiz/<tarix>.md` yaz (constara-stats, private): 5–10 sətir nəticə + nə dəyişdirildi. Commit + push.
+   e. Nəticələri **`video-src/_alet/oyrenilenler.md`**-yə yaz (public: xam rəqəm YOX, yalnız nisbət/qayda, n=post sayı). Qayda yalnız ≥3 postla
+      təsdiqlənəndə «aktiv» olur; ziddinə 3 sübut gəlsə — sil/düzəlt. Kiçik dəyişiklik (mövzu, hook, caption, rəng, uzunluq, karusel növü) — özün et.
+      Böyük dəyişiklik (yeni video şablonu/format, gündəlik say/saat) — yalnız «Sınaqda / təkliflər»-ə yaz və sonda istifadəçiyə bildir.
+   f. Aşağıdakı plan **oyrenilenler.md «Aktiv qaydalar»**-a əməl edir; ziddiyyət olsa, oyrenilenler.md qalib gəlir.
+
 1. Tarix: Türkiyə saatı ilə bugün (UTC+3). Fayl: `plan/<tarix>.json`. Varsa — toxunma, yalnız yoxla.
-2. Say: **3 karusel** (13:00, 16:00, 19:00), 2 story, **4 diktorlu Reels** (11:30, 14:30, 17:30, 20:30). Kinetik `gen/reel.py` RƏDD edilib (istifadəçi 11-10) — işlətmə.
+2. Say `schedule.json`-dan: hazırda **1 karusel** (19:00), 2 story, **4 diktorlu Reels** (11:30, 14:30, 17:30, 20:30). Kinetik `gen/reel.py` RƏDD edilib (istifadəçi 11-10) — işlətmə.
 3. **Təkrar YOX:** `ls posted/` + son 3 günün `plan/*.json`-larını oxu (başlıqlar) — eyni başlıq/mövzu olmasın.
    Mövzular: vərdiş, intizam, məhsuldarlıq, pis vərdişi buraxmaq (vape, şəkər, scroll, içki), yuxu, səhər/axşam rejimi, motivasiya, izləmə (tracking), burnout.
-   Format qarışığı: karusellərin ~1/3-i `myth`, ~1/3-i `steps`, qalanı `list`; rənglər növbələşsin; 1 karuseldə `chart` slaydı; 3 karusel 3 fərqli kind (list, myth, steps) olsun.
+   Format qarışığı: karusellərin ~1/3-i `myth`, ~1/3-i `steps`, qalanı `list`; rənglər növbələşsin; 1 karuseldə `chart` slaydı; günlər üzrə kind növbələşsin (list → steps → myth); karusel saxlanılası olsun (checklist/plan).
 4. Mətn İngiliscə, qısa və konkret (slaydda başlıq ≤ 8 söz, izah ≤ 25 söz). Elmi iddia uydurma (rəqəm verirsənsə ehtiyatlı: «around», «often»).
 5. Caption: açar söz ilk cümlədə, 1–2 cümlə izah, sonra `Comment LINK 👇 and I'll DM you the free app.`, sonra ən çox 5 hashtag.
 6. **Reels (diktorlu, v16 «3 signs» şablonu):** `video-src/_alet/reels.py`-ın başındakı formatla 4 cfg yaz (`/tmp/.../reels.json`).
-   Mövzu: «Quitting X: 3 signs» (X: smoking, junk food, caffeine, energy drinks, gambling, online shopping, video games, soda, nail biting, late-night snacking…; posted/ və son planlarla təkrar olmasın).
+   Mövzu seçimi: **əvvəl oyrenilenler.md qayda 1** (2 sübut olunmuş niş + 2 kəşf, «Bazada qalanlar»-ı təkrarlama). Kəşf üçün nümunə: «Quitting X: 3 signs» (X: smoking, junk food, caffeine, energy drinks, gambling, online shopping, video games, soda, nail biting, late-night snacking…; posted/ və son planlarla təkrar olmasın).
    №1 cümləsi və `n1` ekran yazısı GECƏ ilə bağlı olsun (şablonun №1 kadrı ay/saat/gecədir). №2 = istək gəlir və keçir, №3 = bir dəfə sürüşürsən, sıfırdan başlamırsan (kadrlar sabitdir).
    `bg` rəngi hər videoda fərqli; başlıq uzunsa `fs` 38–42. Son cümlə və LINK kadrı avtomatikdir.
    Qurulum: Constara reposu (`/home/user/Constara`, yoxdursa add_repo read + clone), `pip install kokoro-onnx soundfile`, iş qovluğuna `kokoro-v1.0.onnx` + `voices-v1.0.bin`
