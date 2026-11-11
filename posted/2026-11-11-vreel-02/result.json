@@ -1,0 +1,10 @@
+{
+  "instagram": {
+    "media_id": "18159839371514136",
+    "permalink": "https://www.instagram.com/reel/DfmYNHTgbeH/"
+  },
+  "facebook": {
+    "error": "GET 1872865477460163 -> 400: Unsupported get request. Object with ID '1872865477460163' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api (code 100, sub 33)"
+  },
+  "posted_at": "2026-11-11T11:31:18.093594+00:00"
+}
