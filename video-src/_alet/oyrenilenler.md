@@ -13,7 +13,7 @@ Gündəlik plan (`gun-plani.md`) bu faylın **«Aktiv qaydalar»** bölməsinə 
    Qayda: **ilk diktor cümləsi (`L[0]`) və caption-un ilk sətri** izləyiciyə birbaşa iddia/sual olsun
    («You're not addicted to vaping. You're addicted to the 10 seconds after.»), saat/səhnə təsviri ilə başlama.
    (`n1` və `L[1]` şablon üzrə gecə kadrıdır — ona toxunma.)
-3. **Karusel paylanmır** (11-11, n=8): reach bazanın ~3%-i (yalnız izləyicilərə gedir). Gündə **1 karusel** (19:00), saxlanılası
+3. **Karusel paylanmır** (11-11, n=8): reach bazanın ~3%-i (yalnız izləyicilərə gedir). 11-11 axşam: **karusel tam ləğv** (yüngül temp). Qayıtsa — saxlanılası
    (checklist / plan / qayda) olsun. İzləyici artandan sonra yenidən yoxla.
 4. **Göndərmə (share) siqnalı** ən çox partlayan videolarda var. CTA-dan əvvəl bir cümlə: «Send this to someone who's quitting.» — sına (11-11, status: sınaq).
 

@@ -1,58 +1,6 @@
 {
  "date": "2026-11-11",
- "carousels": [
-  {
-   "kind": "steps",
-   "accent": "blue",
-   "cover": [
-    "Quit any bad habit",
-    "in 5 steps."
-   ],
-   "hook": "Save this for your next craving →",
-   "items": [
-    {
-     "h": "Name the trigger.",
-     "b": "Write down when it hits: the time, the place, the feeling. Most cravings follow a pattern."
-    },
-    {
-     "h": "Make it harder.",
-     "b": "Add friction. Delete the app, move the vape to another room, log out after every use."
-    },
-    {
-     "h": "Use the 10-minute rule.",
-     "b": "When the urge comes, wait 10 minutes. Cravings often peak and fade on their own."
-    },
-    {
-     "h": "Replace, don't remove.",
-     "b": "Give your hands and brain something else: a walk, cold water, 10 push-ups."
-    },
-    {
-     "h": "Track it daily.",
-     "b": "One slip is −5, not zero. Seeing the trend keeps you from starting over."
-    }
-   ],
-   "chart": {
-    "title": "A slip is a dip, not a reset.",
-    "body": "Keep tracking. The trend matters more than one bad day.",
-    "dip": true
-   },
-   "cta": {
-    "title": [
-     "Which step",
-     "is hardest?"
-    ],
-    "list": [
-     "Trigger",
-     "Friction",
-     "10 minutes",
-     "Replace",
-     "Track"
-    ],
-    "note": "Save this and try step 1 tonight."
-   },
-   "caption": "How to quit a bad habit in 5 steps (save this for your next craving).\n\nTriggers, friction, the 10-minute rule, a replacement, and tracking. One slip is a dip, not a reset.\n\nSend this to someone who's quitting something.\nComment LINK 👇 and I'll DM you the free app.\n\n#quitbadhabits #habits #selfimprovement #discipline #habittracker"
-  }
- ],
+ "carousels": [],
  "stories": [
   {
    "kicker": "Honest check",
@@ -89,8 +37,5 @@
  ],
  "stories_times": [
   "12:40"
- ],
- "carousels_times": [
-  "19:00"
  ]
 }

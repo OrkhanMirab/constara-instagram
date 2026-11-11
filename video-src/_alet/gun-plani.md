@@ -11,7 +11,7 @@
    f. Aşağıdakı plan **oyrenilenler.md «Aktiv qaydalar»**-a əməl edir; ziddiyyət olsa, oyrenilenler.md qalib gəlir.
 
 1. Tarix: Türkiyə saatı ilə bugün (UTC+3). Fayl: `plan/<tarix>.json`. Varsa — toxunma, yalnız yoxla.
-2. Say `schedule.json`-dan (11-11-dən YÜNGÜL TEMP, istifadəçi: «radara düşməyək»): **2 Reels** (14:30, 20:30), **1 karusel** (19:00), **story YOX**. Bundan artıq yazma. Köhnə mətn: **4 diktorlu Reels** (11:30, 14:30, 17:30, 20:30). Kinetik `gen/reel.py` RƏDD edilib (istifadəçi 11-10) — işlətmə.
+2. Say `schedule.json`-dan (11-11-dən YÜNGÜL TEMP, istifadəçi: «radara düşməyək»): **yalnız 2 Reels** (14:30, 20:30), **karusel YOX, story YOX**. Bundan artıq yazma. Köhnə mətn: **4 diktorlu Reels** (11:30, 14:30, 17:30, 20:30). Kinetik `gen/reel.py` RƏDD edilib (istifadəçi 11-10) — işlətmə.
 3. **Təkrar YOX:** `ls posted/` + son 3 günün `plan/*.json`-larını oxu (başlıqlar) — eyni başlıq/mövzu olmasın.
    Mövzular: vərdiş, intizam, məhsuldarlıq, pis vərdişi buraxmaq (vape, şəkər, scroll, içki), yuxu, səhər/axşam rejimi, motivasiya, izləmə (tracking), burnout.
    Format qarışığı: karusellərin ~1/3-i `myth`, ~1/3-i `steps`, qalanı `list`; rənglər növbələşsin; 1 karuseldə `chart` slaydı; günlər üzrə kind növbələşsin (list → steps → myth); karusel saxlanılası olsun (checklist/plan).
