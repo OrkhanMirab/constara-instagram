@@ -12,13 +12,15 @@ Gündəlik plan (`gun-plani.md`) bu faylın **«Aktiv qaydalar»** bölməsinə 
 2. **İlk 3 saniyə zəifdir** (11-11, n=20). Ortalama izləmə videonun ~1/3-i. Saat hook-u («2 AM…») olan videolar ən aşağı izləmədədir.
    Qayda: **ilk diktor cümləsi (`L[0]`) və caption-un ilk sətri** izləyiciyə birbaşa iddia/sual olsun
    («You're not addicted to vaping. You're addicted to the 10 seconds after.»), saat/səhnə təsviri ilə başlama.
-   (`n1` və `L[1]` şablon üzrə gecə kadrıdır — ona toxunma.)
+   (`n1` və `L[1]` şablon üzrə gecə kadrıdır — ona toxunma.) Status 11-12: 2 videoda (p*rn, weed) partlayış yoxdur — hələ sınaq, n az.
 3. **Karusel paylanmır** (11-11, n=8): reach bazanın ~3%-i (yalnız izləyicilərə gedir). 11-11 axşam: **karusel tam ləğv** (yüngül temp). Qayıtsa — saxlanılası
    (checklist / plan / qayda) olsun. İzləyici artandan sonra yenidən yoxla.
-4. **Göndərmə (share) siqnalı** ən çox partlayan videolarda var. CTA-dan əvvəl bir cümlə: «Send this to someone who's quitting.» — sına (11-11, status: sınaq).
+4. **Açıq döngə (sınaq, 11-12, n=3 partlayış).** Partlayan 3 videonun hamısında caption/hook-da açıq döngə var idi
+   («Most people miss #3.», «Which one hit?»). «3 signs» caption-un 1-ci sətrinə bunu əlavə et. Status: sınaq.
+5. **Göndərmə (share) siqnalı** ən çox partlayan videolarda var. CTA-dan əvvəl bir cümlə: «Send this to someone who's quitting.» — sına (11-11, status: sınaq).
 
 ## Bazada qalanlar (təkrar etmə, ən azı 2 həftə)
-sugar, drinking, caffeine, gambling, smoking, junk food, scroll (11-11 vəziyyəti).
+sugar, drinking, caffeine, gambling, smoking, junk food, scroll (11-11 vəziyyəti); weed (11-12: bazada + FB yükləməsi uğursuz — **narkotik mövzuları YOX**).
 
 ## Sınaqda / təkliflər (istifadəçi təsdiqi lazım)
 - **«Xal testi» formatı (x01) — SINAQDA** (istifadəçi 11-11 «başla» dedi). `reels.py` cfg `"format": "xal"` (nümunə: reels.py başı).
@@ -29,3 +31,4 @@ sugar, drinking, caffeine, gambling, smoking, junk food, scroll (11-11 vəziyyə
 
 ## Tarixçə
 - 2026-11-11: ilk analiz (29 post, 61 izləyici). Qaydalar 1–4 yazıldı.
+- 2026-11-12: dünənki 4 post erkən (bazada). Xal testi #1 avg izləmə «3 signs» səviyyəsində. Açıq döngə sınağı + narkotik mövzusu qadağası. İzləyici 66.
