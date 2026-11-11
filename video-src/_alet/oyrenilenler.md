@@ -5,7 +5,7 @@ Gündəlik plan (`gun-plani.md`) bu faylın **«Aktiv qaydalar»** bölməsinə 
 
 ## Aktiv qaydalar
 1. **Mövzu > şablon** (11-11, n=20 Reels, ilkin). Eyni «3 signs» şablonu ilə əksər mövzular bazada qalır (~eyni reach),
-   amma iki niş 5–7× partladı: **porn/NoFap** (2 video) və **vaping/nikotin** (1 video). Qayda: gündəlik 4 Reels-dən
+   amma iki niş 5–7× partladı: **porn/NoFap** (2 video) və **vaping/nikotin** (1 video). Qayda (11-11 yüngül temp: gündə 2 Reels): **14:30 = sübut olunmuş niş «3 signs»**, **20:30 = Xal testi** (mövzu nişə yaxın ola bilər). Kəşf mövzuları temp artanda qayıdır. Köhnə: gündəlik 4 Reels-dən
    **2-si sübut olunmuş nişdən** (porn-dan çıxmaq / vape-nikotin — hər dəfə yeni bucaq: gecə, trigger, 30-cu gün, relapse, beyin),
    **2-si kəşf** (yeni niş). Kəşf mövzusu 2 dəfə bazada qalsa — siyahıdan çıxar (aşağıda «Bazada qalanlar»).
    Porn sözünü ekranda və caption-da `p*rn` yaz (filtr riski).

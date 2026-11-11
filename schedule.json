@@ -1,12 +1,10 @@
 {
-  "_izah": "Gundelik plan bu saatlara paylanir (TR, UTC+3). 2026-11-11 analiz: karusel reach ~3% -> gunde 1 karusel; 4 Reels, 2 story.",
+  "_izah": "Gundelik plan bu saatlara paylanir (TR, UTC+3). 2026-11-11: Meta reklam mehdudiyyetinden sonra istifadeci: 'tempi yungul saxlayaq, radara dusmeyek' -> gunde 2 Reels + 1 karusel, story yox.",
   "tz": "+03:00",
   "end": "23:00",
   "reels": {
     "times": [
-      "11:30",
       "14:30",
-      "17:30",
       "20:30"
     ]
   },
@@ -16,10 +14,7 @@
     ]
   },
   "stories": {
-    "times": [
-      "12:40",
-      "20:40"
-    ]
+    "times": []
   },
   "max_per_run": 3,
   "max_late_min": 120

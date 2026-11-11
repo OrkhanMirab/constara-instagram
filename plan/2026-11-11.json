@@ -60,13 +60,6 @@
    "body": "No judgment. Naming it is step one.",
    "cta": "Reply with one word",
    "accent": "blue"
-  },
-  {
-   "kicker": "Tonight",
-   "title": "Did a craving hit today, and did you wait 10 minutes?",
-   "body": "Even if you slipped, waiting once still counts. It's a dip, not a reset.",
-   "cta": "Reply WAITED or SLIPPED",
-   "accent": "green"
   }
  ],
  "reels": [
@@ -83,16 +76,21 @@
    "caption": "Quitting weed? 3 signs it's actually working 🌿\n\n1️⃣ Bedtime comes, and you fall asleep without it.\n2️⃣ The craving hits after work. You let it pass.\n3️⃣ You slip once, and you don't start over. One slip is −5, not zero.\n\nWhich sign are you on? 👇\nSend this to someone who's quitting.\nComment LINK 👇 and I'll DM you the free app.\n\n#quittingweed #sobriety #recovery #selfimprovement #habittracker"
   },
   {
-   "video_branch": "reels/2026-11-11",
-   "video": "r03.mp4",
-   "title": "QUITTING NICOTINE",
-   "caption": "Quitting nicotine (vape, pouches, cigarettes)? 3 signs the loop is breaking 💨\n\n1️⃣ Late at night, you don't reach for a hit.\n2️⃣ The craving spikes. 10 minutes later, it's gone.\n3️⃣ You slip once, and you don't start over. One slip is −5, not zero.\n\nWhich sign are you on? 👇\nSend this to someone who's quitting.\nComment LINK 👇 and I'll DM you the free app.\n\n#quitnicotine #quitvaping #nicotineaddiction #selfimprovement #habittracker"
-  },
-  {
    "video_branch": "reels/2026-11-11-x",
    "video": "x01.mp4",
    "title": "SCORE YOUR NIGHT",
    "caption": "Score your night routine: what's your number? 🌙\n\n+1 phone out of the bedroom\n−5 scrolling in bed past midnight\n+1 in bed before 11\n+1 tomorrow's first task planned\n\nComment your score 👇\nSend this to someone who stays up too late.\nComment LINK 👇 and I'll DM you the free app.\n\n#nightroutine #sleephabits #selfimprovement #discipline #habittracker"
   }
+ ],
+ "reels_times": [
+  "11:30",
+  "14:30",
+  "20:30"
+ ],
+ "stories_times": [
+  "12:40"
+ ],
+ "carousels_times": [
+  "19:00"
  ]
 }

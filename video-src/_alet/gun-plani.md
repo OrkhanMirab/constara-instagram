@@ -11,7 +11,7 @@
    f. Aşağıdakı plan **oyrenilenler.md «Aktiv qaydalar»**-a əməl edir; ziddiyyət olsa, oyrenilenler.md qalib gəlir.
 
 1. Tarix: Türkiyə saatı ilə bugün (UTC+3). Fayl: `plan/<tarix>.json`. Varsa — toxunma, yalnız yoxla.
-2. Say `schedule.json`-dan: hazırda **1 karusel** (19:00), 2 story, **4 diktorlu Reels** (11:30, 14:30, 17:30, 20:30). Kinetik `gen/reel.py` RƏDD edilib (istifadəçi 11-10) — işlətmə.
+2. Say `schedule.json`-dan (11-11-dən YÜNGÜL TEMP, istifadəçi: «radara düşməyək»): **2 Reels** (14:30, 20:30), **1 karusel** (19:00), **story YOX**. Bundan artıq yazma. Köhnə mətn: **4 diktorlu Reels** (11:30, 14:30, 17:30, 20:30). Kinetik `gen/reel.py` RƏDD edilib (istifadəçi 11-10) — işlətmə.
 3. **Təkrar YOX:** `ls posted/` + son 3 günün `plan/*.json`-larını oxu (başlıqlar) — eyni başlıq/mövzu olmasın.
    Mövzular: vərdiş, intizam, məhsuldarlıq, pis vərdişi buraxmaq (vape, şəkər, scroll, içki), yuxu, səhər/axşam rejimi, motivasiya, izləmə (tracking), burnout.
    Format qarışığı: karusellərin ~1/3-i `myth`, ~1/3-i `steps`, qalanı `list`; rənglər növbələşsin; 1 karuseldə `chart` slaydı; günlər üzrə kind növbələşsin (list → steps → myth); karusel saxlanılası olsun (checklist/plan).
@@ -20,7 +20,7 @@
 6. **Reels (diktorlu, v16 «3 signs» şablonu):** `video-src/_alet/reels.py`-ın başındakı formatla 4 cfg yaz (`/tmp/.../reels.json`).
    Mövzu seçimi: **əvvəl oyrenilenler.md qayda 1** (2 sübut olunmuş niş + 2 kəşf, «Bazada qalanlar»-ı təkrarlama). Kəşf üçün nümunə: «Quitting X: 3 signs» (X: smoking, junk food, caffeine, energy drinks, gambling, online shopping, video games, soda, nail biting, late-night snacking…; posted/ və son planlarla təkrar olmasın).
    №1 cümləsi və `n1` ekran yazısı GECƏ ilə bağlı olsun (şablonun №1 kadrı ay/saat/gecədir). №2 = istək gəlir və keçir, №3 = bir dəfə sürüşürsən, sıfırdan başlamırsan (kadrlar sabitdir).
-   **Xal testi (sınaq, 11-11-dən):** 4 Reels-dən biri `"format": "xal"` olsun (oyrenilenler.md «Sınaqda») — 4 sual (3× +1, 1× −5 və ya 2/2),
+   **Xal testi (sınaq, 11-11-dən):** 2 Reels-dən biri (20:30), `"format": "xal"` olsun (oyrenilenler.md «Sınaqda») — 4 sual (3× +1, 1× −5 və ya 2/2),
    sual kartda ≤ 3 sətir, diktor cümləsi «… Plus one.» / «… Minus five.» ilə bitir, hook qısa iddia («Most people score below zero»). Caption-da «Comment your score 👇».
    `bg` rəngi hər videoda fərqli; başlıq uzunsa `fs` 38–42. Son cümlə və LINK kadrı avtomatikdir.
    Qurulum: Constara reposu (`/home/user/Constara`, yoxdursa add_repo read + clone), `pip install kokoro-onnx soundfile`, iş qovluğuna `kokoro-v1.0.onnx` + `voices-v1.0.bin`
