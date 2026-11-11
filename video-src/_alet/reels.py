@@ -9,6 +9,15 @@ reels.json: [cfg, ...] (4 eded), cfg:
          3-cu = istek gelir ve kecir; 4-cu = bir defe surusursen, sifirdan baslamirsan; 5,6 = +1/−5 qrafiki],
    "caption": "..."}
 Son cumle ve son kadr avtomatik: «Comment LINK, and I'll send you the app.»
+
+«Xal testi» formati (x01, 2026-11-11) — cfg-de "format": "xal":
+  {"format": "xal", "title": "SCORE YOUR NIGHT", "fs": 46, "bg": "#2F6FDE", "row": "My night", "end": 3,
+   "hook": "Score your night. Most people end up below zero.",   // qisa (~2,5 s), birbasa iddia
+   "hook_txt": "Most people\nscore below 0.",                   // 0-ci kadrda ekranda (istege bagli)
+   "items": [{"q": "Phone in bed\nafter midnight?", "v": -5, "vo": "Phone in bed after midnight? Minus five."}, ... 4 eded],
+   "result": "Plus three or more, you're investing in yourself. Below zero, you're losing. Comment your score.",
+   "caption": "..."}
+  q: kartda (\n setir, ≤ 3 setir, ≤ ~22 simvol/setir); vo: diktor, sonu «Plus one.» / «Minus five.» (moher o an vurur).
 Lazimdir: Constara reposu (/home/user/Constara ve ya /home/user/life-analytics), kokoro-onnx + soundfile,
 is-qovlugunda kokoro-v1.0.onnx + voices-v1.0.bin, qlobal playwright, ffmpeg.
 """
@@ -29,7 +38,26 @@ CTA_CAP = """[c(6), DUR + 1, '', 92, [['Comment', c(6)], ['"LINK"', c(6, .22), '
 OLD_CAP = """[c(6), DUR + 1, '', 92, [['Which', c(6)], ['sign', c(6, .2)], ['\\n'], ['are', c(6, .4)], ['you', c(6, .5)], ['on?', c(6, .62), 'or']]]"""
 
 
+TPL_XAL = ROOT / "video-src" / "x01-xal-testi"
+
+
+def make_src_xal(cfg, d: Path):
+    items = cfg["items"]
+    assert len(items) == 4 and all(i["v"] in (1, -5) for i in items), "xal: 4 sual, v = 1 ve ya -5"
+    js = {"title": cfg["title"], "fs": cfg.get("fs", 46), "bg": cfg.get("bg", "#2F6FDE"), "row": cfg.get("row", "My day"),
+          "end": cfg.get("end", 3), "hook_txt": cfg.get("hook_txt", "Most people\nscore below 0."), "items": [{"q": i["q"], "v": i["v"]} for i in items]}
+    s = (TPL_XAL / "body.html").read_text(encoding="utf-8").replace("__CFG__", json.dumps(js, ensure_ascii=False))
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "body.html").write_text(s, encoding="utf-8")
+    L = [cfg["hook"]] + [i["vo"] for i in items] + [cfg["result"], CTA_VO]
+    v = (TPL_XAL / "vo.py").read_text(encoding="utf-8")
+    v = re.sub(r"^L=.*$", lambda m: "L=" + json.dumps(L), v, flags=re.M)
+    (d / "vo.py").write_text(v, encoding="utf-8")
+
+
 def make_src(cfg, d: Path):
+    if cfg.get("format") == "xal":
+        return make_src_xal(cfg, d)
     s = (TPL / "body.html").read_text(encoding="utf-8")
     R = [('<span style="font-size:46px">QUITTING VAPING</span>', '<span style="font-size:%dpx">%s</span>' % (cfg.get("fs", 46), cfg["title"])),
          ('<b>No vape</b>', '<b>%s</b>' % cfg["row"]),

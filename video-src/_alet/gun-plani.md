@@ -20,6 +20,8 @@
 6. **Reels (diktorlu, v16 «3 signs» şablonu):** `video-src/_alet/reels.py`-ın başındakı formatla 4 cfg yaz (`/tmp/.../reels.json`).
    Mövzu seçimi: **əvvəl oyrenilenler.md qayda 1** (2 sübut olunmuş niş + 2 kəşf, «Bazada qalanlar»-ı təkrarlama). Kəşf üçün nümunə: «Quitting X: 3 signs» (X: smoking, junk food, caffeine, energy drinks, gambling, online shopping, video games, soda, nail biting, late-night snacking…; posted/ və son planlarla təkrar olmasın).
    №1 cümləsi və `n1` ekran yazısı GECƏ ilə bağlı olsun (şablonun №1 kadrı ay/saat/gecədir). №2 = istək gəlir və keçir, №3 = bir dəfə sürüşürsən, sıfırdan başlamırsan (kadrlar sabitdir).
+   **Xal testi (sınaq, 11-11-dən):** 4 Reels-dən biri `"format": "xal"` olsun (oyrenilenler.md «Sınaqda») — 4 sual (3× +1, 1× −5 və ya 2/2),
+   sual kartda ≤ 3 sətir, diktor cümləsi «… Plus one.» / «… Minus five.» ilə bitir, hook qısa iddia («Most people score below zero»). Caption-da «Comment your score 👇».
    `bg` rəngi hər videoda fərqli; başlıq uzunsa `fs` 38–42. Son cümlə və LINK kadrı avtomatikdir.
    Qurulum: Constara reposu (`/home/user/Constara`, yoxdursa add_repo read + clone), `pip install kokoro-onnx soundfile`, iş qovluğuna `kokoro-v1.0.onnx` + `voices-v1.0.bin`
    (`https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/<fayl>`), qlobal playwright.

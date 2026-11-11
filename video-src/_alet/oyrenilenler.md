@@ -21,7 +21,11 @@ Gündəlik plan (`gun-plani.md`) bu faylın **«Aktiv qaydalar»** bölməsinə 
 sugar, drinking, caffeine, gambling, smoking, junk food, scroll (11-11 vəziyyəti).
 
 ## Sınaqda / təkliflər (istifadəçi təsdiqi lazım)
-- Yeni Reels formatı «Xal testi» (CLAUDE.md «Format müxtəlifliyi») — şablon dəyişikliyidir, istifadəçiyə təklif.
+- **«Xal testi» formatı (x01) — SINAQDA** (istifadəçi 11-11 «başla» dedi). `reels.py` cfg `"format": "xal"` (nümunə: reels.py başı).
+  İlk video: 11-11 20:30 «Score your night». Sınaq: **gündə 1 Reels xal formatında** (4-dən biri, kəşf slotu), mövzular fərqli
+  (night / morning / phone / workday / weekend / quitting X). 2 video sonra analiz: reach və ortalama izləmə «3 signs» bazası ilə müqayisə,
+  şərhlərdə xal yazanların sayı. Baza səviyyəsində və ya aşağıdırsa — hook/sual sayını dəyiş, 2 dəfə də olmursa — istifadəçiyə «dayandıraq?» təklifi.
+  Yaxşıdırsa — gündə 2-yə qaldır (təklif kimi yox, kiçik dəyişiklik sayılır).
 
 ## Tarixçə
 - 2026-11-11: ilk analiz (29 post, 61 izləyici). Qaydalar 1–4 yazıldı.
