@@ -19,6 +19,9 @@
 .cta .or { color: #F06A2A; } .cta .grn { color: #1E9E5B; }
 .hk { position: absolute; left: 30px; right: 30px; top: 196px; font: 400 54px/1.02 "Permanent Marker", cursive; z-index: 15; }
 .hk .w { display: inline-block; margin-right: .2em; opacity: 0; } .hk .br { display: block; height: 0; } .hk .red { color: #E5484D; }
+.live { position: absolute; right: 26px; top: 196px; height: 64px; padding: 0 18px; border-radius: 32px; background: #1B1B1B; color: #FFFDF6; border: 4px solid #1B1B1B; font: 800 30px/56px "JetBrains Mono", monospace; z-index: 16; opacity: 0; white-space: nowrap; letter-spacing: -.02em; }
+.live small { font: 700 15px "Courier Prime", monospace; letter-spacing: .12em; margin-right: 10px; color: #B8AE9C; }
+.most { position: absolute; font: 700 34px "Caveat", cursive; color: #1B1B1B; z-index: 14; opacity: 0; white-space: nowrap; }
 .dots { position: absolute; left: 0; right: 0; top: 612px; display: flex; justify-content: center; gap: 16px; z-index: 12; opacity: 0; }
 .dots i { width: 22px; height: 22px; border-radius: 50%; border: 3px solid #1B1B1B; background: #FFFDF6; }
 @media (max-width: 572px) { body:not(.render) .stage { zoom: .62; } body:not(.render) .ctrl { width: 100%; } }
@@ -55,6 +58,8 @@
 
     <div class="title" id="title"><span id="titleS"></span></div>
     <div class="num stkr" id="num">1/4</div>
+    <div class="live stkr" id="live"><small>SCORE</small><span id="liveN">0</span></div>
+    <div class="most" id="most">← most people</div>
     <div class="tag stkr abs" id="brand" style="right:34px;transform:rotate(3deg);z-index:15;opacity:0;letter-spacing:.3em">CONSTARA</div>
     <div class="cta" id="cta"></div>
   </div>
@@ -110,6 +115,8 @@ var PEEP = __PEEP__, CUE = __CUES__, VO_B64 = '__VO__', CFG = __CFG__;
 
   var gctx = $('grain').getContext('2d'), gim = gctx.createImageData(135, 240);
   function grain(t) { var s = Math.floor(t * 12) * 7919 + 3; for (var i = 0; i < gim.data.length; i += 4) { s = (s * 16807) % 2147483647; var v = 90 + (s & 127); gim.data[i] = gim.data[i + 1] = gim.data[i + 2] = v; gim.data[i + 3] = 255; } gctx.putImageData(gim, 0, 0); }
+  // canlı xal (11-13 yenilik): hər möhürdə «bəli» cavabı ilə toplanır; sonda nəticə şkalasında uyğun sətir vurğulanır
+  var LIVE = CFG.live !== false, TOT = Q.reduce(function (a, q) { return a + q.v; }, 0), ROW = TOT >= 3 ? 0 : TOT >= 0 ? 1 : 2;
   var CUTS = [c(1), c(2), c(3), c(4), c(5), c(6)];
 
   function render(t) {
@@ -149,12 +156,25 @@ var PEEP = __PEEP__, CUE = __CUES__, VO_B64 = '__VO__', CFG = __CFG__;
       $('dots').querySelectorAll('i').forEach(function (d, i) { var done = i < qi || (i === qi && t >= qq.hit); d.style.background = done ? (Q[i].v > 0 ? '#26D67F' : '#E5484D') : (i === qi ? '#F9D24A' : '#FFFDF6'); });
     } else { $('bP').style.opacity = 0; $('bM').style.opacity = 0; }
 
+    // canlı xal
+    var lv = $('live'); lv.style.opacity = LIVE && (sc === 'Q' || sc === 'R') ? 1 : 0;
+    if (LIVE && (sc === 'Q' || sc === 'R')) {
+      var sum = 0, lastHit = -1; Q.forEach(function (q, i) { if (t >= q.hit) { sum += q.v; lastHit = i; } });
+      $('liveN').textContent = (sum > 0 ? '+' : '') + sum; $('liveN').style.color = sum > 0 ? '#26D67F' : sum < 0 ? '#FF6B6B' : '#FFFDF6';
+      var bump = lastHit >= 0 ? P(t, Q[lastHit].hit, .35) : 1;
+      lv.style.transform = 'rotate(' + (sum < 0 ? 4 : -3) + 'deg) scale(' + (bump < 1 ? lerp(1.45, 1, oc(bump)) : 1) + ')';
+    }
     $('scale').style.display = sc === 'R' ? 'block' : 'none';
     if (sc === 'R') {
       var sp = P(t, c(5), .3); $('scale').style.transform = 'translateY(' + (1 - ob(sp)) * 80 + 'px) rotate(-1deg)';
       $('scale').querySelectorAll('.rw').forEach(function (r, i) { var rp = P(t, c(5, [.04, .3, .5][i]), .2); r.style.opacity = rp > 0 ? 1 : 0; r.style.transform = 'translateX(' + (1 - oc(rp)) * -50 + 'px) scale(' + lerp(1.15, 1, oc(rp)) + ')'; });
       pop('your', P(t, c(5, .72), .22), 70, 590, -4, 2.4);
-    } else $('your').style.opacity = 0;
+      if (LIVE) { var rw = $('scale').querySelectorAll('.rw')[ROW], hp2 = P(t, c(5, [.04, .3, .5][ROW]) + .35, .3);
+        rw.querySelector('i').style.opacity = hp2 > 0 ? 0 : 1;
+        rw.style.boxShadow = hp2 > 0 ? '0 0 0 ' + (4 + 3 * Math.sin(t * 9)) + 'px #F9D24A' : 'none';
+        pop('most', hp2, 300, 330 + ROW * 76, -4, 1.8); }
+      else $('most').style.opacity = 0;
+    } else { $('your').style.opacity = 0; $('most').style.opacity = 0; }
 
     $('phone').style.display = sc === 'E' ? 'block' : 'none'; $('peep2').style.display = sc === 'E' ? 'block' : 'none';
     $('cta').style.opacity = sc === 'E' ? 1 : 0;

@@ -35,6 +35,11 @@ sugar, drinking, caffeine, gambling, smoking, junk food, scroll (11-11 vəziyyə
   öz musiqimiz (minor→major, crescendo), söz-söz altyazı. Araşdırma: `video-src/_kino/kino-arastirma.md`. Sınaq: 11-12-də hər iki slot kino (K01 14:30 p*rn, K02 20:30 vape), sonra 14:30 slotunda (sübut olunmuş niş), sonra
   3 s saxlama / orta izləmə / send/reach «3 signs» bazası ilə müqayisə (hədəf 3 s ≥ 60%). Zəifdirsə əvvəl hook-u dəyiş; 2 dəfə də zəifdirsə — istifadəçiyə «dayandıraq?».
 
+- **Xal testi: canlı xal sayğacı (yenilik, 11-13).** Yuxarı sağda «SCORE» pill hər möhürdə «bəli» cavabı ilə toplanır (+1 → −4 → −2),
+  nəticə şkalasında uyğun sətir «← most people» ilə vurğulanır. Suallar elə seçilsin ki, cəm < 0 olsun (hook «most people score below 0» sübut olunsun).
+  `cfg.live=false` ilə söndürülür. Sınaq: Xal #2 «Score your week» (11-13 20:30) vs Xal #1 (sayğacsız) — avg izləmə və şərh sayı.
+
 ## Tarixçə
 - 2026-11-11: ilk analiz (29 post, 61 izləyici). Qaydalar 1–4 yazıldı.
 - 2026-11-12: dünənki 4 post erkən (bazada). Xal testi #1 avg izləmə «3 signs» səviyyəsində. Açıq döngə sınağı + narkotik mövzusu qadağası. İzləyici 66.
+- 2026-11-13: hamısı ~110 bazada (3 signs, Xal #1, Metafor M10); Kino K02 erkən zəif (avg 4.4 s, 6 s). İzləyici 74 (+8). Yenilik: Xal canlı sayğac.
