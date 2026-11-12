@@ -29,6 +29,13 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 - **Tələ:** gözləmə döngəsində `pgrep -f "<fayl adı>"` öz-özünü tapır və sonsuz gözləyir — log faylında «Hazır» sözünü yoxla.
 - Karusel: Pillow, `video-src/carousel-*/car*.py` nümunələri (tünd brend, 1080×1350, 7 slayd, son slayd saxlanılası checklist).
 
+## 🎬 Kino formatı (K01, 2026-11-12, istifadəçi: «60% qalsın, professional, hisslərə toxunsun»)
+- Mühərrik `video-src/_kino/`: `kino.py` (cfg → index.html), `sound.py` (öz musiqimiz + SFX + diktor emalı, −14 LUFS), `body.html` (səhnələr), `snap.mjs` (açar kadrlar).
+  Araşdırma və qaydalar: `video-src/_kino/kino-arastirma.md`. Nümunələr: `ornek/k01-not-weak.json`, `ornek/k02-vaping.json`.
+- Gündəlik sistemdə: `reels.py` cfg `"format": "kino"`; `gun-plani.md` 14:30 slotu (sınaq, 2 video, sonra analiz). Lazımdır: `pip install scipy`.
+- Render ~684 kadr: köhnə şablondan yavaşdır (fon kətanı yarım ölçüdə çəkilir, siluetlərdə SVG filtr var).
+- **Tələ:** `/tmp/vid-*` təmizləmək və ya bütün chrome proseslərini öldürmək auto mode tərəfindən bloklanır. Yalnız öz render PID-ni (`ps … | grep "node render.mjs"`) və öz qovluğunu sil.
+
 ## 🤖 Avtomatik gündəlik sistem (2026-11-10, istifadəçi qərarı)
 İstifadəçi: «10:00–23:00 arası hər 1,5 saatdan bir Reels, hər 30 dəqiqədən bir karusel, gündə 2 story» (risk izah olundu: spam/reach düşməsi; istifadəçi yenə istədi).
 - **Tezlik:** `schedule.json` (TR saatı). **YÜNGÜL TEMP (11-11, Meta reklam məhdudiyyətindən sonra istifadəçi: «tempi yüngül saxlayaq, radara düşməyək»): Reels gündə 2: 14:30, 20:30** (biri «3 signs» sübut olunmuş niş, biri Xal testi; əvvəl 4 idi), diktorlu v16 şablonu, `video-src/_alet/reels.py` → `reels/<tarix>` budağı → plan `reels` (`video_branch`, ID `<tarix>-vreel-NN`); **karusel YOX** (11-11 axşam ləğv: reach Reels-in ~3%-i + yüngül temp), story YOX (əvvəl 12:40, 20:40). Tempi yalnız istifadəçi istəyəndə qaldır. Azaltmaq üçün yalnız bu faylı dəyiş.
