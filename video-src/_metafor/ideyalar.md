@@ -25,3 +25,12 @@ Hər video bir metafordur. Başqasının səhnəsini (daş və çəkic, dəmirç
 | M09 | Karandaş | «Why does it hurt so much?» | yonma: hər dövrdə ucu itiləşir, sonda yazır | Kəsik ucu itiləşdirir | intizam |
 
 Qayda: ardıcıl 2 Metafor videosu eyni vizual dünyada olmasın (bankadan sonra domino və s.). Hər videonun sonunda Constara + «Comment LINK».
+
+## «Tanış hiss» qolu (2026-11-12, istifadəçinin tapdığı nümunə: «What a week feels like», 69 min bəyənmə, 20,5 min göndərmə)
+Dərs: **hamının yaşadığı, gülümsədən hiss** motivasiyadan çox göndərilir («bu mənəm» → dosta at). Səhnənin relyefi əslində hisslərin **qrafikidir**. Bu, Constara-nın ideyasına (həyat qrafikdir) birbaşa uyğun gəlir.
+Kopyalamırıq (daş, həftə günləri lövhəsi onlarındır). Bizim variantlar: relyef = birja qrafiki (şəbəkə xətləri, qiymət etiketi), lövhələr = gün sayı.
+| # | Ad | Hook | Relyef (qrafik) |
+|---|---|---|---|
+| M11 | Vərdiş seriyası necə hiss olunur | «WHAT DAY 1–30 OF A NEW HABIT FEELS LIKE.» | Gün 1 düz və asandır, Gün 3–5 sərt yoxuşdur, Gün 7-də divar, Gün 14-də plato, Gün 21-dən sonra yol öz-özünə enir |
+| M12 | Tərgitmə necə hiss olunur | «WHAT QUITTING FEELS LIKE.» | Gün 1 eniş və həvəs, Gün 3 uçurum (pik istək), Gün 10 «artıq yaxşıyam» tələsi, Gün 30 düzənlik |
+| M13 | Səhər necə hiss olunur | «6:00 ALARM VS 6:05 ME.» | Yatağın cazibəsi, dağın başında zəng saatı |
