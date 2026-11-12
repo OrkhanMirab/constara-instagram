@@ -14,6 +14,7 @@ Hər video bir metafordur. Başqasının səhnəsini (daş və çəkic, dəmirç
 | # | Ad | Ağrı (hook) | Vizual | Çevrilmə | Constara bağı |
 |---|---|---|---|---|---|
 | M01 | Bank ✅ | One bad night: −5 | sikkələr bankaya, çat, qrafik | 15-dəsən, sıfırda yox | xal sistemi |
+| M10 | Kibrit və odun ✅ | «Waiting for motivation?» | kibrit çəkilir və sönür, 37 dəfə; son kibritlə odun yanır, hər gün bir odun atılır, alov böyüyür | Motivasiya kibritdir, intizam odundur | DAYS OF DISCIPLINE sayğacı |
 | M02 | Buz kubu | «Nothing is changing.» | termometr 25°…31°, buz tərpənmir; 32°-də əriyir | Gördüyün iş itmir, yığılır | gizli irəliləyiş, qrafik |
 | M03 | Domino | «Too small to matter.» | hər domino əvvəlkindən 1,5× böyükdür; sonuncunun adı «YOUR GOAL» | Kiçik vərdiş böyüyü yıxır | gündəlik +1 |
 | M04 | Yay və ox | «Life keeps pulling you back.» | ox geri çəkilir, kəndir gərilir, sonra uçur | Geri çəkilmirsən, nişan alırsan | büdrəmə (−5) sonrası |

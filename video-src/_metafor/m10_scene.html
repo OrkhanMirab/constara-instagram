@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:IB;src:url(file:///usr/share/fonts/opentype/inter/Inter-Bold.otf)}
+@font-face{font-family:IM;src:url(file:///usr/share/fonts/opentype/inter/Inter-Medium.otf)}
+@font-face{font-family:MO;src:url(file:///usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf)}
+html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}
+</style></head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+/*TL*/
+const T = window.TL;
+const cv = document.getElementById('c'), X = cv.getContext('2d');
+const W = 1080, H = 1920, G = 1330, FX = 720, FY = G - 26;
+const GOLD = '#F7C04A', RED = '#FF5A4A', WHITE = '#F4F1EA', GREY = '#C9C6BF';
+const HX = 360, HY = G - 74;
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, u) => a + (b - a) * u;
+const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+const eout = u => 1 - Math.pow(1 - u, 3);
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const bump = (t, c, w) => Math.exp(-Math.pow((t - c) / w, 2));
+const R = k => { let x = Math.sin(k * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+
+// ---------- vəziyyət ----------
+function logsIn(t) { let n = 0; for (const x of T.logs) n += ease(seg(t, x + .25, x + .6)); return n; }
+function F(t) {
+  if (t < T.ignite + .05) return 0;
+  let f = .06 * seg(t, T.ignite + .05, T.ignite + .5) + .94 * Math.pow(logsIn(t) / 30, .9);
+  return f * (1 + .35 * bump(t, T.boom + .1, .35));
+}
+function matchFlame(t) {
+  let m = 0;
+  for (const s of T.strikes) if (t >= s && t < s + 1.35) m = Math.max(m, seg(t, s, s + .06) * (1 - .45 * seg(t, s + .06, s + .3)) * (1 - seg(t, s + .9, s + 1.35)));
+  for (const s of T.rapid) if (t >= s && t < s + .19) m = Math.max(m, Math.sin(seg(t, s, s + .19) * Math.PI) * .8);
+  if (t >= T.ignite && t < T.ignite + .7) m = Math.max(m, seg(t, T.ignite, T.ignite + .06) * (1 - seg(t, T.ignite + .4, T.ignite + .7)));
+  return m * (.9 + .1 * Math.sin(t * 47));
+}
+function matchesStruck(t) {
+  let c = T.strikes.filter(s => t >= s).length;
+  T.rapid.forEach((s, i) => { if (t >= s) c = 3 + Math.round((i + 1) / T.rapid.length * 34); });
+  if (t >= T.ignite) c = 38;
+  return c;
+}
+
+// ---------- IK ----------
+function ik(ax, ay, bx, by, l1, l2, flip) {
+  let dx = bx - ax, dy = by - ay, d = Math.min(Math.hypot(dx, dy), l1 + l2 - .01);
+  let a = Math.atan2(dy, dx), c = Math.acos(clamp((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1));
+  let ang = a + (flip ? -c : c);
+  return [ax + Math.cos(ang) * l1, ay + Math.sin(ang) * l1];
+}
+function reach(ax, ay, bx, by, L) { let d = Math.hypot(bx - ax, by - ay); if (d <= L) return [bx, by]; return [ax + (bx - ax) / d * L, ay + (by - ay) / d * L]; }
+function limb(p, col, w) {
+  X.strokeStyle = col; X.lineWidth = w; X.lineCap = 'round'; X.lineJoin = 'round';
+  X.beginPath(); X.moveTo(p[0][0], p[0][1]); for (let i = 1; i < p.length; i++) X.lineTo(p[i][0], p[i][1]); X.stroke();
+}
+
+// ---------- fiqur (oturur) ----------
+const PILE = [290, G - 70], TOSS = [545, G - 165];
+function pose(t) {
+  let lean = .18, headA = .25, hR = null, hL = null, carry = null;
+  const fL = [HX + 118, G - 8], fR = [HX + 92, G - 8];
+  // dizləri qucaqlayır (giriş)
+  let hug = 1 - seg(t, 1.0, 1.35);
+  // kibrit fazası
+  let mp = seg(t, 1.0, 1.35) * (1 - seg(t, 7.3, 7.6)) + seg(t, 8.65, 8.85) * (1 - seg(t, 9.35, 9.6));
+  let slump = seg(t, 7.35, 7.75) * (1 - seg(t, 8.5, 8.8));
+  let relax = seg(t, 15.2, 15.9);
+  lean = lerp(.18, .05, mp) + slump * .38 - relax * .12;
+  headA = lean + .2 + slump * .7 - relax * .15 - mp * .15;
+  let hip = [HX, HY];
+  let neck = [hip[0] + Math.sin(lean) * 168, hip[1] - Math.cos(lean) * 168];
+  let sh = [neck[0] - 4, neck[1] + 22];
+  let kL = ik(hip[0], hip[1], fL[0], fL[1], 100, 100, true), kR = ik(hip[0], hip[1], fR[0], fR[1], 100, 100, true);
+  let knee = [(kL[0] + kR[0]) / 2, (kL[1] + kR[1]) / 2];
+  let restR = [knee[0] + 10, knee[1] + 8], restL = [knee[0] - 6, knee[1] + 14];
+  // kibrit çəkmə: sol əl qutu, sağ əl sürtür
+  let box = [sh[0] + 120, sh[1] + 60];
+  let strikeHand = [sh[0] + 175, sh[1] + 25];
+  let sw = 0;
+  for (const s of T.strikes.concat(T.rapid, [T.ignite])) sw = Math.max(sw, bump(t, s - .04, .05));
+  let mR = [lerp(strikeHand[0], box[0] + 10, sw), lerp(strikeHand[1], box[1], sw)];
+  if (t >= T.ignite - .1 && t < 9.6) mR = [lerp(mR[0], FX - 80, ease(seg(t, T.ignite + .05, T.ignite + .35))), lerp(mR[1], G - 70, ease(seg(t, T.ignite + .05, T.ignite + .35)))];
+  hR = [lerp(lerp(restR[0], mR[0], mp), restR[0], slump), lerp(lerp(restR[1], mR[1], mp), restR[1] + 10, slump)];
+  hL = [lerp(restL[0], box[0], mp), lerp(restL[1], box[1], mp)];
+  // odun dövrü
+  for (let i = 0; i < T.logs.length; i++) {
+    let d = T.logs[i], prev = i ? T.logs[i - 1] : d - .7, cyc = Math.min(.7, Math.max(.16, d - prev));
+    if (t >= d - cyc && t < d + Math.min(.25, cyc * .5)) {
+      let u = (t - (d - cyc)) / cyc;
+      if (u <= 1) {
+        let a = ease(clamp(u * 2)), b = ease(clamp(u * 2 - 1));
+        let p = u < .5 ? [lerp(restR[0], PILE[0], a), lerp(restR[1], PILE[1], a)] : [lerp(PILE[0], TOSS[0], b), lerp(PILE[1], TOSS[1], b) - Math.sin(b * Math.PI) * 60];
+        hR = p; carry = u > .45 ? p : null;
+        lean += (u < .5 ? -.32 * Math.sin(a * Math.PI / 2) : -.32 * (1 - b) + .22 * b);
+      } else {
+        let e = ease(clamp((t - d) / Math.min(.25, cyc * .5)));
+        hR = [lerp(TOSS[0], restR[0], e), lerp(TOSS[1], restR[1], e)];
+        lean += .22 * (1 - e);
+      }
+      break;
+    }
+  }
+  neck = [hip[0] + Math.sin(lean) * 168, hip[1] - Math.cos(lean) * 168];
+  sh = [neck[0] - 4, neck[1] + 22];
+  // qucaqlama
+  hR = [lerp(hR[0], kR[0] + 18, hug), lerp(hR[1], kR[1] + 6, hug)];
+  hL = [lerp(hL[0], kL[0] + 4, hug), lerp(hL[1], kL[1] + 12, hug)];
+  lean = lerp(lean, .3, hug); headA = lerp(headA, .55, hug);
+  if (hug > 0) { neck = [hip[0] + Math.sin(lean) * 168, hip[1] - Math.cos(lean) * 168]; sh = [neck[0] - 4, neck[1] + 22]; }
+  hR = reach(sh[0], sh[1], hR[0], hR[1], 195); hL = reach(sh[0], sh[1], hL[0], hL[1], 195);
+  let head = [neck[0] + Math.sin(headA) * 46, neck[1] - Math.cos(headA) * 46];
+  return {hip, neck, sh, head, kL, kR, fL, fR, hR, hL, carry, mp};
+}
+function drawFigure(P) {
+  let eL = ik(P.sh[0], P.sh[1], P.hL[0], P.hL[1], 98, 98, false);
+  let eR = ik(P.sh[0], P.sh[1], P.hR[0], P.hR[1], 98, 98, false);
+  limb([P.sh, eL, P.hL], GREY, 25);
+  limb([P.hip, P.kL, P.fL], GREY, 30);
+  limb([P.hip, P.neck], WHITE, 40);
+  limb([P.hip, P.kR, P.fR], WHITE, 30);
+  X.fillStyle = WHITE; X.beginPath(); X.arc(P.head[0], P.head[1], 39, 0, 7); X.fill();
+  if (P.carry) logShape(P.carry[0] + 10, P.carry[1] - 6, -.25, 120, 0);
+  limb([P.sh, eR, P.hR], WHITE, 25);
+  [P.fL, P.fR].forEach(f => { X.beginPath(); X.ellipse(f[0] + 10, f[1], 20, 9, 0, 0, 7); X.fillStyle = WHITE; X.fill(); });
+  if (P.mp > .5 && P.hL) { X.fillStyle = '#B23A2A'; X.save(); X.translate(P.hL[0] + 4, P.hL[1] - 6); X.rotate(-.2); X.fillRect(-26, -14, 52, 28); X.fillStyle = '#E8D9B5'; X.fillRect(-26, -4, 52, 8); X.restore(); }
+}
+
+// ---------- əşyalar ----------
+function logShape(x, y, ang, len, glow) {
+  X.save(); X.translate(x, y); X.rotate(ang);
+  X.fillStyle = '#4A2E1A'; X.beginPath(); X.roundRect(-len / 2, -15, len, 30, 14); X.fill();
+  X.strokeStyle = 'rgba(0,0,0,.35)'; X.lineWidth = 3; X.beginPath(); X.moveTo(-len / 2 + 14, -4); X.lineTo(len / 2 - 20, -6); X.stroke();
+  X.fillStyle = '#7A5232'; X.beginPath(); X.ellipse(len / 2 - 2, 0, 9, 15, 0, 0, 7); X.fill();
+  if (glow > 0) { X.globalCompositeOperation = 'lighter'; X.fillStyle = `rgba(255,110,30,${.55 * glow})`; X.beginPath(); X.roundRect(-len / 2 + 6, 4, len - 12, 10, 5); X.fill(); X.globalCompositeOperation = 'source-over'; }
+  X.restore();
+}
+function woodpile(t) {
+  let taken = Math.floor(T.logs.filter(x => t >= x - .3).length / 2);
+  let k = 0, rows = [5, 4, 3, 2, 1];
+  for (let r = 0; r < rows.length; r++) for (let i = 0; i < rows[r]; i++) {
+    k++; if (15 - k < taken) continue;
+    let x = 165 + r * 28 + i * 56, y = G - 26 - r * 48;
+    X.fillStyle = '#5B3A22'; X.beginPath(); X.arc(x, y, 26, 0, 7); X.fill();
+    X.strokeStyle = '#8C6038'; X.lineWidth = 3; X.beginPath(); X.arc(x, y, 15, 0, 7); X.stroke(); X.beginPath(); X.arc(x, y, 6, 0, 7); X.stroke();
+  }
+}
+function pit(t, f) {
+  // yanmış kibritlər
+  let c = matchesStruck(t);
+  for (let i = 0; i < Math.min(c, 38); i++) {
+    if (t < T.strikes[0] + 1.35 && i >= 0) break;
+    let a = R(i) * 6.28, r = R(i + 50) * 55;
+    let x = FX + Math.cos(a) * r, y = FY + Math.sin(a) * r * .25;
+    X.save(); X.translate(x, y); X.rotate(R(i + 9) * 3); X.fillStyle = '#2b2620'; X.fillRect(-14, -2, 28, 4); X.fillStyle = '#111'; X.fillRect(10, -3, 6, 6); X.restore();
+  }
+  // odunlar (teepee)
+  let n = Math.min(16, Math.floor(logsIn(t) + .001));
+  for (let i = 0; i < n; i++) {
+    let side = i % 2 ? 1 : -1, ang = side * (.55 + .25 * R(i + 3)) - Math.PI / 2 * 0;
+    let len = 150 + i * 6;
+    X.save(); X.translate(FX + side * (52 + 10 * R(i)), FY - 40 - i * 2.5); X.rotate(side * (Math.PI / 2 - (.55 + .3 * R(i + 3)))); X.translate(0, 0);
+    X.restore();
+    logShape(FX + side * (40 + 12 * R(i)), FY - 38 - Math.floor(i / 2) * 6, side * -(.95 + .25 * R(i + 3)), len, Math.min(1, f * 1.3));
+  }
+  // daşlar
+  for (let i = 0; i < 9; i++) {
+    let a = Math.PI * (i / 8), x = FX - Math.cos(a) * 130, y = FY + 6 + Math.sin(a) * 4;
+    X.fillStyle = i % 2 ? '#34343a' : '#2a2a30'; X.beginPath(); X.ellipse(x, y, 30, 20, 0, 0, 7); X.fill();
+  }
+}
+function tongue(x, y, h, w, sway, a) {
+  let g = X.createLinearGradient(0, y, 0, y - h);
+  g.addColorStop(0, `rgba(255,248,215,${.95 * a})`); g.addColorStop(.28, `rgba(255,196,70,${.85 * a})`);
+  g.addColorStop(.65, `rgba(255,96,24,${.55 * a})`); g.addColorStop(1, 'rgba(190,30,10,0)');
+  X.fillStyle = g; X.beginPath(); X.moveTo(x - w, y);
+  X.quadraticCurveTo(x - w * .95 + sway * .4, y - h * .55, x + sway, y - h);
+  X.quadraticCurveTo(x + w * .95 + sway * .4, y - h * .55, x + w, y); X.closePath(); X.fill();
+}
+function flames(t, s) {
+  if (s <= .001) return;
+  X.save(); X.globalCompositeOperation = 'lighter';
+  let n = 4 + Math.round(9 * Math.min(1, s)), wid = 40 + 170 * Math.min(1.2, s);
+  for (let j = 0; j < n; j++) {
+    let o = n > 1 ? j / (n - 1) - .5 : 0;
+    let prof = 1 - .55 * Math.abs(o) * 2;
+    let h = (70 + 520 * s) * prof * (.62 + .38 * R(j + 1)) * (.78 + .22 * Math.sin(t * (8 + j) + j * 2.1));
+    let w = 18 + 46 * Math.min(1.1, s) * (.7 + .3 * R(j + 7));
+    tongue(FX + o * wid + Math.sin(t * 3 + j) * 6, FY + 8, h * (1 - .25 * Math.abs(o) * 2), w * (1 - .3 * Math.abs(o) * 2), Math.sin(t * 5.5 + j * 1.7) * 26 * (.3 + s), .85);
+  }
+  let g = X.createRadialGradient(FX, FY - 40, 5, FX, FY - 40, 90 + 160 * s);
+  g.addColorStop(0, `rgba(255,220,140,${.55 * Math.min(1, s * 2)})`); g.addColorStop(1, 'rgba(255,120,30,0)');
+  X.fillStyle = g; X.fillRect(FX - 400, FY - 450, 800, 600);
+  X.restore();
+}
+function sparks(t) {
+  X.save(); X.globalCompositeOperation = 'lighter'; X.lineCap = 'round';
+  for (let k = 0; k < 520; k++) {
+    let tb = k * .044, life = 1.2 + 1.4 * R(k + 2), age = t - tb;
+    if (age < 0 || age > life) continue;
+    let fb = F(tb); if (R(k + 5) > fb * 1.05) continue;
+    let vy = (180 + 360 * R(k + 8)) * (.6 + .6 * fb), x = FX + (R(k) - .5) * (60 + 240 * fb) + Math.sin(age * 3 + k) * 26 + (R(k + 11) - .5) * 80 * age;
+    let y = FY - 60 - vy * age, a = (1 - age / life) * .9;
+    X.strokeStyle = `rgba(255,${150 + 80 * R(k + 4) | 0},60,${a})`; X.lineWidth = 3;
+    X.beginPath(); X.moveTo(x, y); X.lineTo(x - Math.sin(age * 3 + k) * 4, y + 12); X.stroke();
+  }
+  // partlayış qığılcımları
+  let ba = t - T.boom;
+  if (ba > 0 && ba < 1.8) for (let k = 0; k < 90; k++) {
+    let ang = -Math.PI * (.08 + .84 * R(k + 200)), sp = 500 + 900 * R(k + 300);
+    let x = FX + Math.cos(ang) * sp * ba, y = FY - 80 + Math.sin(ang) * sp * ba + 400 * ba * ba, a = (1 - ba / 1.8);
+    X.strokeStyle = `rgba(255,200,90,${a})`; X.lineWidth = 4;
+    X.beginPath(); X.moveTo(x, y); X.lineTo(x - Math.cos(ang) * 22, y - Math.sin(ang) * 22); X.stroke();
+  }
+  X.restore();
+}
+function smoke(t, s) {
+  if (s <= .02) return;
+  for (let k = 0; k < 7; k++) {
+    let ph = ((t * .18 + k / 7) % 1), x = FX + Math.sin(ph * 5 + k) * 60 + ph * 90, y = FY - 300 - ph * 700, r = 90 + ph * 220;
+    let g = X.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(150,150,160,${.07 * s * Math.sin(ph * Math.PI)})`); g.addColorStop(1, 'rgba(150,150,160,0)');
+    X.fillStyle = g; X.fillRect(x - r, y - r, 2 * r, 2 * r);
+  }
+}
+function sky(t) {
+  let g = X.createLinearGradient(0, 0, 0, G); g.addColorStop(0, '#04070F'); g.addColorStop(1, '#13203A');
+  X.fillStyle = g; X.fillRect(-200, -200, W + 400, G + 200);
+  let rot = .004 * t + .5 * ease(seg(t, 9.7, 15.2));
+  X.save(); X.translate(W * .35, -500); X.rotate(rot);
+  for (let i = 0; i < 160; i++) {
+    let r = 500 + R(i) * 1700, a = R(i + 99) * 6.28, x = Math.cos(a) * r, y = Math.sin(a) * r;
+    let tw = .5 + .5 * Math.sin(t * (1 + R(i + 7) * 3) + i);
+    X.fillStyle = `rgba(220,230,255,${(.25 + .6 * R(i + 3)) * tw})`; X.fillRect(x, y, 2.4, 2.4);
+  }
+  X.restore();
+  // təpələr
+  [['#060A13', 980, 120, .004], ['#04070D', 1090, 90, .007]].forEach(([c, base, amp, fr], j) => {
+    X.fillStyle = c; X.beginPath(); X.moveTo(-200, G);
+    for (let x = -200; x <= W + 200; x += 20) X.lineTo(x, base - amp * (.5 + .5 * Math.sin(x * fr + j * 2)) - 30 * Math.sin(x * fr * 3.1 + j));
+    X.lineTo(W + 200, G); X.fill();
+  });
+  let gg = X.createLinearGradient(0, G, 0, H); gg.addColorStop(0, '#0E0C0B'); gg.addColorStop(1, '#030303');
+  X.fillStyle = gg; X.fillRect(-200, G, W + 400, H - G + 200);
+}
+function label(txt, x, y, a) {
+  if (a <= 0) return;
+  X.save(); X.globalAlpha = a; X.font = '26px MO'; X.letterSpacing = '6px'; X.textAlign = 'center';
+  X.fillStyle = 'rgba(244,241,234,.92)'; X.fillText(txt, x + 3, y);
+  X.strokeStyle = 'rgba(244,241,234,.5)'; X.lineWidth = 2; X.beginPath(); X.moveTo(x, y + 12); X.lineTo(x, y + 44); X.stroke();
+  X.restore();
+}
+
+// ---------- üst qat ----------
+function counter(t) {
+  let A = seg(t, 1.45, 1.75) * (1 - seg(t, 8.5, 8.75)), B = seg(t, 9.75, 10.05) * (1 - seg(t, T.end - .35, T.end));
+  let a = Math.max(A, B); if (a <= 0) return;
+  let boom = bump(t, T.boom + .1, .35);
+  let v, lab, col = WHITE;
+  if (A > 0) { v = matchesStruck(t); lab = 'MATCHES STRUCK'; if (t > 4.3) col = '#FFB1A8'; }
+  else { v = T.logs.filter(x => t >= x + .3).length; lab = 'DAYS OF DISCIPLINE'; col = t > T.boom - .05 ? GOLD : WHITE; }
+  X.save(); X.globalAlpha = a; X.textAlign = 'center';
+  X.shadowColor = col; X.shadowBlur = 6 + 40 * boom; X.fillStyle = col; X.font = `${Math.round(140 * (1 + .12 * boom))}px IB`;
+  X.fillText(String(v), W / 2, 600);
+  X.shadowBlur = 0; X.fillStyle = 'rgba(200,198,190,.85)'; X.font = '28px MO'; X.letterSpacing = '10px'; X.fillText(lab, W / 2 + 5, 656);
+  X.restore();
+}
+function caption(t) {
+  for (const [a, b, txt, hi, hc] of T.texts) {
+    if (t < a || t > b) continue;
+    let al = Math.min(seg(t, a, a + .25), 1 - seg(t, b - .2, b));
+    X.save(); X.globalAlpha = al; X.font = '42px MO'; X.letterSpacing = '6px'; X.textBaseline = 'middle'; X.textAlign = 'left';
+    let lines = txt.split('\n'), y0 = 300 - (lines.length - 1) * 30 + (1 - eout(seg(t, a, a + .35))) * 14;
+    lines.forEach((ln, li) => {
+      let x = W / 2 - X.measureText(ln).width / 2, y = y0 + li * 62, i = ln.indexOf(hi);
+      let parts = i < 0 ? [[ln, WHITE]] : [[ln.slice(0, i), WHITE], [hi, hc === 'red' ? RED : GOLD], [ln.slice(i + hi.length), WHITE]];
+      for (const [p, c] of parts) { if (!p) continue; X.fillStyle = c; X.shadowColor = c === WHITE ? 'transparent' : c; X.shadowBlur = c === WHITE ? 0 : 18; X.fillText(p, x, y); x += X.measureText(p).width; }
+    });
+    X.restore();
+  }
+}
+function endcard(t) {
+  let a = seg(t, T.end, T.end + .45); if (a <= 0) return;
+  X.save(); X.globalAlpha = a; X.textAlign = 'center'; X.textBaseline = 'middle';
+  X.translate(W / 2, 760); X.strokeStyle = GOLD; X.lineWidth = 10; X.lineCap = 'round'; X.lineJoin = 'round'; X.shadowColor = GOLD; X.shadowBlur = 26;
+  X.beginPath(); [[-90, 40], [-40, 0], [-5, 22], [40, -30], [90, -55]].forEach((p, i) => i ? X.lineTo(...p) : X.moveTo(...p)); X.stroke();
+  X.shadowBlur = 0; X.translate(-W / 2, -760);
+  X.fillStyle = WHITE; X.font = '96px IB'; X.fillText('Constara', W / 2, 900);
+  X.fillStyle = 'rgba(200,198,190,.9)'; X.font = '28px MO'; X.letterSpacing = '9px'; X.fillText('ONE LOG A DAY. TRACKED.', W / 2 + 4, 985); X.letterSpacing = '0px';
+  let b = seg(t, T.end + .7, T.end + 1.1); X.globalAlpha = a * b;
+  X.fillStyle = WHITE; X.font = '44px IM'; X.fillText('Comment “LINK” and I’ll', W / 2, 1150); X.fillText('send you the app.', W / 2, 1210);
+  X.strokeStyle = GOLD; X.lineWidth = 3; X.globalAlpha = a * b * .8; X.beginPath(); X.roundRect(W / 2 - 330, 1100, 660, 160, 30); X.stroke();
+  X.restore();
+}
+
+window.draw = function (t) {
+  X.setTransform(1, 0, 0, 1, 0, 0); X.globalAlpha = 1; X.globalCompositeOperation = 'source-over';
+  X.fillStyle = '#000'; X.fillRect(0, 0, W, H);
+  const f = F(t), P = pose(t), m = matchFlame(t);
+  const L = Math.max(f, m * .22);
+  let wa = 1 - seg(t, T.end - .35, T.end);
+  let z = 1.22 + .06 * seg(t, 0, T.end), shake = bump(t, T.boom + .05, .2) * 9;
+  X.save();
+  X.globalAlpha = wa;
+  X.translate(560, G + 40); X.scale(z, z); X.translate(-560 + Math.sin(t * 90) * shake, -(G + 40) + Math.cos(t * 70) * shake * .6);
+  sky(t);
+  // yerdə kölgə
+  if (f > .05) { X.fillStyle = `rgba(0,0,0,${.45 * Math.min(1, f)})`; X.beginPath(); X.ellipse(HX - 150 * f, G + 6, 160 + 160 * f, 16, 0, 0, 7); X.fill(); }
+  woodpile(t);
+  // oturacaq kötük
+  X.fillStyle = '#3B2616'; X.beginPath(); X.roundRect(HX - 90, G - 50, 170, 50, 16); X.fill();
+  X.fillStyle = '#6A4628'; X.beginPath(); X.ellipse(HX + 80, G - 25, 12, 25, 0, 0, 7); X.fill();
+  pit(t, f);
+  drawFigure(P);
+  // uçan odun
+  T.logs.forEach(d => { let u = seg(t, d, d + .3); if (u > 0 && u < 1) logShape(lerp(TOSS[0], FX, u), lerp(TOSS[1], FY - 50, u) - Math.sin(u * Math.PI) * 70, -.25 - u * 1.2, 130, u * f); });
+  // qaranlıq (işıq radiusu)
+  let rr = 60 + 1100 * Math.min(1, L), dk = X.createRadialGradient(FX, FY - 80, rr * .12, FX, FY - 80, rr);
+  dk.addColorStop(0, 'rgba(2,3,8,0)'); dk.addColorStop(1, 'rgba(2,3,8,.62)');
+  X.fillStyle = dk; X.fillRect(-300, -300, W + 600, H + 600);
+  // isti işıq
+  X.globalCompositeOperation = 'lighter';
+  let wg = X.createRadialGradient(FX, FY - 100, 10, FX, FY - 100, 120 + 800 * Math.min(1, L));
+  wg.addColorStop(0, `rgba(255,150,50,${.28 * Math.min(1, L)})`); wg.addColorStop(1, 'rgba(255,90,20,0)');
+  X.fillStyle = wg; X.fillRect(-300, -300, W + 600, H + 600);
+  if (m > 0) { // kibrit işığı əlin yanında
+    let hx = P.hR[0] + 8, hy = P.hR[1] - 18;
+    let mg = X.createRadialGradient(hx, hy, 2, hx, hy, 260 * m + 40); mg.addColorStop(0, `rgba(255,190,90,${.5 * m})`); mg.addColorStop(1, 'rgba(255,120,40,0)');
+    X.fillStyle = mg; X.fillRect(hx - 400, hy - 400, 800, 800);
+    tongue(hx, hy, 34 + 30 * m, 8 + 4 * m, Math.sin(t * 20) * 4, m);
+  }
+  X.globalCompositeOperation = 'source-over';
+  smoke(t, f);
+  flames(t, f);
+  sparks(t);
+  for (let i = 0; i < 7; i++) { // ön daşlar alovun dibini örtür
+    let x = FX - 150 + i * 50, y = FY + 14 + (i % 2) * 4;
+    X.fillStyle = i % 2 ? '#2E2C30' : '#252428'; X.beginPath(); X.ellipse(x, y, 34, 22, 0, 0, 7); X.fill();
+    X.fillStyle = `rgba(255,140,60,${.25 * Math.min(1, f)})`; X.beginPath(); X.ellipse(x, y - 12, 26, 7, 0, 0, 7); X.fill();
+  }
+  label('MOTIVATION', P.sh[0] + 140, P.sh[1] - 40, seg(t, 1.6, 1.9) * (1 - seg(t, 5.6, 5.9)));
+  label('DISCIPLINE', 250, G - 290, seg(t, 10.4, 10.7) * (1 - seg(t, 14.6, 14.9)));
+  X.restore();
+  // ağ parıltı (boom)
+  let fl = bump(t, T.boom + .02, .08) * .22; if (fl > .01) { X.fillStyle = `rgba(255,220,170,${fl})`; X.fillRect(0, 0, W, H); }
+  counter(t); caption(t); endcard(t);
+};
+document.fonts.ready.then(() => { window.READY = true; });
+['MO', 'IB', 'IM'].forEach(f => document.fonts.load('40px ' + f));
+</script></body></html>
