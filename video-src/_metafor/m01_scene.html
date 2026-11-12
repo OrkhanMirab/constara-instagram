@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:IB;src:url(file:///usr/share/fonts/opentype/inter/Inter-Bold.otf)}
+@font-face{font-family:IM;src:url(file:///usr/share/fonts/opentype/inter/Inter-Medium.otf)}
+@font-face{font-family:MO;src:url(file:///usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf)}
+html,body{margin:0;background:#000;overflow:hidden}
+canvas{display:block}
+</style></head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+/*TL*/
+const T = window.TL;
+const cv = document.getElementById('c'), X = cv.getContext('2d');
+const W = 1080, H = 1920, FLOOR = 1330;
+const GOLD = '#F7C04A', RED = '#FF4D4D', WHITE = '#F4F1EA', GREY = '#C9C6BF';
+const JAR = {x: 520, y: 820, w: 300, h: FLOOR - 820};
+const COIN_H = 11.5;
+
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, u) => a + (b - a) * u;
+const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+const eout = u => 1 - Math.pow(1 - u, 3);
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+
+// --- vəziyyət: neçə sikkə bankadadır, sayğac ---
+function state(t) {
+  let n1 = T.drops1.filter(d => t >= d + .26).length;
+  let leaked = T.leaks.filter(d => t >= d + .15).length;
+  let n2 = T.drops2.filter(d => t >= d + .2).length;
+  let count = n1 - leaked + n2;
+  return {count, n1, leaked, n2};
+}
+
+// --- iki sümüklü IK ---
+function ik(ax, ay, bx, by, l1, l2, flip) {
+  let dx = bx - ax, dy = by - ay, d = Math.min(Math.hypot(dx, dy), l1 + l2 - .01);
+  let a = Math.atan2(dy, dx), c = Math.acos(clamp((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1));
+  let ang = a + (flip ? -c : c);
+  return [ax + Math.cos(ang) * l1, ay + Math.sin(ang) * l1];
+}
+function limb(pts, col, w) {
+  X.strokeStyle = col; X.lineWidth = w; X.lineCap = 'round'; X.lineJoin = 'round';
+  X.beginPath(); X.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) X.lineTo(pts[i][0], pts[i][1]);
+  X.stroke();
+}
+
+// --- fiqur ---
+function figure(t, s) {
+  const hx = 345, hip = [hx, FLOOR - 196];
+  // əyilmə (slump) və dikəlmə
+  let sl = ease(seg(t, T.slump[0], T.slump[0] + .55)) * (1 - ease(seg(t, T.slump[1] - .35, T.slump[1] + .15)));
+  // relapse anında diksinmə
+  let jolt = Math.exp(-Math.pow((t - T.relapse - .12) / .12, 2)) * 1;
+  let lean = -0.05 + sl * 0.36 - jolt * .12;                // radian, + = irəli (sağa)
+  let hipY = hip[1] + sl * 48;
+  const TOR = 178;
+  let neck = [hx + Math.sin(lean) * TOR, hipY - Math.cos(lean) * TOR];
+  let headA = lean + sl * .85;
+  let head = [neck[0] + Math.sin(headA) * 48, neck[1] - Math.cos(headA) * 48];
+  // ayaqlar
+  let fL = [hx - 62, FLOOR - 8], fR = [hx + 48, FLOOR - 8];
+  let kL = ik(hx, hipY, fL[0], fL[1], 100, 100, true), kR = ik(hx, hipY, fR[0], fR[1], 100, 100, true);
+  // əl hədəfi: sikkə atma dövrü
+  let tgt = null, hold = false;
+  const all = T.drops1.concat(T.drops2);
+  for (let i = 0; i < all.length; i++) {
+    let d = all[i], prev = i ? all[i - 1] : d - .6, cyc = Math.min(.55, Math.max(.2, d - prev));
+    if (t >= d - cyc && t < d + Math.min(.3, cyc * .6)) {
+      let u = (t - (d - cyc)) / cyc; // 0..1 → atma anı
+      let pocket = [hx + 30, hipY - 20], mouth = [JAR.x + 34, JAR.y - 18];
+      if (u <= 1) { let e = ease(u); tgt = [lerp(pocket[0], mouth[0], e), lerp(pocket[1], mouth[1], e) - Math.sin(e * Math.PI) * 40]; hold = true; }
+      else { let e = ease(clamp((t - d) / Math.min(.3, cyc * .6))); tgt = [lerp(mouth[0], pocket[0], e), lerp(mouth[1], pocket[1], e)]; }
+      break;
+    }
+  }
+  let sh = [neck[0] + Math.sin(lean) * -14, neck[1] + 22];
+  let restR = [sh[0] + 30 + sl * 40, sh[1] + 175 + sl * -10];
+  let hR = tgt || restR;
+  let eR = ik(sh[0], sh[1], hR[0], hR[1], 98, 98, true);
+  let restL = [sh[0] - 24 + sl * 30, sh[1] + 178];
+  let eL = ik(sh[0], sh[1], restL[0], restL[1], 98, 98, true);
+  // arxa əzalar (boz), sonra gövdə, ön əzalar (ağ)
+  limb([sh, eL, restL], GREY, 26);
+  limb([[hx, hipY], kL, fL], GREY, 30);
+  limb([[hx, hipY], neck], WHITE, 40);
+  limb([[hx, hipY], kR, fR], WHITE, 30);
+  X.fillStyle = WHITE; X.beginPath(); X.arc(head[0], head[1], 40, 0, 7); X.fill();
+  limb([sh, eR, hR], WHITE, 26);
+  if (hold && tgt) coin(hR[0] + 6, hR[1] - 10, 1, .9);
+  // ayaq izləri
+  X.fillStyle = WHITE; [fL, fR].forEach(f => { X.beginPath(); X.ellipse(f[0] + 10, f[1], 20, 9, 0, 0, 7); X.fill(); });
+}
+
+// --- sikkə (üzü görünən) ---
+function coin(x, y, sc, a) {
+  X.save(); X.globalAlpha *= a; X.translate(x, y); X.scale(sc, sc);
+  X.shadowColor = GOLD; X.shadowBlur = 24;
+  X.fillStyle = GOLD; X.beginPath(); X.arc(0, 0, 26, 0, 7); X.fill();
+  X.shadowBlur = 0; X.strokeStyle = '#B9861E'; X.lineWidth = 3; X.beginPath(); X.arc(0, 0, 20, 0, 7); X.stroke();
+  X.fillStyle = '#5A3D06'; X.font = '22px IB'; X.textAlign = 'center'; X.textBaseline = 'middle'; X.fillText('+1', 0, 1);
+  X.restore();
+}
+// --- yan görünüşdə sikkə diski ---
+function disc(x, y, a, red) {
+  X.save(); X.globalAlpha *= a;
+  let g = X.createLinearGradient(x - 70, 0, x + 70, 0);
+  g.addColorStop(0, '#9C6F14'); g.addColorStop(.35, red ? '#FF9A7A' : '#FFD877'); g.addColorStop(1, '#A87818');
+  X.fillStyle = g; X.beginPath(); X.roundRect(x - 68, y - COIN_H + 1, 136, COIN_H - 1.5, 5); X.fill();
+  X.restore();
+}
+
+function jar(t, s) {
+  // içindəki sikkələr (qalaq), relapse zamanı hamar enmə
+  let pile = s.count;
+  let base = FLOOR - 14;
+  let glow = Math.exp(-Math.pow((t - T.chart[1]) / .5, 2));
+  for (let i = 0; i < pile; i++) {
+    let ox = ((i * 37) % 23) - 11;
+    disc(JAR.x + JAR.w / 2 + ox, base - i * COIN_H, 1, false);
+  }
+  // düşən sikkələr
+  const all = T.drops1.concat(T.drops2), land = [.26, .2];
+  all.forEach((d, i) => {
+    let L = i < T.drops1.length ? .26 : .2;
+    if (t >= d && t < d + L) {
+      let u = (t - d) / L, n = (i < T.drops1.length ? i : T.drops1.length - 5 + (i - T.drops1.length));
+      let y = lerp(JAR.y - 18, base - n * COIN_H, u * u);
+      coin(lerp(JAR.x + 40, JAR.x + JAR.w / 2, u), y, lerp(1, .7, u), 1);
+    }
+  });
+  // şüşə banka
+  X.save();
+  X.strokeStyle = 'rgba(235,240,250,.75)'; X.lineWidth = 6;
+  X.shadowColor = 'rgba(200,220,255,.35)'; X.shadowBlur = 18;
+  X.beginPath(); X.roundRect(JAR.x, JAR.y, JAR.w, JAR.h, [18, 18, 34, 34]); X.stroke();
+  X.shadowBlur = 0;
+  X.fillStyle = 'rgba(200,215,235,.05)'; X.fill();
+  // ağız
+  X.lineWidth = 8; X.beginPath(); X.moveTo(JAR.x - 10, JAR.y); X.lineTo(JAR.x + JAR.w + 10, JAR.y); X.stroke();
+  // parıltı zolağı
+  X.strokeStyle = 'rgba(255,255,255,.18)'; X.lineWidth = 10; X.beginPath(); X.moveTo(JAR.x + 30, JAR.y + 40); X.lineTo(JAR.x + 30, JAR.y + JAR.h - 60); X.stroke();
+  // etiket
+  X.fillStyle = 'rgba(244,241,234,.9)'; X.font = '26px MO'; X.textAlign = 'center';
+  X.letterSpacing = '6px'; X.fillText('YOUR LIFE', JAR.x + JAR.w / 2 + 3, JAR.y + 70); X.letterSpacing = '0px';
+  X.restore();
+  // çat (relapse)
+  let ca = seg(t, T.relapse, T.relapse + .12) * (1 - seg(t, T.slump[1] + .1, T.slump[1] + .9));
+  if (ca > 0) {
+    X.save(); X.globalAlpha = ca; X.strokeStyle = RED; X.lineWidth = 4; X.shadowColor = RED; X.shadowBlur = 22;
+    X.beginPath(); let cx = JAR.x + JAR.w - 4, cy = FLOOR - 150;
+    X.moveTo(cx, cy); [[-24, 22], [-6, 30], [-30, 26], [-10, 40]].forEach(([dx, dy]) => { cx += dx; cy += dy; X.lineTo(cx, cy); });
+    X.stroke();
+    X.font = '30px MO'; X.fillStyle = RED; X.textAlign = 'left'; X.letterSpacing = '4px';
+    X.fillText('RELAPSE', JAR.x + JAR.w + 22, FLOOR - 180); X.letterSpacing = '0px';
+    X.restore();
+  }
+  // axıb gedən sikkələr
+  T.leaks.forEach((d, i) => {
+    if (t >= d) {
+      let u = clamp((t - d) / 1.3);
+      let x = JAR.x + JAR.w + 10 + eout(u) * (90 + i * 26), y = FLOOR - 40 + Math.min(1, u * 4) * 30 - 6;
+      disc(x, y, 1 - seg(u, .55, 1), true);
+    }
+  });
+  return glow;
+}
+
+// --- sayğac ---
+function counter(t, s) {
+  let a = 1 - seg(t, T.end - .3, T.end);
+  if (a <= 0) return;
+  let red = Math.exp(-Math.pow((t - (T.leaks[2] + .4)) / .7, 2));
+  let boom = Math.exp(-Math.pow((t - T.chart[1] - .1) / .35, 2));
+  let v = s.count;
+  X.save(); X.globalAlpha = a * seg(t, .1, .5); X.textAlign = 'center'; X.textBaseline = 'alphabetic';
+  let col = red > .3 ? RED : (t > T.chart[1] - .05 ? GOLD : WHITE);
+  X.shadowColor = col; X.shadowBlur = 8 + 40 * boom + 20 * red;
+  X.fillStyle = col; X.font = `${Math.round(150 * (1 + .12 * boom))}px IB`;
+  X.fillText((v > 0 ? '+' : '') + v, W / 2, 610);
+  X.shadowBlur = 0; X.fillStyle = 'rgba(200,198,190,.85)'; X.font = '30px MO'; X.letterSpacing = '10px';
+  let day = Math.max(1, s.n1 + (t >= T.relapse ? 1 : 0) + s.n2);
+  X.fillText(`POINTS · DAY ${day}`, W / 2 + 5, 668); X.letterSpacing = '0px';
+  X.restore();
+}
+
+// --- üst yazı ---
+function caption(t) {
+  for (const [a, b, txt, hi, hc] of T.texts) {
+    if (t < a || t > b) continue;
+    let al = Math.min(seg(t, a, a + .25), 1 - seg(t, b - .2, b));
+    X.save(); X.globalAlpha = al; X.font = '40px MO'; X.letterSpacing = '7px'; X.textBaseline = 'middle';
+    let wTot = X.measureText(txt).width, x = W / 2 - wTot / 2, y = 330 + (1 - eout(seg(t, a, a + .35))) * 14;
+    let i = txt.indexOf(hi);
+    let parts = [[txt.slice(0, i), WHITE], [hi, hc === 'red' ? RED : GOLD], [txt.slice(i + hi.length), WHITE]];
+    X.textAlign = 'left';
+    for (const [p, c] of parts) {
+      if (!p) continue;
+      X.fillStyle = c; X.shadowColor = c === WHITE ? 'transparent' : c; X.shadowBlur = c === WHITE ? 0 : 18;
+      X.fillText(p, x, y); x += X.measureText(p).width;
+    }
+    X.restore();
+  }
+}
+
+// --- qrafik ---
+function chart(t) {
+  let u = seg(t, T.chart[0] + .2, T.chart[1]);
+  let a = seg(t, T.chart[0], T.chart[0] + .4) * (1 - seg(t, T.end - .3, T.end));
+  if (a <= 0) return;
+  const S = T.series, n = S.length - 1, x0 = 110, x1 = 950, yb = 1260, yt = 760, mx = Math.max(...S);
+  const P = i => [lerp(x0, x1, i / n), lerp(yb, yt, S[i] / mx)];
+  X.save(); X.globalAlpha = a;
+  // şəbəkə
+  X.strokeStyle = 'rgba(255,255,255,.07)'; X.lineWidth = 2;
+  for (let k = 0; k <= 4; k++) { let y = lerp(yb, yt, k / 4); X.beginPath(); X.moveTo(x0, y); X.lineTo(x1, y); X.stroke(); }
+  let m = ease(u) * n, last = P(0);
+  // sahə
+  let g = X.createLinearGradient(0, yt, 0, yb); g.addColorStop(0, 'rgba(247,192,74,.28)'); g.addColorStop(1, 'rgba(247,192,74,0)');
+  X.beginPath(); X.moveTo(x0, yb);
+  for (let i = 0; i <= Math.floor(m); i++) { let p = P(i); X.lineTo(p[0], p[1]); last = p; }
+  if (m < n) { let i = Math.floor(m), f = m - i, p = P(i), q = P(i + 1); last = [lerp(p[0], q[0], f), lerp(p[1], q[1], f)]; X.lineTo(last[0], last[1]); }
+  X.lineTo(last[0], yb); X.closePath(); X.fillStyle = g; X.fill();
+  // xətt
+  X.lineWidth = 9; X.lineCap = 'round'; X.lineJoin = 'round';
+  for (let i = 0; i < Math.ceil(m); i++) {
+    let p = P(i), q = P(i + 1), f = Math.min(1, m - i);
+    let col = S[i + 1] < S[i] ? RED : GOLD;
+    X.strokeStyle = col; X.shadowColor = col; X.shadowBlur = 20;
+    X.beginPath(); X.moveTo(p[0], p[1]); X.lineTo(lerp(p[0], q[0], f), lerp(p[1], q[1], f)); X.stroke();
+  }
+  // baş nöqtə
+  let boom = Math.exp(-Math.pow((t - T.chart[1] - .1) / .4, 2));
+  X.shadowColor = GOLD; X.shadowBlur = 30 + 60 * boom; X.fillStyle = '#FFF4D6';
+  X.beginPath(); X.arc(last[0], last[1], 14 + 10 * boom, 0, 7); X.fill();
+  // relapse işarəsi
+  if (m > 21) { let p = P(21); X.shadowBlur = 0; X.fillStyle = RED; X.font = '26px MO'; X.textAlign = 'center'; X.fillText('−5', p[0], p[1] + 46); }
+  X.restore();
+  // partlayış şüaları
+  if (boom > .02) {
+    X.save(); X.globalAlpha = boom * .9; X.translate(last[0], last[1]);
+    for (let k = 0; k < 14; k++) {
+      let ang = k / 14 * Math.PI * 2, r0 = 40, r1 = 40 + 160 * (1 - boom) + 60;
+      X.strokeStyle = GOLD; X.lineWidth = 4; X.beginPath(); X.moveTo(Math.cos(ang) * r0, Math.sin(ang) * r0); X.lineTo(Math.cos(ang) * r1, Math.sin(ang) * r1); X.stroke();
+    }
+    X.restore();
+  }
+}
+
+// --- son kadr ---
+function endcard(t) {
+  let a = seg(t, T.end, T.end + .45);
+  if (a <= 0) return;
+  X.save(); X.globalAlpha = a; X.textAlign = 'center'; X.textBaseline = 'middle';
+  // kiçik qrafik ikonu
+  X.translate(W / 2, 760);
+  X.strokeStyle = GOLD; X.lineWidth = 10; X.lineCap = 'round'; X.lineJoin = 'round'; X.shadowColor = GOLD; X.shadowBlur = 26;
+  X.beginPath(); [[-90, 40], [-40, 0], [-5, 22], [40, -30], [90, -55]].forEach((p, i) => i ? X.lineTo(...p) : X.moveTo(...p)); X.stroke();
+  X.shadowBlur = 0; X.translate(-W / 2, -760);
+  X.fillStyle = WHITE; X.font = '96px IB'; X.fillText('Constara', W / 2, 900);
+  X.fillStyle = 'rgba(200,198,190,.9)'; X.font = '28px MO'; X.letterSpacing = '9px';
+  X.fillText('YOUR LIFE, AS A CHART.', W / 2 + 4, 985); X.letterSpacing = '0px';
+  let b = seg(t, T.end + .7, T.end + 1.1);
+  X.globalAlpha = a * b;
+  X.fillStyle = WHITE; X.font = '44px IM';
+  X.fillText('Comment “LINK” and I’ll', W / 2, 1150);
+  X.fillText('send you the app.', W / 2, 1210);
+  X.strokeStyle = GOLD; X.lineWidth = 3; X.globalAlpha = a * b * .8;
+  X.beginPath(); X.roundRect(W / 2 - 330, 1100, 660, 160, 30); X.stroke();
+  X.restore();
+}
+
+function world(t, s, wa) {
+  X.save(); X.globalAlpha = wa;
+  jar(t, s);
+  figure(t, s);
+  X.restore();
+}
+
+window.draw = function (t) {
+  X.setTransform(1, 0, 0, 1, 0, 0);
+  X.globalAlpha = 1; X.fillStyle = '#000'; X.fillRect(0, 0, W, H);
+  // yumşaq işıq dairəsi
+  let v = X.createRadialGradient(W / 2, FLOOR - 250, 50, W / 2, FLOOR - 250, 900);
+  v.addColorStop(0, 'rgba(255,255,255,.045)'); v.addColorStop(1, 'rgba(0,0,0,0)');
+  X.fillStyle = v; X.fillRect(0, 0, W, H);
+  const s = state(t);
+  let wa = 1 - .82 * seg(t, T.chart[0], T.chart[0] + .5);
+  wa *= 1 - seg(t, T.end - .3, T.end);
+  // kamera: yavaş zoom + relapse silkələnməsi
+  let shake = Math.exp(-Math.pow((t - T.relapse - .05) / .18, 2)) * 10;
+  let z = 1 + .035 * seg(t, 0, T.chart[0]);
+  X.save();
+  X.translate(W / 2, FLOOR - 300); X.scale(z, z); X.translate(-W / 2 + Math.sin(t * 90) * shake, -(FLOOR - 300) + Math.cos(t * 77) * shake * .6);
+  if (wa > 0) {
+    world(t, s, wa);
+    // əks
+    X.save(); X.translate(0, FLOOR * 2); X.scale(1, -1); world(t, s, wa * .28); X.restore();
+    let g = X.createLinearGradient(0, FLOOR, 0, FLOOR + 330);
+    g.addColorStop(0, 'rgba(0,0,0,.25)'); g.addColorStop(1, 'rgba(0,0,0,1)');
+    X.fillStyle = g; X.fillRect(-100, FLOOR, W + 200, 900);
+    // döşəmə xətti
+    X.globalAlpha = wa * .5; X.strokeStyle = 'rgba(255,255,255,.25)'; X.lineWidth = 2;
+    X.beginPath(); X.moveTo(-100, FLOOR); X.lineTo(W + 100, FLOOR); X.stroke(); X.globalAlpha = 1;
+  }
+  X.restore();
+  chart(t);
+  counter(t, s);
+  caption(t);
+  endcard(t);
+};
+document.fonts.ready.then(() => { window.READY = true; });
+document.fonts.load('40px MO'); document.fonts.load('40px IB'); document.fonts.load('40px IM');
+</script></body></html>
