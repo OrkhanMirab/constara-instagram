@@ -29,6 +29,14 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 - **Tələ:** gözləmə döngəsində `pgrep -f "<fayl adı>"` öz-özünü tapır və sonsuz gözləyir — log faylında «Hazır» sözünü yoxla.
 - Karusel: Pillow, `video-src/carousel-*/car*.py` nümunələri (tünd brend, 1080×1350, 7 slayd, son slayd saxlanılası checklist).
 
+## 🧪 DAİMİ YARADICILIQ — video mexanizmini HƏR GÜN inkişaf etdir (istifadəçi, 2026-11-12, MÜTLƏQ)
+İstifadəçi: «tez-tez belə kreativ şeylər et. Bir şablon üzərindən getmək pis olur. Fərqli şeylər sınayıb ən yaxşısını tapmalıyıq. Video mexanizmini daima inkişaf etdir.»
+- **Bir şablonda ilişib qalma.** Hər gecə planla yanaşı mühərrikə ən azı **1 yaradıcı yenilik** gətir (yeni səhnə, yeni kamera hərəkəti, yeni musiqi əhvalı və ya ritm, yeni hook quruluşu, yeni keçid, yeni personaj pozası) və onu həmin günün videolarından birində sına.
+- **Hər həftə ən azı 1 tam yeni format** (məs. telefon POV, Gün 1 vs Gün 30, kinetik qrafik loop, sual-cavab, «gələcək mən» məktubu) — `kino-arastirma.md`-yə ideya və nəticəni yaz.
+- Ardıcıl 2 gün eyni format və eyni vizual olmasın. Hər yeni format 2 videoda sınanır → rəqəmlər (`analiz.py`) → qalib qalır və inkişaf etdirilir, uduzan atılır və ya dəyişdirilir.
+- Kiçik yeniliklər (səhnə, rəng, səs, hook) avtomatik edilir. Böyük format dəyişikliyindən sonra istifadəçiyə MP4 + qısa izah göndər.
+- Dəyişiklikləri `video-src/_kino/` (və ya yeni `video-src/_<format>/`) mühərrikində et, nümunə cfg-ni `ornek/`-a əlavə et, oyrenilenler.md «Sınaqda»-ya yaz.
+
 ## 🎬 Kino formatı (K01, 2026-11-12, istifadəçi: «60% qalsın, professional, hisslərə toxunsun»)
 - Mühərrik `video-src/_kino/`: `kino.py` (cfg → index.html), `sound.py` (öz musiqimiz + SFX + diktor emalı, −14 LUFS), `body.html` (səhnələr), `snap.mjs` (açar kadrlar).
   Araşdırma və qaydalar: `video-src/_kino/kino-arastirma.md`. Nümunələr: `ornek/k01-not-weak.json`, `ornek/k02-vaping.json`.

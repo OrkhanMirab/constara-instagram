@@ -19,6 +19,8 @@ Gündəlik plan (`gun-plani.md`) bu faylın **«Aktiv qaydalar»** bölməsinə 
    («Most people miss #3.», «Which one hit?»). «3 signs» caption-un 1-ci sətrinə bunu əlavə et. Status: sınaq.
 5. **Göndərmə (share) siqnalı** ən çox partlayan videolarda var. CTA-dan əvvəl bir cümlə: «Send this to someone who's quitting.» — sına (11-11, status: sınaq).
 
+6. **Daimi yenilik (11-12, istifadəçi qərarı).** Tək şablon zamanla bazaya enir (v15–v18 eyni şablon idi). Hər gün 1 yaradıcı yenilik, həftədə 1 yeni format; qalibi rəqəm seçir.
+
 ## Bazada qalanlar (təkrar etmə, ən azı 2 həftə)
 sugar, drinking, caffeine, gambling, smoking, junk food, scroll (11-11 vəziyyəti); weed (11-12: bazada + FB yükləməsi uğursuz — **narkotik mövzuları YOX**).
 
@@ -30,7 +32,7 @@ sugar, drinking, caffeine, gambling, smoking, junk food, scroll (11-11 vəziyyə
   Yaxşıdırsa — gündə 2-yə qaldır (təklif kimi yox, kiçik dəyişiklik sayılır).
 
 - **«Kino» formatı (K01) — SINAQDA (11-12, istifadəçi tapşırığı).** Kinematik motivasiya: açıq hook → gecə → sayğac → sükut+zərbə dönüşü → şəfəq → qrafik → LINK;
-  öz musiqimiz (minor→major, crescendo), söz-söz altyazı. Araşdırma: `video-src/_kino/kino-arastirma.md`. Sınaq: 2 video 14:30 slotunda (sübut olunmuş niş), sonra
+  öz musiqimiz (minor→major, crescendo), söz-söz altyazı. Araşdırma: `video-src/_kino/kino-arastirma.md`. Sınaq: 11-12-də hər iki slot kino (K01 14:30 p*rn, K02 20:30 vape), sonra 14:30 slotunda (sübut olunmuş niş), sonra
   3 s saxlama / orta izləmə / send/reach «3 signs» bazası ilə müqayisə (hədəf 3 s ≥ 60%). Zəifdirsə əvvəl hook-u dəyiş; 2 dəfə də zəifdirsə — istifadəçiyə «dayandıraq?».
 
 ## Tarixçə
