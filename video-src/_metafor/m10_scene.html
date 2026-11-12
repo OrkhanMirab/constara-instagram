@@ -287,10 +287,7 @@ function endcard(t) {
   X.beginPath(); [[-90, 40], [-40, 0], [-5, 22], [40, -30], [90, -55]].forEach((p, i) => i ? X.lineTo(...p) : X.moveTo(...p)); X.stroke();
   X.shadowBlur = 0; X.translate(-W / 2, -760);
   X.fillStyle = WHITE; X.font = '96px IB'; X.fillText('Constara', W / 2, 900);
-  X.fillStyle = 'rgba(200,198,190,.9)'; X.font = '28px MO'; X.letterSpacing = '9px'; X.fillText('ONE LOG A DAY. TRACKED.', W / 2 + 4, 985); X.letterSpacing = '0px';
-  let b = seg(t, T.end + .7, T.end + 1.1); X.globalAlpha = a * b;
-  X.fillStyle = WHITE; X.font = '44px IM'; X.fillText('Comment “LINK” and I’ll', W / 2, 1150); X.fillText('send you the app.', W / 2, 1210);
-  X.strokeStyle = GOLD; X.lineWidth = 3; X.globalAlpha = a * b * .8; X.beginPath(); X.roundRect(W / 2 - 330, 1100, 660, 160, 30); X.stroke();
+  X.fillStyle = 'rgba(200,198,190,.9)'; X.font = '30px MO'; X.letterSpacing = '14px'; X.fillText('APP', W / 2 + 7, 985); X.letterSpacing = '0px';
   X.restore();
 }
 

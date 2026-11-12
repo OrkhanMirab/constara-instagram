@@ -20,8 +20,8 @@ if (snap) {
   }
 } else {
   fs.mkdirSync(path.join(dir, 'frames'), { recursive: true });
-  const n = Math.round(fps * dur);
-  for (let i = 0; i < n; i++) {
+  const n = Math.round(fps * dur), from = Number(process.env.FROM || 0);
+  for (let i = from; i < n; i++) {
     await p.evaluate(t => window.draw(t), i / fps);
     await p.screenshot({ path: path.join(dir, 'frames', `f${String(i).padStart(5, '0')}.jpg`), type: 'jpeg', quality: 94 });
     if (i % 60 === 0) console.log(`${i}/${n}`);
