@@ -37,6 +37,11 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 - Kiçik yeniliklər (səhnə, rəng, səs, hook) avtomatik edilir. Böyük format dəyişikliyindən sonra istifadəçiyə MP4 + qısa izah göndər.
 - Dəyişiklikləri `video-src/_kino/` (və ya yeni `video-src/_<format>/`) mühərrikində et, nümunə cfg-ni `ornek/`-a əlavə et, oyrenilenler.md «Sınaqda»-ya yaz.
 
+## 🧪 Sınaq videoları: HƏMİŞƏ SORUŞ (istifadəçi, 2026-11-12)
+- Avtomatik paylaşma planına düşməyən sınaq/nümunə videolarında (yeni format, «nümunə hazırla» və s.) tam render-ə başlamazdan əvvəl istifadəçidən soruş: əvvəl ssenari + açar kadrlar (snap montage) göstərilsin, yoxsa birbaşa MP4 render edilsin. Son kadr (LINK çağırışı və ya yalnız «Constara APP») da soruşulsun.
+- Avtomatik gündəlik plan (`plan/*.json`) bu qaydaya düşmür — orada əvvəlki kimi göstərmədən hazırla və paylaş.
+- Metafor formatı (2026-11-12): `video-src/_metafor/` (M01 «Bank», M10 «Kibrit və odun»; ideyalar `ideyalar.md`). M10-da istifadəçi LINK çağırışını çıxartdı, sonda yalnız «Constara APP».
+
 ## 🎬 Kino formatı (K01, 2026-11-12, istifadəçi: «60% qalsın, professional, hisslərə toxunsun»)
 - Mühərrik `video-src/_kino/`: `kino.py` (cfg → index.html), `sound.py` (öz musiqimiz + SFX + diktor emalı, −14 LUFS), `body.html` (səhnələr), `snap.mjs` (açar kadrlar).
   Araşdırma və qaydalar: `video-src/_kino/kino-arastirma.md`. Nümunələr: `ornek/k01-not-weak.json`, `ornek/k02-vaping.json`.
