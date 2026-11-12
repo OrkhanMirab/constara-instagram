@@ -29,6 +29,10 @@ sugar, drinking, caffeine, gambling, smoking, junk food, scroll (11-11 vəziyyə
   şərhlərdə xal yazanların sayı. Baza səviyyəsində və ya aşağıdırsa — hook/sual sayını dəyiş, 2 dəfə də olmursa — istifadəçiyə «dayandıraq?» təklifi.
   Yaxşıdırsa — gündə 2-yə qaldır (təklif kimi yox, kiçik dəyişiklik sayılır).
 
+- **«Kino» formatı (K01) — SINAQDA (11-12, istifadəçi tapşırığı).** Kinematik motivasiya: açıq hook → gecə → sayğac → sükut+zərbə dönüşü → şəfəq → qrafik → LINK;
+  öz musiqimiz (minor→major, crescendo), söz-söz altyazı. Araşdırma: `video-src/_kino/kino-arastirma.md`. Sınaq: 2 video 14:30 slotunda (sübut olunmuş niş), sonra
+  3 s saxlama / orta izləmə / send/reach «3 signs» bazası ilə müqayisə (hədəf 3 s ≥ 60%). Zəifdirsə əvvəl hook-u dəyiş; 2 dəfə də zəifdirsə — istifadəçiyə «dayandıraq?».
+
 ## Tarixçə
 - 2026-11-11: ilk analiz (29 post, 61 izləyici). Qaydalar 1–4 yazıldı.
 - 2026-11-12: dünənki 4 post erkən (bazada). Xal testi #1 avg izləmə «3 signs» səviyyəsində. Açıq döngə sınağı + narkotik mövzusu qadağası. İzləyici 66.

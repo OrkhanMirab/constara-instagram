@@ -1,0 +1,15 @@
+{
+  "title": "K01 — You're not weak",
+  "tag": "QUITTING P*RN",
+  "lines": [
+    {"scene": "hook",  "vo": "You're not weak. You're just tired of losing.", "txt": "You're not _weak._ You're just tired of *losing.*"},
+    {"scene": "night", "vo": "It's two A.M. You promised yourself. Again.", "txt": "2 AM. You promised yourself. *Again.*", "clock": "02:13"},
+    {"scene": "count", "vo": "One night. A week of guilt.", "txt": "One night. A week of _guilt._", "num": [1, 7], "unit": "DAYS OF GUILT"},
+    {"scene": "turn",  "vo": "But here's what nobody tells you.", "txt": "Here's what *nobody* tells you."},
+    {"scene": "rise",  "vo": "You don't need more motivation. You need proof.", "txt": "You don't need motivation. You need *proof.*"},
+    {"scene": "chart", "vo": "Clean day, plus one. Slip, minus five.", "txt": "Clean day, ~+1.~ Slip, !−5.!"},
+    {"scene": "chart", "vo": "One slip can't erase thirty days.", "txt": "One slip can't erase _thirty days._"},
+    {"scene": "cta",   "vo": "Comment link, and I'll send you the app.", "txt": "Comment *LINK* and I'll send you the app."}
+  ],
+  "caption": "You're not weak. You're tired of losing to yourself. 🖤\nSave this for the night you need it. Send it to someone who's quitting.\nComment LINK 👇 and I'll DM you the free app.\n#nofap #quitporn #selfimprovement #discipline #dopaminedetox"
+}

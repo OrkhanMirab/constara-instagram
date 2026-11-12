@@ -23,7 +23,13 @@
    **Xal testi (sınaq, 11-11-dən):** 2 Reels-dən biri (20:30), `"format": "xal"` olsun (oyrenilenler.md «Sınaqda») — 4 sual (3× +1, 1× −5 və ya 2/2),
    sual kartda ≤ 3 sətir, diktor cümləsi «… Plus one.» / «… Minus five.» ilə bitir, hook qısa iddia («Most people score below zero»). Caption-da «Comment your score 👇».
    `bg` rəngi hər videoda fərqli; başlıq uzunsa `fs` 38–42. Son cümlə və LINK kadrı avtomatikdir.
-   Qurulum: Constara reposu (`/home/user/Constara`, yoxdursa add_repo read + clone), `pip install kokoro-onnx soundfile`, iş qovluğuna `kokoro-v1.0.onnx` + `voices-v1.0.bin`
+   **Kino formatı (sınaq, 11-13-dən, istifadəçi 11-12: «professional, hisslərə toxunan, 60% qalsın»):** 14:30 slotu `"format": "kino"` olsun
+   (sübut olunmuş niş — p*rn/NoFap, vape/nikotin — ki, fərqi format yaratsın). Əvvəl `video-src/_kino/kino-arastirma.md` §2–§3 oxu, nümunə `video-src/_kino/ornek/k01-not-weak.json`.
+   Ssenari 8 xətt, ~20–23 s: `hook` (birbaşa «sən» iddiası, ≤ 2,5 s, saat YOX) → `night` (konkret ağrı anı) → `count` (sayğac: rəqəm + vahid, uydurma statistika YOX) →
+   `turn` («Here's what nobody tells you» tipli, 1 aksent sözü) → `rise` (şəxsiyyət/ümid) → `chart` ×2 (+1 / −5 / «can't erase») → `cta` (LINK, sabit cümlə: «Comment link, and I'll send you the app.»).
+   Hər xəttdə 1 vurğu: `*söz*` aksent, `_söz_` serif emosiya, `~+1~` yaşıl, `!−5!` qırmızı. `tag` = niş adı (`QUITTING P*RN`, `QUITTING VAPING`). Hook və turn hər videoda YENİ olsun.
+   Kino üçün əlavə: `pip install scipy`. Montage: `node video-src/_kino/snap.mjs <iş>/rNN/index.html <png-qovluq>`.
+   Qurulum: Constara reposu (`/home/user/Constara`, yoxdursa add_repo read + clone), `pip install kokoro-onnx soundfile scipy`, iş qovluğuna `kokoro-v1.0.onnx` + `voices-v1.0.bin`
    (`https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/<fayl>`), qlobal playwright.
    Əmr (karusel/story planı yazılandan SONRA): `python3 video-src/_alet/reels.py <tarix> reels.json <iş-qovluğu>` (~15–20 dəq; videoları `reels/<tarix>` budağına yükləyir, plan faylına `reels` yazır).
    Bir neçə kadrı `ffmpeg -ss` ilə çıxarıb montage-də bax (mətn sığır).

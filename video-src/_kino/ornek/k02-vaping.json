@@ -1,0 +1,15 @@
+{
+  "title": "K02 — Quitting vaping",
+  "tag": "QUITTING VAPING",
+  "lines": [
+    {"scene": "hook",  "vo": "You don't need it. You just think you do.", "txt": "You don't _need_ it. You just *think* you do."},
+    {"scene": "night", "vo": "Midnight. Three hits, just to fall asleep.", "txt": "Midnight. Three hits just to *sleep.*", "clock": "00:07"},
+    {"scene": "count", "vo": "Twenty times a day, your hand reaches for it.", "txt": "Your hand reaches for it _twenty times_ a day.", "num": [0, 20], "unit": "TIMES A DAY"},
+    {"scene": "turn",  "vo": "Here's the part nobody tells you.", "txt": "The part *nobody* tells you."},
+    {"scene": "rise",  "vo": "A craving lasts minutes. You last longer.", "txt": "A craving lasts _minutes._ You last *longer.*"},
+    {"scene": "chart", "vo": "Clean day, plus one. Slip, minus five.", "txt": "Clean day, ~+1.~ Slip, !−5.!"},
+    {"scene": "chart", "vo": "And still, your line keeps climbing.", "txt": "Your line keeps *climbing.*"},
+    {"scene": "cta",   "vo": "Comment link, and I'll send you the app.", "txt": "Comment *LINK* and I'll send you the app."}
+  ],
+  "caption": "Quitting vaping: you don't need it, you just think you do. A craving lasts minutes. You last longer.\nSend this to someone who's quitting.\nComment LINK 👇 and I'll DM you the free app.\n#quitvaping #nicotinefree #selfimprovement #discipline #habittracker"
+}

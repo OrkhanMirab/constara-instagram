@@ -18,6 +18,9 @@ Son cumle ve son kadr avtomatik: «Comment LINK, and I'll send you the app.»
    "result": "Plus three or more, you're investing in yourself. Below zero, you're losing. Comment your score.",
    "caption": "..."}
   q: kartda (\n setir, ≤ 3 setir, ≤ ~22 simvol/setir); vo: diktor, sonu «Plus one.» / «Minus five.» (moher o an vurur).
+«Kino» formati (K01, 2026-11-12) — cfg-de "format": "kino": kinematik motivasiya (söz-söz altyazı, siluetlər, öz musiqimiz,
+  dönüşdə sükut→zərbə, Constara qrafiki). Sxem: video-src/_kino/kino.py başı, nümunə video-src/_kino/ornek/*.json,
+  qaydalar video-src/_kino/kino-arastirma.md. cfg-də "title" və "caption" da olsun.
 Lazimdir: Constara reposu (/home/user/Constara ve ya /home/user/life-analytics), kokoro-onnx + soundfile,
 is-qovlugunda kokoro-v1.0.onnx + voices-v1.0.bin, qlobal playwright, ffmpeg.
 """
@@ -39,6 +42,7 @@ OLD_CAP = """[c(6), DUR + 1, '', 92, [['Which', c(6)], ['sign', c(6, .2)], ['\\n
 
 
 TPL_XAL = ROOT / "video-src" / "x01-xal-testi"
+KINO = ROOT / "video-src" / "_kino"
 
 
 def make_src_xal(cfg, d: Path):
@@ -89,15 +93,21 @@ def run(cmd, cwd, env=None):
 def one(i, cfg, work: Path):
     name = f"r{i + 1:02d}"
     d = work / name
-    make_src(cfg, d)
-    for f in ("kokoro-v1.0.onnx", "voices-v1.0.bin"):
-        if not (d / f).exists():
-            os.symlink(work / f, d / f)
-    run([sys.executable, "vo.py"], d)
     vid = work / "vid" / name
     vid.mkdir(parents=True, exist_ok=True)
-    run([sys.executable, "marketing/sablon/build.py", str(d / "body.html"), str(d / "cues.json"), str(d / "vo.b64"),
-         str(vid / "index.html"), cfg["title"]], ENGINE)
+    if cfg.get("format") == "kino":  # kinematik format (video-src/_kino, 2026-11-12): diktor+musiqi+SFX bir miksdə
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "cfg.json").write_text(json.dumps(cfg, ensure_ascii=False), encoding="utf-8")
+        run([sys.executable, str(KINO / "kino.py"), str(d / "cfg.json"), str(d), "--tts", str(work)], ROOT)
+        shutil.copy(d / "index.html", vid / "index.html")
+    else:
+        make_src(cfg, d)
+        for f in ("kokoro-v1.0.onnx", "voices-v1.0.bin"):
+            if not (d / f).exists():
+                os.symlink(work / f, d / f)
+        run([sys.executable, "vo.py"], d)
+        run([sys.executable, "marketing/sablon/build.py", str(d / "body.html"), str(d / "cues.json"), str(d / "vo.b64"),
+             str(vid / "index.html"), cfg["title"]], ENGINE)
     env = dict(os.environ, NODE_PATH=run(["npm", "root", "-g"], work).strip())
     run(["node", "render.mjs", name], work / "vid", env)
     out = work / "out" / f"{name}.mp4"
