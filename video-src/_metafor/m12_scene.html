@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:IB;src:url(file:///usr/share/fonts/opentype/inter/Inter-Bold.otf)}
+@font-face{font-family:MO;src:url(file:///usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf)}
+html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}
+</style></head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+/*TL*/
+// M12 «Masa»: dəyirmi ad günü masası; illər keçdikcə stullar boşalır; 60-da ikinci lampa dostu göstərir.
+const T = window.TL;
+const cv = document.getElementById('c'), X = cv.getContext('2d');
+const W = 1080, H = 1920, CX = 540, CY = 1290, RX = 410, RY = 150;
+const GOLD = '#F7C04A', RED = '#FF5A4A', WHITE = '#F4F1EA', INK = '#0B0B0C';
+const PAL = ['#FF6FA8', '#2EC4B6', '#FFD166', '#9B5DE5', '#4CC9F0', '#FF8C42'];
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, u) => a + (b - a) * u;
+const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+const eout = u => 1 - Math.pow(1 - u, 3);
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const bump = (t, c, w) => Math.exp(-Math.pow((t - c) / w, 2));
+const R = k => { let x = Math.sin(k * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const ANG = [200, 222, 246, 270, 294, 318, 340, 28, 62, 90, 118, 152];   // 0–6 arxa, 7–11 ön
+const YOU = 3, FRIEND = 4;
+const OCC = { 18: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 25: [1, 3, 5, 6, 7, 9, 11], 32: [2, 3, 5, 9], 45: [3, 5, 10], 60: [3, 4] };
+function seat(i) {
+  const a = ANG[i] * Math.PI / 180, back = i < 7, k = back ? 1.13 : 1.16;
+  const x = CX + Math.cos(a) * RX * k, y = CY + Math.sin(a) * RY * k;
+  const s = back ? .74 + .2 * (y - (CY - RY)) / RY : 1.12 + .12 * Math.sin(a);
+  return { x, y, s, back, a };
+}
+function eraAt(t) { let k = 0; T.eras.forEach((e, i) => { if (t >= e.t0) k = i; }); return k; }
+function limb(p, w, col, ink = INK) {
+  X.lineCap = 'round'; X.lineJoin = 'round';
+  X.strokeStyle = ink; X.lineWidth = w + 6; X.beginPath(); X.moveTo(...p[0]); for (let i = 1; i < p.length; i++) X.lineTo(...p[i]); X.stroke();
+  X.strokeStyle = col; X.lineWidth = w; X.stroke();
+}
+
+// ---------- fon ----------
+function wall(t, k, L) {
+  let g = X.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0B1620'); g.addColorStop(.55, '#0A1218'); g.addColorStop(1, '#040607');
+  X.fillStyle = g; X.fillRect(-200, -200, W + 400, H + 400);
+  // divar panelləri (incə)
+  X.strokeStyle = 'rgba(255,255,255,.025)'; X.lineWidth = 2; for (let x = 60; x < W; x += 160) { X.beginPath(); X.moveTo(x, 600); X.lineTo(x, 1200); X.stroke(); }
+}
+function stringLights(t, k) {
+  const lit = [1, .6, .35, .12, 0][k], relight = seg(t, T.toast + .4, T.toast + 2.4);
+  X.strokeStyle = 'rgba(200,190,170,.25)'; X.lineWidth = 2;
+  for (let r = 0; r < 2; r++) {
+    const y0 = 660 + r * 90, sag = 60 + r * 20;
+    X.beginPath(); X.moveTo(-20, y0); X.quadraticCurveTo(540, y0 + sag * 2, 1100, y0); X.stroke();
+    for (let i = 0; i < 13; i++) {
+      const u = (i + .5) / 13, x = -20 + u * 1120, y = y0 + 4 * sag * u * (1 - u) + 10;
+      const on = R(i + r * 31) < lit ? 1 : 0, gold = k === 4 && R(i * 7 + r) < relight ? 1 : 0;
+      const col = gold ? GOLD : PAL[(i + r) % PAL.length], a = Math.max(on, gold) * (.75 + .25 * Math.sin(t * 3 + i));
+      X.fillStyle = '#22262b'; X.beginPath(); X.arc(x, y, 7, 0, 7); X.fill();
+      if (a > 0) {
+        X.globalCompositeOperation = 'lighter';
+        let bg = X.createRadialGradient(x, y, 1, x, y, 46); bg.addColorStop(0, col); bg.addColorStop(1, 'rgba(0,0,0,0)');
+        X.globalAlpha = .55 * a; X.fillStyle = bg; X.fillRect(x - 46, y - 46, 92, 92);
+        X.globalAlpha = a; X.fillStyle = col; X.beginPath(); X.arc(x, y, 7, 0, 7); X.fill();
+        X.globalAlpha = 1; X.globalCompositeOperation = 'source-over';
+      }
+    }
+  }
+}
+function balloons(t, k) {
+  const n = [6, 3, 1, 1, 0][k], deflate = k === 3;
+  const pos = [[150, 900], [260, 820], [95, 1010], [930, 880], [820, 800], [990, 1000]];
+  for (let i = 0; i < n; i++) {
+    const [bx, by0] = pos[i], by = by0 + Math.sin(t * 1.3 + i) * 10 + (deflate ? 210 : 0), r = deflate ? 34 : 56, col = PAL[i % PAL.length];
+    X.strokeStyle = 'rgba(220,220,220,.35)'; X.lineWidth = 2; X.beginPath(); X.moveTo(bx, by + r); X.quadraticCurveTo(bx + 20, by + r + 120, bx + (bx < 540 ? 60 : -60), 1180); X.stroke();
+    let g = X.createRadialGradient(bx - r * .35, by - r * .4, 4, bx, by, r * 1.15); g.addColorStop(0, '#fff'); g.addColorStop(.18, col); g.addColorStop(1, shade(col, .45));
+    X.globalAlpha = deflate ? .7 : 1; X.fillStyle = g; X.beginPath(); X.ellipse(bx, by, r * (deflate ? 1.1 : .86), r, 0, 0, 7); X.fill(); X.globalAlpha = 1;
+  }
+}
+function shade(hex, f) { const n = parseInt(hex.slice(1), 16); return `rgb(${(n >> 16) * f | 0},${((n >> 8) & 255) * f | 0},${(n & 255) * f | 0})`; }
+
+// ---------- lampa ----------
+function lamp(x, y, on, t, small) {
+  const s = small ? .75 : 1;
+  X.strokeStyle = '#2a2a2a'; X.lineWidth = 3; X.beginPath(); X.moveTo(x, -50); X.lineTo(x, y - 40 * s); X.stroke();
+  X.fillStyle = '#1d1f22'; X.beginPath(); X.moveTo(x - 30 * s, y - 40 * s); X.lineTo(x + 30 * s, y - 40 * s); X.lineTo(x + 95 * s, y + 30 * s); X.lineTo(x - 95 * s, y + 30 * s); X.closePath(); X.fill();
+  X.strokeStyle = `rgba(255,190,110,${.25 + .5 * on})`; X.lineWidth = 2; X.stroke();
+  if (on > 0) {
+    X.globalCompositeOperation = 'lighter';
+    let bulb = X.createRadialGradient(x, y + 30 * s, 2, x, y + 30 * s, 120 * s); bulb.addColorStop(0, `rgba(255,236,190,${on})`); bulb.addColorStop(1, 'rgba(255,170,80,0)');
+    X.fillStyle = bulb; X.fillRect(x - 130, y - 90, 260, 260);
+    X.globalCompositeOperation = 'source-over';
+  }
+}
+function cone(x, y, tx, ty, w, on, tint) {
+  if (on <= 0) return;
+  X.save(); X.globalCompositeOperation = 'lighter';
+  let g = X.createLinearGradient(0, y, 0, ty); g.addColorStop(0, `rgba(${tint},${.20 * on})`); g.addColorStop(1, `rgba(${tint},${.05 * on})`);
+  X.fillStyle = g; X.beginPath(); X.moveTo(x - 80, y + 30); X.lineTo(x + 80, y + 30); X.lineTo(tx + w, ty); X.lineTo(tx - w, ty); X.closePath(); X.fill();
+  let p = X.createRadialGradient(tx, ty - 40, 10, tx, ty - 40, w * 1.2); p.addColorStop(0, `rgba(${tint},${.28 * on})`); p.addColorStop(1, `rgba(${tint},0)`);
+  X.fillStyle = p; X.fillRect(tx - w * 1.3, ty - w * 1.3, w * 2.6, w * 2.6);
+  X.restore();
+}
+
+// ---------- stul + fiqur ----------
+function chairBack(p, pulled) {
+  const s = p.s, x = p.x + (pulled || 0) * (p.x < CX ? -10 : 10), top = p.y - 190 * s, bot = p.y + 40 * s;
+  X.fillStyle = '#3A2414'; X.strokeStyle = '#5C3A1F'; X.lineWidth = 3;
+  X.beginPath(); X.roundRect(x - 48 * s, top, 96 * s, bot - top, [26 * s, 26 * s, 6 * s, 6 * s]); X.fill(); X.stroke();
+  X.fillStyle = 'rgba(255,200,140,.06)'; X.beginPath(); X.roundRect(x - 40 * s, top + 10 * s, 20 * s, bot - top - 20 * s, 8 * s); X.fill();
+}
+function seated(p, o, pass) {  // arxa tərəf: üzü kameraya
+  const s = p.s, col = o.col || WHITE, x = p.x, neck = [x + (o.lean || 0) * 20 * s, p.y - 150 * s], hip = [x, p.y + 40 * s];
+  const head = [neck[0] + (o.look || 0) * 6 * s, neck[1] - 46 * s + (o.down || 0) * 16 * s];
+  if (pass === 0) {
+    limb([hip, neck], 54 * s, col);
+    X.fillStyle = INK; X.beginPath(); X.arc(head[0], head[1], 40 * s, 0, 7); X.fill();
+    X.fillStyle = col; X.beginPath(); X.arc(head[0], head[1], 36 * s, 0, 7); X.fill();
+    const ex = head[0] + (o.look || 0) * 11 * s, ey = head[1] - 2 * s + (o.down || 0) * 9 * s;
+    X.fillStyle = '#1A1A1A'; X.beginPath(); X.arc(ex - 11 * s, ey, 4.3 * s, 0, 7); X.arc(ex + 11 * s, ey, 4.3 * s, 0, 7); X.fill();
+    if (o.smile > 0) { X.strokeStyle = '#1A1A1A'; X.lineWidth = 3 * s; X.beginPath(); X.arc(ex, ey + 9 * s, 9 * s * o.smile, .15 * Math.PI, .85 * Math.PI); X.stroke(); }
+    if (o.hat) { X.fillStyle = o.hat; X.beginPath(); X.moveTo(head[0] - 24 * s, head[1] - 26 * s); X.lineTo(head[0] + 22 * s, head[1] - 30 * s); X.lineTo(head[0] + 4 * s, head[1] - 100 * s); X.closePath(); X.fill();
+      X.fillStyle = '#fff'; X.beginPath(); X.arc(head[0] + 4 * s, head[1] - 102 * s, 8 * s, 0, 7); X.fill(); }
+  } else {  // qollar masanın üstündə
+    const shL = [neck[0] - 30 * s, neck[1] + 22 * s], shR = [neck[0] + 30 * s, neck[1] + 22 * s];
+    const into = (p.y < CY ? 1 : -1);
+    let hL = o.hl || [x - 46 * s, p.y + 62 * s * into], hR = o.hr || [x + 46 * s, p.y + 62 * s * into];
+    const eL = [lerp(shL[0], hL[0], .5) - 22 * s, lerp(shL[1], hL[1], .5) + 10 * s], eR = [lerp(shR[0], hR[0], .5) + 22 * s, lerp(shR[1], hR[1], .5) + 10 * s];
+    limb([shL, eL, hL], 25 * s, col); limb([shR, eR, hR], 25 * s, col);
+    if (o.cup) cup(hR[0], hR[1] - 6 * s, s * .9, o.cup);
+  }
+}
+function backView(p, o) {  // ön tərəf: arxası kameraya
+  const s = p.s, x = p.x, top = p.y - 150 * s;
+  limb([[x, p.y + 60 * s], [x, top]], 56 * s, '#E8E3D8');
+  X.fillStyle = INK; X.beginPath(); X.arc(x + (o.turn || 0) * 8 * s, top - 46 * s, 40 * s, 0, 7); X.fill();
+  X.fillStyle = '#E8E3D8'; X.beginPath(); X.arc(x + (o.turn || 0) * 8 * s, top - 46 * s, 36 * s, 0, 7); X.fill();
+  X.fillStyle = 'rgba(0,0,0,.12)'; X.beginPath(); X.arc(x + (o.turn || 0) * 8 * s + 8 * s, top - 40 * s, 30 * s, 0, 7); X.fill();
+  if (o.hat) { const hx = x + (o.turn || 0) * 8 * s, hy = top - 46 * s; X.fillStyle = o.hat; X.beginPath(); X.moveTo(hx - 24 * s, hy - 26 * s); X.lineTo(hx + 22 * s, hy - 30 * s); X.lineTo(hx + 2 * s, hy - 100 * s); X.closePath(); X.fill(); }
+}
+function frontChair(p) {  // ön stulun söykənəcəyi (insanın belini örtür)
+  const s = p.s, top = p.y - 40 * s, bot = p.y + 115 * s;
+  X.fillStyle = '#2C1B0F'; X.strokeStyle = '#4A2E18'; X.lineWidth = 3;
+  X.beginPath(); X.roundRect(p.x - 58 * s, top, 116 * s, bot - top, [28 * s, 28 * s, 8 * s, 8 * s]); X.fill(); X.stroke();
+  X.fillStyle = 'rgba(255,190,120,.07)'; X.beginPath(); X.roundRect(p.x - 58 * s, top + 12 * s, 30 * s, 60 * s, 10 * s); X.fill();
+}
+function cup(x, y, s, col) {
+  X.fillStyle = col; X.strokeStyle = INK; X.lineWidth = 3;
+  X.beginPath(); X.moveTo(x - 16 * s, y - 34 * s); X.lineTo(x + 16 * s, y - 34 * s); X.lineTo(x + 12 * s, y + 4 * s); X.lineTo(x - 12 * s, y + 4 * s); X.closePath(); X.fill(); X.stroke();
+}
+function mug(x, y, s) {
+  X.fillStyle = '#EDE7DA'; X.strokeStyle = INK; X.lineWidth = 3;
+  X.beginPath(); X.roundRect(x - 17 * s, y - 36 * s, 34 * s, 38 * s, 6 * s); X.fill(); X.stroke();
+  X.beginPath(); X.arc(x + 20 * s, y - 18 * s, 10 * s, -1.3, 1.3); X.stroke();
+}
+
+// ---------- masa ----------
+function table(t, k, age) {
+  // ayaq + kölgə
+  X.fillStyle = 'rgba(0,0,0,.55)'; X.beginPath(); X.ellipse(CX, CY + 300, RX * 1.05, 70, 0, 0, 7); X.fill();
+  X.fillStyle = '#1E120A'; X.fillRect(CX - 34, CY + 40, 68, 250); X.beginPath(); X.ellipse(CX, CY + 290, 140, 26, 0, 0, 7); X.fill();
+  // kənar
+  X.fillStyle = '#3E2513'; X.beginPath(); X.ellipse(CX, CY + 26, RX, RY, 0, 0, Math.PI); X.lineTo(CX - RX, CY); X.ellipse(CX, CY, RX, RY, 0, Math.PI, 0, true); X.fill();
+  // üst
+  let g = X.createRadialGradient(CX, CY - 30, 30, CX, CY, RX * 1.1); g.addColorStop(0, '#9A6337'); g.addColorStop(.6, '#6E4122'); g.addColorStop(1, '#4A2A14');
+  X.fillStyle = g; X.beginPath(); X.ellipse(CX, CY, RX, RY, 0, 0, 7); X.fill();
+  X.strokeStyle = 'rgba(255,210,160,.25)'; X.lineWidth = 3; X.beginPath(); X.ellipse(CX, CY, RX - 2, RY - 2, 0, Math.PI * 1.05, Math.PI * 1.95); X.stroke();
+  // ağac damarları
+  X.strokeStyle = 'rgba(40,20,8,.25)'; X.lineWidth = 2; for (let i = 0; i < 6; i++) { X.beginPath(); X.ellipse(CX, CY, RX * (.3 + i * .11), RY * (.3 + i * .11), 0, .2, 2.6); X.stroke(); }
+}
+function plates(t, occ, k) {
+  occ.forEach(i => {
+    const a = ANG[i] * Math.PI / 180, x = CX + Math.cos(a) * RX * .74, y = CY + Math.sin(a) * RY * .74;
+    X.fillStyle = 'rgba(0,0,0,.25)'; X.beginPath(); X.ellipse(x + 3, y + 5, 44, 15, 0, 0, 7); X.fill();
+    X.fillStyle = '#F2EEE6'; X.beginPath(); X.ellipse(x, y, 42, 14, 0, 0, 7); X.fill();
+    X.fillStyle = '#DCD6CA'; X.beginPath(); X.ellipse(x, y, 27, 8.5, 0, 0, 7); X.fill();
+  });
+}
+function cake(t, age, k) {
+  const x = CX, y = CY + 30, big = k <= 1 ? 1 : k <= 3 ? .8 : .62;
+  X.fillStyle = 'rgba(0,0,0,.3)'; X.beginPath(); X.ellipse(x, y + 10, 120 * big, 30 * big, 0, 0, 7); X.fill();
+  X.fillStyle = '#C9C2B6'; X.beginPath(); X.ellipse(x, y + 4, 112 * big, 26 * big, 0, 0, 7); X.fill();
+  const tier = (w, h, yb, col, top) => { X.fillStyle = col; X.fillRect(x - w, yb - h, 2 * w, h); X.beginPath(); X.ellipse(x, yb, w, w * .25, 0, 0, Math.PI); X.fill();
+    X.fillStyle = top; X.beginPath(); X.ellipse(x, yb - h, w, w * .25, 0, 0, 7); X.fill(); };
+  tier(88 * big, 62 * big, y, '#F3D9C4', '#FFF1E2');
+  X.fillStyle = PAL[0]; for (let i = 0; i < 9; i++) { const u = i / 8; X.beginPath(); X.arc(x - 84 * big + u * 168 * big, y - 62 * big + 8 * big + Math.sin(u * Math.PI) * 18 * big, 6 * big, 0, 7); X.fill(); }
+  // yaş şamları
+  const txt = String(age); X.font = `${Math.round(58 * big)}px IB`; X.textAlign = 'center'; X.textBaseline = 'alphabetic';
+  const ty = y - 62 * big - 6;
+  X.fillStyle = GOLD; X.shadowColor = GOLD; X.shadowBlur = 16; X.fillText(txt, x, ty); X.shadowBlur = 0;
+  [-1, 1].forEach(d => { const fx = x + d * 16 * big, fy = ty - 52 * big, fl = 1 + .15 * Math.sin(t * 23 + d);
+    X.globalCompositeOperation = 'lighter'; let fg = X.createRadialGradient(fx, fy, 1, fx, fy, 40 * big); fg.addColorStop(0, 'rgba(255,200,110,.8)'); fg.addColorStop(1, 'rgba(255,120,40,0)');
+    X.fillStyle = fg; X.fillRect(fx - 40, fy - 40, 80, 80); X.globalCompositeOperation = 'source-over';
+    X.fillStyle = '#FFE3A0'; X.beginPath(); X.ellipse(fx, fy, 6 * big, 13 * big * fl, 0, 0, 7); X.fill(); });
+}
+
+// ---------- mətn ----------
+function caption(t) {
+  for (const [a, b, txt, hi, hc] of T.texts) {
+    if (t < a || t > b) continue;
+    const al = Math.min(seg(t, a, a + .25), 1 - seg(t, b - .2, b));
+    X.save(); X.globalAlpha = al; X.font = '48px MO'; X.letterSpacing = '4px'; X.textBaseline = 'middle';
+    const lines = txt.split('\n'), cy = t >= T.end ? 880 : 420, y0 = cy - (lines.length - 1) * 34 + (1 - eout(seg(t, a, a + .35))) * 14;
+    lines.forEach((ln, li) => {
+      let x = W / 2 - X.measureText(ln).width / 2, y = y0 + li * 68, i = ln.indexOf(hi);
+      const parts = i < 0 ? [[ln, WHITE]] : [[ln.slice(0, i), WHITE], [hi, hc === 'red' ? RED : GOLD], [ln.slice(i + hi.length), WHITE]];
+      for (const [p, c] of parts) { if (!p) continue; X.fillStyle = c; X.shadowColor = c === WHITE ? 'rgba(0,0,0,.6)' : c; X.shadowBlur = c === WHITE ? 8 : 18; X.fillText(p, x, y); x += X.measureText(p).width; }
+    });
+    X.restore();
+  }
+}
+function ageLabel(t, k) {
+  if (t >= T.end) return;
+  const E = T.eras[k], suf = { 18: 'TH', 25: 'TH', 32: 'ND', 45: 'TH', 60: 'TH' }[E.age], a = seg(t, E.t0, E.t0 + .3);
+  X.save(); X.globalAlpha = a * .9; X.fillStyle = 'rgba(220,214,200,.85)'; X.font = '30px MO'; X.letterSpacing = '10px'; X.textAlign = 'center';
+  X.fillText(`${E.age}${suf} BIRTHDAY`, W / 2 + 5, 300); X.restore();
+}
+
+window.draw = function (t) {
+  X.setTransform(1, 0, 0, 1, 0, 0); X.globalAlpha = 1; X.globalCompositeOperation = 'source-over';
+  X.fillStyle = '#000'; X.fillRect(0, 0, W, H);
+  const k = eraAt(t), E = T.eras[k], age = E.age, occ = OCC[age], last = k === 4;
+  let flick = 1; T.eras.slice(1).forEach(e => { flick -= .85 * bump(t, e.t0 - .05, .1); });
+  const main = last ? lerp(1, .32, seg(t, E.t0, E.t0 + .6)) * (1 + .7 * seg(t, T.toast + .4, T.toast + 1.6)) : 1 - k * .12;
+  const L = clamp(main * flick, 0, 1.4), side = last ? seg(t, T.reveal, T.reveal + .12) * (1 - .25 * bump(t, T.reveal + .2, .08)) : 0;
+  const z = 1.24 + .08 * seg(t, 0, T.end), endA = seg(t, T.end, T.end + .5);
+  X.save(); X.translate(540, 1200); X.scale(z, z); X.translate(-540, -1200);
+  wall(t, k, L); stringLights(t, k); balloons(t, k);
+  // arxa stullar + arxa insanlar (uzaqdan yaxına)
+  const backs = [0, 1, 2, 3, 4, 5, 6].sort((a, b) => seat(a).y - seat(b).y);
+  const opts = i => {
+    const o = { smile: age <= 25 ? 1 : age <= 32 ? .5 : 0, hat: age === 18 ? PAL[i % PAL.length] : age === 25 && i % 3 === 0 ? PAL[(i + 2) % PAL.length] : null, cup: age <= 32 ? PAL[(i + 3) % PAL.length] : null };
+    if (age === 18 && i % 2 === 0) { const p = seat(i); o.hr = [p.x + 40 * p.s, p.y - 230 * p.s + Math.sin(t * 5 + i) * 12]; }
+    if (last && i === YOU) { o.down = .8 * (1 - seg(t, T.reveal + .3, T.reveal + .9)); o.look = seg(t, T.reveal + .3, T.reveal + .9) * .9; o.cup = null; o.smile = seg(t, T.toast, T.toast + .6);
+      const up = eout(seg(t, T.toast, T.toast + .45)), p = seat(i); o.hr = [lerp(p.x + 46 * p.s, p.x + 70 * p.s, up), lerp(p.y + 62 * p.s, p.y - 120 * p.s, up)]; }
+    if (last && i === FRIEND) { o.look = -.9; o.cup = null; o.smile = seg(t, T.reveal + .4, T.reveal + 1); o.down = .25;
+      const up = eout(seg(t, T.toast - .1, T.toast + .4)), p = seat(i); o.hl = [lerp(p.x - 46 * p.s, p.x - 72 * p.s, up), lerp(p.y + 62 * p.s, p.y - 120 * p.s, up)]; }
+    return o;
+  };
+  const fa = i => last && i === FRIEND ? .06 + .94 * side : 1;
+  backs.forEach(i => { const p = seat(i); chairBack(p, !occ.includes(i) && age !== 18 ? 1 : 0); if (occ.includes(i)) { X.globalAlpha = fa(i); seated(p, opts(i), 0); X.globalAlpha = 1; } });
+  // işıq konusları
+  cone(CX, 760, last ? seat(YOU).x : CX, CY - 40, last ? 170 : 420, L * (last ? 1 : .9), '255,190,110');
+  if (last) cone(seat(FRIEND).x + 40, 790, seat(FRIEND).x, CY - 40, 150, side, '255,205,130');
+  table(t, k, age); plates(t, occ, k); cake(t, age, k);
+  backs.forEach(i => { if (occ.includes(i)) { const p = seat(i); X.globalAlpha = fa(i); seated(p, opts(i), 1); if (last && (i === YOU || i === FRIEND)) { const o = opts(i), h = i === YOU ? o.hr : o.hl; mug(h[0], h[1] - 4, p.s * .95); } X.globalAlpha = 1; } });
+  // cingilti parıltısı
+  if (last) { const c = bump(t, T.toast + .45, .18); if (c > .02) { const a = seat(YOU), b = seat(FRIEND), mx = (a.x + b.x) / 2 + 10, my = a.y - 150;
+    X.globalCompositeOperation = 'lighter'; let sg = X.createRadialGradient(mx, my, 2, mx, my, 220); sg.addColorStop(0, `rgba(255,220,140,${.8 * c})`); sg.addColorStop(1, 'rgba(255,160,60,0)'); X.fillStyle = sg; X.fillRect(mx - 230, my - 230, 460, 460); X.globalCompositeOperation = 'source-over'; } }
+  // ön insanlar + stullar
+  [7, 8, 9, 10, 11].sort((a, b) => seat(a).y - seat(b).y).forEach(i => { const p = seat(i); if (occ.includes(i)) backView(p, { hat: age === 18 ? PAL[(i + 1) % PAL.length] : null, turn: Math.sin(t * 2 + i) * .5 }); frontChair(p); });
+  lamp(CX, 760, L, t, false);
+  if (last) lamp(seat(FRIEND).x + 40, 790, side, t, true);
+  // qaranlıq: 60-da yalnız işıq düşən yerlər
+  const dk = (last ? .95 * seg(t, E.t0, E.t0 + .6) * (1 - .55 * seg(t, T.toast + .4, T.toast + 2)) : .1 + k * .1) + .7 * (1 - flick);
+  if (dk > 0) { X.save(); X.globalCompositeOperation = 'multiply';
+    let m = X.createRadialGradient(last ? seat(YOU).x : CX, CY - 180, 60, last ? seat(YOU).x : CX, CY - 180, last ? 300 + 420 * side : 900);
+    m.addColorStop(0, '#ffffff'); m.addColorStop(1, `rgb(${255 * (1 - dk) | 0},${255 * (1 - dk) | 0},${255 * (1 - dk) | 0})`);
+    X.fillStyle = m; X.fillRect(-200, -200, W + 400, H + 400); X.restore();
+    if (last && side > 0) { X.save(); X.globalCompositeOperation = 'lighter'; const f = seat(FRIEND); let s2 = X.createRadialGradient(f.x, f.y - 120, 20, f.x, f.y - 120, 300);
+      s2.addColorStop(0, `rgba(255,200,130,${.16 * side})`); s2.addColorStop(1, 'rgba(0,0,0,0)'); X.fillStyle = s2; X.fillRect(f.x - 320, f.y - 440, 640, 640); X.restore(); } }
+  X.restore();
+  if (endA > 0) { X.fillStyle = `rgba(0,0,0,${.72 * endA})`; X.fillRect(0, 0, W, H); }
+  // vinyet + kino zolaqları
+  let vg = X.createRadialGradient(540, 1000, 480, 540, 1000, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.6)'); X.fillStyle = vg; X.fillRect(0, 0, W, H);
+  for (let i = 0; i < 900; i++) { X.fillStyle = `rgba(255,255,255,${.018 * R(i + Math.floor(t * 24) * 13)})`; X.fillRect(R(i * 3 + Math.floor(t * 24)) * W, R(i * 5 + 1 + Math.floor(t * 24)) * H, 2, 2); }
+  ageLabel(t, k); caption(t);
+  if (t >= T.end) { const a = seg(t, T.end + .5, T.end + 1); X.save(); X.globalAlpha = a; X.fillStyle = 'rgba(210,204,190,.9)'; X.font = '32px MO'; X.letterSpacing = '6px'; X.textAlign = 'center'; X.fillText('@constara.app', W / 2 + 3, 1120); X.restore(); }
+};
+document.fonts.ready.then(() => { window.READY = true; });
+['MO', 'IB'].forEach(f => document.fonts.load('40px ' + f));
+</script></body></html>
