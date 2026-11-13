@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:IB;src:url(file:///usr/share/fonts/opentype/inter/Inter-Bold.otf)}
+@font-face{font-family:MO;src:url(file:///usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf)}
+html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}
+</style></head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+/*TL*/
+// M06 «1%»: iki pilləkən — qızılı yuxarı (1.01^d), qırmızı aşağı (0.99^d); kamera fərq böyüdükcə geri çəkilir.
+const T = window.TL;
+const cv = document.getElementById('c'), X = cv.getContext('2d');
+const W = 1080, H = 1920, OX = 540, OY = 1260;
+const GOLD = '#F7C04A', RED = '#FF5A4A', WHITE = '#F4F1EA', INK = '#0B0B0C';
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, u) => a + (b - a) * u;
+const eout = u => 1 - Math.pow(1 - u, 3);
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const bump = (t, c, w) => Math.exp(-Math.pow((t - c) / w, 2));
+const R = k => { let x = Math.sin(k * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+function dayAt(t) { let d = T.days[0][1]; for (let i = 0; i < T.days.length - 1; i++) { const [a, d0] = T.days[i], [b, d1] = T.days[i + 1]; if (t >= a) { let u = Math.min(1, (t - a) / (b - a)); u = u * u * (3 - 2 * u); d = d0 + (d1 - d0) * u; } } return d; }
+const L = d => Math.sqrt(Math.max(0, d - 1) / 364);       // 0..1
+function ik(ax, ay, bx, by, l1, l2, flip) { let dx = bx - ax, dy = by - ay, d = Math.min(Math.hypot(dx, dy), l1 + l2 - .01);
+  let a = Math.atan2(dy, dx), c = Math.acos(clamp((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1)), ang = a + (flip ? -c : c); return [ax + Math.cos(ang) * l1, ay + Math.sin(ang) * l1]; }
+function limb(p, w, col) { X.lineCap = 'round'; X.lineJoin = 'round'; X.strokeStyle = INK; X.lineWidth = w + 7; X.beginPath(); X.moveTo(...p[0]); for (let i = 1; i < p.length; i++) X.lineTo(...p[i]); X.stroke(); X.strokeStyle = col; X.lineWidth = w; X.stroke(); }
+function figure(o) {  // yan tərəfdən yeriyən fiqur (dir: +1 sağa, −1 sola); up: pilləkən qalxır/enir
+  const s = o.sc, col = o.col || WHITE, ph = o.walk, dir = o.dir;
+  const bob = Math.abs(Math.sin(ph)) * 8 * s, hip = [o.x, o.base - 176 * s - bob];
+  const st = 40 * s, fA = [o.x + dir * Math.sin(ph) * st, o.base - Math.max(0, Math.cos(ph)) * 22 * s * (o.up ? 1.6 : 1)], fB = [o.x - dir * Math.sin(ph) * st, o.base - Math.max(0, -Math.cos(ph)) * 22 * s * (o.up ? 1.6 : 1)];
+  const kA = ik(hip[0], hip[1], fA[0], fA[1], 90 * s, 90 * s, dir < 0), kB = ik(hip[0], hip[1], fB[0], fB[1], 90 * s, 90 * s, dir < 0);
+  const lean = (o.slump || 0) * .35 + .06, neck = [hip[0] + dir * Math.sin(lean) * 160 * s, hip[1] - Math.cos(lean) * 160 * s];
+  const sh = [neck[0], neck[1] + 22 * s], swing = Math.sin(ph) * 50 * s;
+  const hA = [sh[0] - dir * swing * .8, hip[1] + 20 * s], hB = [sh[0] + dir * swing * .8, hip[1] + 20 * s];
+  limb([hip, kB, fB], 30 * s, col); limb([sh, ik(sh[0], sh[1], hB[0], hB[1], 85 * s, 85 * s, dir > 0), hB], 25 * s, col);
+  limb([hip, neck], 52 * s, col); limb([hip, kA, fA], 30 * s, col); limb([sh, ik(sh[0], sh[1], hA[0], hA[1], 85 * s, 85 * s, dir > 0), hA], 25 * s, col);
+  const head = [neck[0] + dir * 8 * s, neck[1] - 46 * s + (o.slump || 0) * 20 * s];
+  X.fillStyle = INK; X.beginPath(); X.arc(head[0], head[1], 40 * s, 0, 7); X.fill(); X.fillStyle = col; X.beginPath(); X.arc(head[0], head[1], 36 * s, 0, 7); X.fill();
+  X.fillStyle = '#1A1A1A'; X.beginPath(); X.arc(head[0] + dir * 16 * s, head[1] - 3 * s + (o.slump || 0) * 8 * s, 4.5 * s, 0, 7); X.fill();
+}
+
+// pilləkən yolları (dünya koordinatı)
+const STEPS = 26, SW = 92, SH = 64;   // tam 365 gündə 26 pillə
+function tip(side, l) { const n = l * STEPS; return [OX + side * n * SW, OY - side * n * SH * (side < 0 ? 1 : 1) * (side < 0 ? 1 : -1) * -1]; }
+function pathPt(side, n) { // side −1: sol-yuxarı (qızılı), +1: sağ-aşağı (qırmızı)
+  const x = OX + n * SW, y = OY + (side < 0 ? -1 : 1) * n * SH; return [x, y]; }
+function stairs(side, l, col, t) {
+  const n = l * STEPS, full = Math.floor(n);
+  X.save(); X.strokeStyle = col; X.lineWidth = 7 / Math.max(.35, window.__z || 1); X.lineCap = 'round'; X.lineJoin = 'round'; X.shadowColor = col; X.shadowBlur = 22;
+  X.beginPath(); let [x, y] = pathPt(side, 0); X.moveTo(x, y);
+  for (let i = 0; i < full; i++) { const [x1, y1] = pathPt(side, i + 1); X.lineTo(x1, y); X.lineTo(x1, y1); [x, y] = [x1, y1]; }
+  const fr = n - full; if (fr > 0) { const [x1, y1] = pathPt(side, full + 1); X.lineTo(lerp(x, x1, Math.min(1, fr * 2)), y); if (fr > .5) X.lineTo(x1, lerp(y, y1, fr * 2 - 1)); }
+  X.stroke(); X.restore();
+  // pillələrin altı (dolğu)
+  X.save(); X.globalAlpha = .10; X.fillStyle = col; X.beginPath(); X.moveTo(...pathPt(side, 0));
+  for (let i = 1; i <= full; i++) X.lineTo(...pathPt(side, i)); const e = pathPt(side, n); X.lineTo(e[0], e[1]); X.lineTo(e[0], side < 0 ? OY : OY); X.closePath(); X.fill(); X.restore();
+}
+
+function label(x, y, txt, col, a, big) {
+  X.save(); X.globalAlpha = a; X.font = `${big ? 64 : 34}px MO`; X.textAlign = 'center'; X.textBaseline = 'middle';
+  const w = X.measureText(txt).width + 36, h = big ? 92 : 58;
+  X.fillStyle = 'rgba(8,8,10,.82)'; X.strokeStyle = col; X.lineWidth = 3; X.beginPath(); X.roundRect(x - w / 2, y - h / 2, w, h, 14); X.fill(); X.stroke();
+  X.fillStyle = col; X.shadowColor = col; X.shadowBlur = 14; X.fillText(txt, x, y + 2); X.restore();
+}
+
+function caption(t) {
+  for (const [a, b, txt, hi, hc] of T.texts) {
+    if (t < a || t > b) continue;
+    const al = Math.min(seg(t, a, a + .25), 1 - seg(t, b - .2, b));
+    X.save(); X.globalAlpha = al; X.font = '46px MO'; X.letterSpacing = '4px'; X.textBaseline = 'middle';
+    const lines = txt.split('\n'), cy = t >= T.end ? 900 : 360, y0 = cy - (lines.length - 1) * 33 + (1 - eout(seg(t, a, a + .35))) * 14;
+    lines.forEach((ln, li) => { let x = W / 2 - X.measureText(ln).width / 2, y = y0 + li * 66, i = ln.indexOf(hi);
+      const parts = i < 0 ? [[ln, ln.startsWith('1% BETTER') ? GOLD : WHITE]] : [[ln.slice(0, i), WHITE], [hi, hc === 'red' ? RED : GOLD], [ln.slice(i + hi.length), WHITE]];
+      for (const [p, c] of parts) { if (!p) continue; X.fillStyle = c; X.shadowColor = c === WHITE ? 'rgba(0,0,0,.6)' : c; X.shadowBlur = c === WHITE ? 8 : 18; X.fillText(p, x, y); x += X.measureText(p).width; } });
+    X.restore();
+  }
+}
+
+window.draw = function (t) {
+  X.setTransform(1, 0, 0, 1, 0, 0); X.globalAlpha = 1; X.globalCompositeOperation = 'source-over'; X.fillStyle = '#000'; X.fillRect(0, 0, W, H);
+  const d = dayAt(t), l = L(d), endA = seg(t, T.end, T.end + .5), boom = bump(t, T.reveal + .05, .3);
+  // fon
+  let g = X.createRadialGradient(OX, OY - 200, 60, OX, OY - 200, 1300); g.addColorStop(0, '#0F1116'); g.addColorStop(1, '#020203'); X.fillStyle = g; X.fillRect(0, 0, W, H);
+  for (let i = 0; i < 70; i++) { X.fillStyle = `rgba(255,255,255,${.04 + .1 * R(i + 4)})`; X.beginPath(); X.arc(R(i) * W, R(i + 33) * H, 1 + 1.5 * R(i + 8), 0, 7); X.fill(); }
+  // kamera: fərq böyüdükcə geri çəkilir
+  const n0 = l * STEPS, CXW = OX + n0 * SW * .62, z = Math.min(1.15, 720 / (n0 * SW + 420), 760 / (n0 * SH * 2 + 520)) * (1 + .03 * boom), sh = boom * 8;
+  window.__z = z; X.save(); X.translate(540, 1240); X.scale(z, z); X.translate(-CXW + Math.sin(t * 90) * sh, -OY);
+  // başlanğıc platforma
+  X.fillStyle = '#1A1D24'; X.beginPath(); X.roundRect(OX - 90, OY, 180, 40, 6); X.fill();
+  X.strokeStyle = 'rgba(255,255,255,.25)'; X.lineWidth = 3; X.beginPath(); X.moveTo(OX - 90, OY); X.lineTo(OX + 90, OY); X.stroke();
+  X.fillStyle = 'rgba(220,220,220,.55)'; X.font = `${Math.round(26 / z)}px MO`; X.textAlign = 'center'; X.fillText('DAY 1', OX, OY + 70 / z);
+  const split = seg(t, 3.3, 3.9);
+  stairs(-1, l, GOLD, t); stairs(1, l, RED, t);
+  // fiqurlar
+  const n = l * STEPS, walking = t > 3.3 && t < T.reveal - .1;
+  const pa = pathPt(-1, n), pb = pathPt(1, n);
+  const sc = .62 / z;
+  figure({ x: lerp(OX - 30 / z, pa[0] - 10, split), base: lerp(OY, pa[1], split), sc, dir: 1, walk: walking ? t * 9 : 0, up: true, col: t > T.reveal ? '#FFF3D6' : WHITE });
+  figure({ x: lerp(OX + 30 / z, pb[0] - 10, split), base: lerp(OY, pb[1], split), sc, dir: 1, walk: walking ? t * 6 : 0, slump: seg(t, 6.5, 13), col: t > T.reveal ? '#B9B4AC' : WHITE });
+  X.restore();
+  // ekran koordinatında etiketlər
+  const toS = p => [540 + (p[0] - CXW) * z, 1240 + (p[1] - OY) * z];
+  const A = toS(pa), B = toS(pb), la = seg(t, 3.6, 4.0);
+  const vb = Math.pow(1.01, Math.round(d)), vw = Math.pow(.99, Math.round(d));
+  if (la > 0 && t < T.end) {
+    label(A[0] - 190, A[1] - 150, vb.toFixed(2), GOLD, la, t > T.reveal);
+    label(B[0] - 190, B[1] - 150, vw.toFixed(2), RED, la, t > T.reveal);
+    X.save(); X.globalAlpha = la * .85; X.font = '24px MO'; X.textAlign = 'center'; X.fillStyle = GOLD; X.fillText('1% BETTER', A[0] - 190, A[1] - 90); X.fillStyle = RED; X.fillText('1% WORSE', B[0] - 190, B[1] - 90); X.restore();
+  }
+  // gün sayğacı
+  if (t < T.end) { X.save(); X.globalAlpha = seg(t, .2, .5); X.textAlign = 'center'; const col = t > T.reveal ? GOLD : WHITE; X.fillStyle = col; X.shadowColor = col; X.shadowBlur = 10 + 40 * boom;
+    X.font = `${Math.round(120 * (1 + .12 * boom))}px IB`; X.fillText(String(Math.round(d)), W / 2, 610); X.shadowBlur = 0; X.fillStyle = 'rgba(200,200,200,.8)'; X.font = '28px MO'; X.letterSpacing = '10px'; X.fillText(Math.round(d) === 1 ? 'DAY' : 'DAYS', W / 2 + 5, 668); X.restore(); }
+  if (endA > 0) { X.fillStyle = `rgba(0,0,0,${.72 * endA})`; X.fillRect(0, 0, W, H); }
+  const fl = bump(t, T.reveal + .02, .08) * .25; if (fl > .01) { X.fillStyle = `rgba(255,230,180,${fl})`; X.fillRect(0, 0, W, H); }
+  let vg = X.createRadialGradient(540, 1000, 480, 540, 1000, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.6)'); X.fillStyle = vg; X.fillRect(0, 0, W, H);
+  caption(t);
+  if (t >= T.end) { const a = seg(t, T.end + .5, T.end + 1); X.save(); X.globalAlpha = a; X.fillStyle = 'rgba(210,204,190,.9)'; X.font = '32px MO'; X.letterSpacing = '6px'; X.textAlign = 'center'; X.fillText('@constara.app', W / 2 + 3, 1160); X.restore(); }
+};
+document.fonts.ready.then(() => { window.READY = true; });
+['MO', 'IB'].forEach(f => document.fonts.load('40px ' + f));
+</script></body></html>
