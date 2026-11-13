@@ -35,6 +35,9 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 - Mühərrik: `video-src/_metafor/` (M01 «Bank», M10 «Kibrit və odun», ideyalar `ideyalar.md`). Kino, Xal testi, «3 signs», karusel, story — **artıq paylaşılmır** (arxivdə qalır).
 - **Kopyalama YOX:** başqa hesabın konkret səhnəsini/mətnini təkrarlama — eyni janrda, öz metaforumuz, Constara-nın +1/−5 və həyat qrafiki ideyasına bağlı.
 - İstifadəçi skrinşot atanda: o hekayənin **mesajına** uyğun YENİ, original metafor qur (eyni mövzu, fərqli səhnə).
+- **Strategiya (istifadəçi 11-13):** metafor videoları **səhifəyə izləyici çəkmək** üçündür (hiss + göndərmə: CTA «Send this to…/Tag…», sonda `@constara.app`); **arada bir app videosu** həmin izləyiciləri tətbiqə çəkir (LINK). Əksər videolarda LINK yox.
+- İstifadəçi «eyni dostlar şəklində» istədi (moonshotmotion «dostlar masada» reelsi): hekayə eyni saxlanıldı, səhnə öz — **M11 «Son şəkil»** (`video-src/_metafor/m11_photo.py` + `m11_scene.html`): hər yaşda dostlarla şəkil (taymer → flaş → polaroid ipə), 12 → 7 → 4 → 3 → 60-da tək → bir köhnə dost gəlir → qızılı polaroid. Masa/şam/qədəh/«AGE NN»/onların caption-u kopyalanmır (Instagram kopya məzmunun reach-ini kəsir).
+- Metafor render: `python3 m11_photo.py <scr>` → `cp render.mjs <scr>/` → `NODE_PATH=$(npm root -g) node render.mjs <scr>` (kadrlar) → `ffmpeg -framerate 30 -i frames/f%05d.jpg -i audio.wav -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a aac -b:a 160k -shortest out.mp4`. `pip install scipy` lazımdır.
 
 ## 🧪 DAİMİ YARADICILIQ — video mexanizmini HƏR GÜN inkişaf etdir (istifadəçi, 2026-11-12, MÜTLƏQ)
 İstifadəçi: «tez-tez belə kreativ şeylər et. Bir şablon üzərindən getmək pis olur. Fərqli şeylər sınayıb ən yaxşısını tapmalıyıq. Video mexanizmini daima inkişaf etdir.»
