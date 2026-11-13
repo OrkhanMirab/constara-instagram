@@ -10,6 +10,8 @@
       Böyük dəyişiklik (yeni video şablonu/format, gündəlik say/saat) — yalnız «Sınaqda / təkliflər»-ə yaz və sonda istifadəçiyə bildir.
    f. Aşağıdakı plan **oyrenilenler.md «Aktiv qaydalar»**-a əməl edir; ziddiyyət olsa, oyrenilenler.md qalib gəlir.
 
+**⭐ 11-13-dən: YALNIZ METAFOR ÜSLUBU** (CLAUDE.md «⭐ YALNIZ METAFOR ÜSLUBU»). Aşağıdakı 3 signs / Xal / Kino / karusel bölmələri köhnədir — işlətmə. 2 Reels (14:30, 20:30), hər biri `video-src/_metafor/`-da yeni original metafor (ideyalar.md-dən və ya yeni), qara fon + ağ fiqur.
+
 1. Tarix: Türkiyə saatı ilə bugün (UTC+3). Fayl: `plan/<tarix>.json`. Varsa — toxunma, yalnız yoxla.
 1a. **Yaradıcı addım (HƏR GECƏ, istifadəçi 11-12: «bir şablon pis olur, daima inkişaf etdir»):** CLAUDE.md «🧪 DAİMİ YARADICILIQ» bölməsinə əməl et —
    mühərrikə ən azı 1 yenilik (səhnə/kamera/musiqi/hook/keçid) gətir və bugünkü videolardan birində sına; həftədə 1 tam yeni format. Nə dəyişdiyini oyrenilenler.md «Sınaqda»-ya yaz.

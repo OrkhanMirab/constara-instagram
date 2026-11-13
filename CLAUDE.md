@@ -29,6 +29,13 @@ Constara tətbiqinin sosial şəbəkə avtomatlaşdırması. Hazırda **@constar
 - **Tələ:** gözləmə döngəsində `pgrep -f "<fayl adı>"` öz-özünü tapır və sonsuz gözləyir — log faylında «Hazır» sözünü yoxla.
 - Karusel: Pillow, `video-src/carousel-*/car*.py` nümunələri (tünd brend, 1080×1350, 7 slayd, son slayd saxlanılası checklist).
 
+## ⭐ YALNIZ METAFOR ÜSLUBU (istifadəçi, 2026-11-13 16:36, ƏN ÜSTÜN QAYDA)
+İstifadəçi («moonshotmotion» hesabının skrinşotları ilə): «Artık sadece bu tarz postlar, reelsler paylaşacağız.»
+- Üslub: **qara fon, parlayan ağ fiqur (stick figure, əks/reflection), bir güclü vizual metafor** (kibrit/odun, daş + çəkic zərbələri, qrafik çöküşü, pilləkən, ox atan «bad habits», il dairəsi sayğacı), az mətn (yuxarıda 1 qısa sətir, monospace/serif etiketlər), isti işıq aksenti (narıncı/qızıl), yavaş kamera.
+- Mühərrik: `video-src/_metafor/` (M01 «Bank», M10 «Kibrit və odun», ideyalar `ideyalar.md`). Kino, Xal testi, «3 signs», karusel, story — **artıq paylaşılmır** (arxivdə qalır).
+- **Kopyalama YOX:** başqa hesabın konkret səhnəsini/mətnini təkrarlama — eyni janrda, öz metaforumuz, Constara-nın +1/−5 və həyat qrafiki ideyasına bağlı.
+- İstifadəçi skrinşot atanda: o hekayənin **mesajına** uyğun YENİ, original metafor qur (eyni mövzu, fərqli səhnə).
+
 ## 🧪 DAİMİ YARADICILIQ — video mexanizmini HƏR GÜN inkişaf etdir (istifadəçi, 2026-11-12, MÜTLƏQ)
 İstifadəçi: «tez-tez belə kreativ şeylər et. Bir şablon üzərindən getmək pis olur. Fərqli şeylər sınayıb ən yaxşısını tapmalıyıq. Video mexanizmini daima inkişaf etdir.»
 - **Bir şablonda ilişib qalma.** Hər gecə planla yanaşı mühərrikə ən azı **1 yaradıcı yenilik** gətir (yeni səhnə, yeni kamera hərəkəti, yeni musiqi əhvalı və ya ritm, yeni hook quruluşu, yeni keçid, yeni personaj pozası) və onu həmin günün videolarından birində sına.
