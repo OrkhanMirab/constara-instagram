@@ -39,7 +39,11 @@ sugar, drinking, caffeine, gambling, smoking, junk food, scroll (11-11 vəziyyə
   nəticə şkalasında uyğun sətir «← most people» ilə vurğulanır. Suallar elə seçilsin ki, cəm < 0 olsun (hook «most people score below 0» sübut olunsun).
   `cfg.live=false` ilə söndürülür. Sınaq: Xal #2 «Score your week» (11-13 20:30) vs Xal #1 (sayğacsız) — avg izləmə və şərh sayı.
 
+- **Metafor + diktor (11-14).** M12 «Masa» 9 saatda son videolar arasında ən çox göndərilən (n=1). Bütün metaforlar diktorlu, CTA «Send this to…».
+  Kino formatı dayandırıldı (K01 istifadəçi tərəfindən silindi, K02 avg izləmə ən aşağı).
+
 ## Tarixçə
 - 2026-11-11: ilk analiz (29 post, 61 izləyici). Qaydalar 1–4 yazıldı.
 - 2026-11-12: dünənki 4 post erkən (bazada). Xal testi #1 avg izləmə «3 signs» səviyyəsində. Açıq döngə sınağı + narkotik mövzusu qadağası. İzləyici 66.
 - 2026-11-13: hamısı ~110 bazada (3 signs, Xal #1, Metafor M10); Kino K02 erkən zəif (avg 4.4 s, 6 s). İzləyici 74 (+8). Yenilik: Xal canlı sayğac.
+- 2026-11-14: M12 Masa share lideri; K01 silinib. Bugün M02 Buz kubu + M06 1% (diktorlu metafor, kamera geri çəkilməsi yeniliyi).
