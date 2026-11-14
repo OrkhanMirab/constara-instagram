@@ -1,0 +1,10 @@
+{
+  "instagram": {
+    "error": "video upload -> HTTP 400: {\"debug_info\":{\"retriable\":false,\"type\":\"ProcessingFailedError\",\"message\":\"Request processing failed\"}}"
+  },
+  "facebook": {
+    "video_id": "1610560853571802",
+    "permalink": "https://www.facebook.com/reel/1610560853571802/"
+  },
+  "posted_at": "2026-11-14T11:31:55.716979+00:00"
+}
