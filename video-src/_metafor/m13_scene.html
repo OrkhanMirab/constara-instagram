@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:IB;src:url(file:///usr/share/fonts/opentype/inter/Inter-Bold.otf)}
+@font-face{font-family:MO;src:url(file:///usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf)}
+html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}
+</style></head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+/*TL*/
+// M13 «Körpü»: iki sütun arasında kəndir körpü. İş blokları səni qaldırır, taxtalar düşür; bir mesaj körpünü qızılı yandırır.
+const T = window.TL;
+const cv = document.getElementById('c'), X = cv.getContext('2d');
+const W = 1080, H = 1920, GROUND = 1300, BH = 80, YX = 215, FX = 865, PW = 230, NP = 12, SC = .56;
+const GOLD = '#F7C04A', RED = '#FF5A4A', WHITE = '#F4F1EA';
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, u) => a + (b - a) * u;
+const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+const eout = u => 1 - Math.pow(1 - u, 3);
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const bump = (t, c, w) => Math.exp(-Math.pow((t - c) / w, 2));
+const R = k => { let x = Math.sin(k * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const lift = (t, k) => eout(seg(t, T.blocks[k][0], T.blocks[k][0] + .38));
+const nUp = t => T.blocks.reduce((s, b, k) => s + lift(t, k), 0);
+const yTop = t => GROUND - BH * nUp(t);
+const fallT = {}; T.fall.forEach(([i, ft]) => fallT[i] = ft);
+const relT = i => T.arrive + .3 + (NP - 1 - i) * .1;
+const warmth = t => clamp(1 - seg(t, 2.8, 11.5) * .9 - seg(t, 13.4, 14.5) * .1 + seg(t, T.arrive, T.arrive + 1.6) * 1.15, 0, 1.15);
+
+// ---------- körpü həndəsəsi ----------
+function ends(t) { const y = yTop(t); return [[YX + PW / 2 - 4, y], [FX - PW / 2 + 4, GROUND]]; }
+function deck(t, u) {
+  const [A, B] = ends(t), st = clamp((GROUND - yTop(t)) / 260), sag = lerp(70, 6, st);
+  return [lerp(A[0], B[0], u), lerp(A[1], B[1], u) + sag * 4 * u * (1 - u)];
+}
+const rail = (t, u) => { const p = deck(t, u); return [p[0], p[1] - 92]; };
+const tang = (t, u) => { const a = deck(t, u - .01), b = deck(t, u + .01); return Math.atan2(b[1] - a[1], b[0] - a[0]); };
+const uP = i => (i + .5) / NP;
+
+// ---------- fiqur ----------
+function ik(ax, ay, bx, by, l1, l2, flip) { let dx = bx - ax, dy = by - ay, d = Math.min(Math.hypot(dx, dy), l1 + l2 - .01);
+  let a = Math.atan2(dy, dx), c = Math.acos(clamp((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1)), ang = a + (flip ? -c : c); return [ax + Math.cos(ang) * l1, ay + Math.sin(ang) * l1]; }
+function stroke(p, w) { X.beginPath(); X.moveTo(...p[0]); for (let i = 1; i < p.length; i++) X.lineTo(...p[i]); X.lineWidth = w; X.stroke(); }
+function fig(o) {
+  const s = o.s || SC, dir = o.dir, col = o.col || WHITE, ph = o.ph || 0;
+  const bob = o.walk ? Math.abs(Math.sin(ph)) * 8 * s : 0, hip = [o.x, o.base - 176 * s - bob];
+  let fA, fB;
+  if (o.walk) { const st = 34 * s, lift = 22 * s * (o.up ? 1.7 : 1);
+    fA = [o.x + dir * Math.sin(ph) * st, o.base - Math.max(0, Math.cos(ph)) * lift + (o.slope || 0) * Math.sin(ph) * st];
+    fB = [o.x - dir * Math.sin(ph) * st, o.base - Math.max(0, -Math.cos(ph)) * lift - (o.slope || 0) * Math.sin(ph) * st];
+  } else { fA = [o.x + dir * 18 * s, o.base]; fB = [o.x - dir * 16 * s, o.base]; }
+  const kA = ik(hip[0], hip[1], fA[0], fA[1], 90 * s, 90 * s, dir < 0), kB = ik(hip[0], hip[1], fB[0], fB[1], 90 * s, 90 * s, dir < 0);
+  const lean = (o.slump || 0) * .32 + (o.walk ? .1 : .03), neck = [hip[0] + dir * Math.sin(lean) * 160 * s, hip[1] - Math.cos(lean) * 160 * s];
+  const sh = [neck[0], neck[1] + 22 * s], sw = o.walk ? Math.sin(ph) * 46 * s : 0;
+  let hA = [sh[0] + dir * (12 * s - sw * .8), hip[1] + 24 * s], hB = [sh[0] - dir * (6 * s - sw * .8), hip[1] + 24 * s];
+  if (o.wave > 0) { const w = o.wave; hA = [lerp(hA[0], sh[0] + dir * (95 * s + Math.sin(o.t * 10) * 22 * s), w), lerp(hA[1], sh[1] - 140 * s, w)]; }
+  if (o.phone > 0) { const w = o.phone; hA = [lerp(hA[0], sh[0] + dir * 62 * s, w), lerp(hA[1], sh[1] + 44 * s, w)]; hB = [lerp(hB[0], sh[0] + dir * 52 * s, w), lerp(hB[1], sh[1] + 54 * s, w)]; }
+  if (o.reach) { const w = o.reach[2]; hA = [lerp(hA[0], o.reach[0], w), lerp(hA[1], o.reach[1], w)]; }
+  const head = [neck[0] + dir * 8 * s, neck[1] - 46 * s + (o.down || 0) * 18 * s];
+  X.save(); X.globalAlpha = o.alpha == null ? 1 : o.alpha;
+  X.lineCap = 'round'; X.lineJoin = 'round'; X.strokeStyle = col; X.fillStyle = col;
+  X.shadowColor = o.glow || 'rgba(255,255,255,.75)'; X.shadowBlur = 28 * (o.gl == null ? 1 : o.gl);
+  stroke([hip, kB, fB], 28 * s); stroke([sh, ik(sh[0], sh[1], hB[0], hB[1], 85 * s, 85 * s, dir > 0), hB], 23 * s);
+  stroke([hip, neck], 50 * s); stroke([hip, kA, fA], 28 * s); stroke([sh, ik(sh[0], sh[1], hA[0], hA[1], 85 * s, 85 * s, (o.wave > .3 || (o.reach && o.reach[2] > .3)) ? dir < 0 : dir > 0), hA], 23 * s);
+  X.beginPath(); X.arc(head[0], head[1], 37 * s, 0, 7); X.fill();
+  X.shadowBlur = 0; X.fillStyle = '#15171a'; X.beginPath(); X.arc(head[0] + dir * 17 * s, head[1] - 3 * s + (o.down || 0) * 9 * s, 4.6 * s, 0, 7); X.fill();
+  if (o.phone > .05) {  // telefon + ekran işığı
+    const px = hA[0] + dir * 4 * s, py = hA[1] - 14 * s, on = o.phoneOn == null ? 1 : o.phoneOn;
+    X.globalCompositeOperation = 'lighter';
+    let g = X.createRadialGradient(px, py, 2, px, py, 150 * s); g.addColorStop(0, `rgba(160,200,255,${.35 * on * o.phone})`); g.addColorStop(1, 'rgba(0,0,0,0)');
+    X.fillStyle = g; X.fillRect(px - 160 * s, py - 160 * s, 320 * s, 320 * s); X.globalCompositeOperation = 'source-over';
+    X.fillStyle = '#0d0f12'; X.fillRect(px - 10 * s, py - 18 * s, 20 * s, 34 * s);
+    X.fillStyle = `rgba(190,215,255,${.9 * on})`; X.fillRect(px - 8 * s, py - 16 * s, 16 * s, 30 * s);
+  }
+  X.restore();
+  return { head, hand: hA, sh };
+}
+
+// ---------- fon ----------
+function sky(t, wm) {
+  let g = X.createLinearGradient(0, -900, 0, 2600); g.addColorStop(0, '#05070A'); g.addColorStop(.5, '#080B10'); g.addColorStop(1, '#020203');
+  X.fillStyle = g; X.fillRect(-600, -1200, W + 1200, 4200);
+  const cx = 540, cy = GROUND - 120;
+  let w = X.createRadialGradient(cx, cy, 20, cx, cy, 900); w.addColorStop(0, `rgba(255,165,80,${.20 * wm})`); w.addColorStop(1, 'rgba(255,140,60,0)');
+  X.fillStyle = w; X.fillRect(-600, -1200, W + 1200, 4200);
+  let c = X.createRadialGradient(cx, cy - 500, 20, cx, cy - 500, 1100); c.addColorStop(0, `rgba(90,125,170,${.10 * (1 - Math.min(1, wm))})`); c.addColorStop(1, 'rgba(0,0,0,0)');
+  X.fillStyle = c; X.fillRect(-600, -1200, W + 1200, 4200);
+  for (let i = 0; i < 90; i++) {  // toz
+    const x = (R(i) * 1500 - 210 + t * (8 + R(i + 9) * 14)) % 1500 - 200, y = R(i + 3) * 2600 - 700 - t * 6 * R(i + 5);
+    X.fillStyle = `rgba(255,${wm > .5 ? 220 : 235},${wm > .5 ? 180 : 255},${.10 + .2 * R(i + 7)})`; X.fillRect(x, y, 2.4, 2.4);
+  }
+}
+function pillar(x, top, wm, rim) {
+  let g = X.createLinearGradient(x - PW / 2, 0, x + PW / 2, 0); g.addColorStop(0, '#0b0d10'); g.addColorStop(.5, '#14171c'); g.addColorStop(1, '#0a0b0e');
+  X.fillStyle = g; X.fillRect(x - PW / 2, top, PW, 2400);
+  X.strokeStyle = `rgba(255,${180 + 50 * (1 - wm)},${120 + 120 * (1 - wm)},${.18 + .2 * wm})`; X.lineWidth = 2;
+  X.beginPath(); X.moveTo(x + rim * PW / 2, top + 4); X.lineTo(x + rim * PW / 2, top + 900); X.stroke();
+  X.fillStyle = 'rgba(255,255,255,.07)'; X.fillRect(x - PW / 2, top, PW, 4);
+  for (let k = 0; k < 9; k++) { X.fillStyle = 'rgba(255,255,255,.018)'; X.fillRect(x - PW / 2 + 14 + R(k + x) * (PW - 40), top + 40 + k * 95, 26, 2); }
+}
+function blocks(t) {
+  let base = GROUND;
+  T.blocks.forEach(([bt, lab], k) => {
+    const l = lift(t, k); if (l <= 0) return;
+    const h = BH * l, top = base - h, x0 = YX - PW / 2 + 6 - (1 - l) * 40, w = PW - 12, gold = lab === 'PROMOTED';
+    X.save();
+    if (gold) { let g = X.createLinearGradient(0, top, 0, base); g.addColorStop(0, '#FFE08A'); g.addColorStop(1, '#C98F1E'); X.fillStyle = g; X.shadowColor = GOLD; X.shadowBlur = 40 * l; }
+    else X.fillStyle = '#15181d';
+    X.beginPath(); X.roundRect(x0, top + 2, w, h - 3, 6); X.fill(); X.shadowBlur = 0;
+    X.strokeStyle = gold ? 'rgba(255,240,190,.8)' : 'rgba(255,255,255,.16)'; X.lineWidth = 2; X.stroke();
+    if (l > .6) { X.globalAlpha = seg(l, .6, 1); X.font = (lab.length > 11 ? '19px' : '22px') + ' MO'; X.letterSpacing = '3px'; X.textAlign = 'center'; X.textBaseline = 'middle';
+      X.fillStyle = gold ? '#2a1c05' : '#8F99A6'; X.fillText(lab, x0 + w / 2 + 2, top + h / 2 + 1); }
+    X.restore();
+    base = top;
+  });
+}
+
+// ---------- körpü ----------
+function plankAt(t, i, col, glow, a) {
+  const u = uP(i), p = deck(t, u), an = tang(t, u), len = 460 / NP * .74;
+  X.save(); X.translate(p[0], p[1]); X.rotate(an); X.globalAlpha = a;
+  if (glow) { X.shadowColor = GOLD; X.shadowBlur = 26 * glow; }
+  X.fillStyle = col; X.beginPath(); X.roundRect(-len / 2, -3, len, 15, 3); X.fill();
+  X.shadowBlur = 0; X.fillStyle = 'rgba(255,230,190,.25)'; X.fillRect(-len / 2 + 2, -3, len - 4, 3);
+  X.restore();
+}
+function bridge(t, wm) {
+  const relit = seg(t, T.arrive, T.arrive + 1.6), nF = T.fall.filter(f => t > f[1]).length;
+  // deck kəndiri
+  const ropeCol = (a) => relit > 0 ? `rgba(247,192,74,${.4 + .5 * relit})` : `rgba(${lerp(140, 225, wm)},${lerp(140, 175, wm)},${lerp(150, 120, wm)},${a})`;
+  X.save(); X.lineCap = 'round';
+  X.strokeStyle = ropeCol(.85 - nF * .04); X.lineWidth = lerp(5, 2.2, nF / 11) + 2.5 * relit;
+  if (relit > 0) { X.shadowColor = GOLD; X.shadowBlur = 18 * relit; }
+  X.beginPath(); for (let k = 0; k <= 40; k++) { const p = deck(t, k / 40); k ? X.lineTo(...p) : X.moveTo(...p); } X.stroke();
+  // məhəccər
+  const snapped = t > T.snap, back = seg(t, T.arrive + .4, T.arrive + 1.8);
+  if (!snapped || back > 0) {
+    X.globalAlpha = snapped ? back : 1 - .4 * seg(t, 11.5, 13.4) * (.6 + .4 * Math.sin(t * 30));
+    X.strokeStyle = ropeCol(.7); X.lineWidth = lerp(4, 2, nF / 11) + 1.5 * relit;
+    X.beginPath(); for (let k = 0; k <= 40; k++) { const p = rail(t, k / 40); k ? X.lineTo(...p) : X.moveTo(...p); } X.stroke();
+    X.lineWidth = 1.6;
+    for (let i = 0; i < NP; i++) { const on = (!fallT[i] || t < fallT[i]) || t > relT(i); if (!on) continue; const a = rail(t, uP(i)), b = deck(t, uP(i)); X.beginPath(); X.moveTo(...a); X.lineTo(...b); X.stroke(); }
+    X.globalAlpha = 1;
+  }
+  if (snapped && back < 1) {  // qırılmış məhəccər dostun tərəfindən sallanır
+    const B = rail(t, 1), sw = Math.sin((t - T.snap) * 2.2) * .25 * Math.exp(-(t - T.snap) * .3), L = 300 * eout(seg(t, T.snap, T.snap + .7));
+    X.globalAlpha = 1 - back; X.strokeStyle = 'rgba(150,150,160,.6)'; X.lineWidth = 2.4; X.shadowBlur = 0;
+    X.beginPath(); X.moveTo(...B); X.quadraticCurveTo(B[0] - 60, B[1] + L * .5, B[0] - 30 + Math.sin(sw) * L, B[1] + L * Math.cos(sw)); X.stroke(); X.globalAlpha = 1;
+  }
+  X.restore();
+  // taxtalar
+  for (let i = 0; i < NP; i++) {
+    const ft = fallT[i], rt = relT(i);
+    if (t > rt) { const g = seg(t, rt, rt + .3); plankAt(t, i, GOLD, g * (1 + bump(t, rt + .1, .15)), 1); continue; }
+    if (ft && t > ft) continue;
+    const lone = ft == null && t > 11.5 ? .55 + .35 * Math.sin(t * 7) * Math.sin(t * 3.1) : 1;
+    plankAt(t, i, `rgb(${lerp(70, 128, wm) | 0},${lerp(64, 84, wm) | 0},${lerp(62, 48, wm) | 0})`, 0, lone);
+  }
+}
+function fallen(t) {
+  for (const [i, ft] of T.fall) {
+    const dt = t - ft; if (dt < 0 || dt > 2.2) continue;
+    const p = deck(ft, uP(i)), an = tang(ft, uP(i)), len = 460 / NP * .74, dir = R(i) > .5 ? 1 : -1;
+    X.save(); X.translate(p[0] + dir * 40 * dt, p[1] + 700 * dt * dt); X.rotate(an + dir * dt * 3.2); X.globalAlpha = clamp(1 - dt / 2.2);
+    X.fillStyle = '#5a4030'; X.fillRect(-len / 2, -3, len, 15); X.restore();
+    if (dt < 1.3) { X.save(); X.globalAlpha = clamp(1 - dt / 1.3) * seg(dt, 0, .12); X.font = '40px MO'; X.textAlign = 'center'; X.fillStyle = RED; X.shadowColor = RED; X.shadowBlur = 18;
+      X.fillText('−1', p[0], p[1] - 34 - dt * 70); X.restore(); }
+  }
+  for (let i = 0; i < NP; i++) {  // +1
+    const dt = t - relT(i); if (dt < 0 || dt > 1.2) continue; const p = deck(t, uP(i));
+    X.save(); X.globalAlpha = clamp(1 - dt / 1.2) * seg(dt, 0, .1); X.font = '34px MO'; X.textAlign = 'center'; X.fillStyle = GOLD; X.shadowColor = GOLD; X.shadowBlur = 18;
+    X.fillText('+1', p[0], p[1] + 70 + dt * 30); X.restore();
+  }
+}
+function messageLight(t) {
+  if (t < T.send || t > T.arrive + .3) return;
+  const u = ease(seg(t, T.send, T.arrive)), a = 1 - seg(t, T.arrive, T.arrive + .3);
+  X.save(); X.globalCompositeOperation = 'lighter';
+  for (let k = 0; k < 9; k++) { const uu = clamp(u - k * .025), p = deck(t, uu); const r = 34 - k * 3;
+    let g = X.createRadialGradient(p[0], p[1], 1, p[0], p[1], r); g.addColorStop(0, `rgba(255,225,150,${a * (1 - k / 9)})`); g.addColorStop(1, 'rgba(255,170,60,0)');
+    X.fillStyle = g; X.fillRect(p[0] - r, p[1] - r, 2 * r, 2 * r); }
+  X.restore();
+}
+function bubble(x, y, txt, a, mine) {
+  if (a <= 0) return;
+  X.save(); X.globalAlpha = a; X.font = '25px MO'; const w = X.measureText(txt).width + 34;
+  const bx = clamp(x - w / 2, 30, W - 30 - w), by = y - 26 + (1 - eout(a)) * 10;
+  X.fillStyle = mine ? 'rgba(40,20,20,.92)' : 'rgba(26,30,36,.94)'; X.strokeStyle = mine ? 'rgba(255,90,74,.7)' : 'rgba(255,255,255,.25)'; X.lineWidth = 2;
+  X.beginPath(); X.roundRect(bx, by, w, 52, 16); X.fill(); X.stroke();
+  X.fillStyle = mine ? '#FF8A7A' : '#E8EDF2'; X.textBaseline = 'middle'; X.fillText(txt, bx + 17, by + 27); X.restore();
+}
+
+// ---------- ekran mətni ----------
+function caption(t) {
+  for (const [a, b, txt, hi, hc] of T.texts) {
+    if (t < a || t > b) continue;
+    const al = Math.min(seg(t, a, a + .25), 1 - seg(t, b - .2, b));
+    X.save(); X.globalAlpha = al; X.font = (txt.length > 40 ? '44px' : '48px') + ' MO'; X.letterSpacing = '4px'; X.textBaseline = 'middle';
+    const lines = txt.split('\n'), y0 = 430 - (lines.length - 1) * 34 + (1 - eout(seg(t, a, a + .35))) * 14;
+    lines.forEach((ln, li) => {
+      let x = W / 2 - X.measureText(ln).width / 2, y = y0 + li * 68, i = ln.indexOf(hi);
+      const parts = i < 0 ? [[ln, WHITE]] : [[ln.slice(0, i), WHITE], [hi, hc === 'red' ? RED : GOLD], [ln.slice(i + hi.length), WHITE]];
+      for (const [p, c] of parts) { if (!p) continue; X.fillStyle = c; X.shadowColor = c === WHITE ? 'rgba(0,0,0,.6)' : c; X.shadowBlur = c === WHITE ? 8 : 18; X.fillText(p, x, y); x += X.measureText(p).width; }
+    });
+    X.restore();
+  }
+}
+function hud(t) {
+  if (t > T.end + .3) return;
+  const a = (1 - seg(t, T.end, T.end + .3)) * seg(t, .2, .6), yr = 1 + Math.round(nUp(t));
+  const nF = T.fall.filter(f => t > f[1]).length, nR = Array.from({ length: NP }, (_, i) => t > relT(i)).filter(Boolean).length;
+  const left = Math.max(NP - nF, nR);
+  X.save(); X.globalAlpha = a * .9; X.font = '28px MO'; X.letterSpacing = '6px'; X.textBaseline = 'middle';
+  X.fillStyle = 'rgba(210,214,220,.85)'; X.textAlign = 'left'; X.fillText(`YEAR ${yr}`, 80, 250);
+  X.textAlign = 'right'; X.fillStyle = nR > 0 ? GOLD : left < 6 ? RED : 'rgba(210,214,220,.85)';
+  X.fillText(`BRIDGE ${String(left).padStart(2, '0')}/${NP}`, 1000, 250); X.restore();
+}
+
+window.draw = function (t) {
+  X.setTransform(1, 0, 0, 1, 0, 0); X.globalAlpha = 1; X.globalCompositeOperation = 'source-over'; X.shadowBlur = 0;
+  X.fillStyle = '#000'; X.fillRect(0, 0, W, H);
+  const wm = warmth(t), yt = yTop(t);
+  // kamera: hər iki fiqur görünür; təklikdə geri çəkilir, sonda görüşə yaxınlaşır
+  const top = yt - 330, bot = GROUND + 260, alone = seg(t, 13.4, 15.2) * (1 - seg(t, T.arrive, T.arrive + 2));
+  let z = Math.min(1.14, 1180 / (bot - top)) * (1 - .13 * alone) * (1 + .12 * ease(seg(t, T.climb, 25.8))) * (1 + .03 * seg(t, 0, 3));
+  let cy = lerp((top + bot) / 2, yt + 120, .45 * ease(seg(t, T.climb, 25.5)));
+  let cx = lerp(540, 470, .5 * ease(seg(t, T.climb, 25.5)));
+  X.save(); X.translate(540, 1190); X.scale(z, z); X.translate(-cx, -cy);
+  sky(t, wm);
+  pillar(FX, GROUND, wm, -1); pillar(YX, GROUND, wm, 1); blocks(t);
+  // abis dumanı
+  let f = X.createLinearGradient(0, GROUND + 200, 0, GROUND + 1100); f.addColorStop(0, 'rgba(0,0,0,0)'); f.addColorStop(1, 'rgba(0,0,0,.95)');
+  X.fillStyle = f; X.fillRect(-600, GROUND + 200, W + 1200, 1600);
+  bridge(t, wm); fallen(t); messageLight(t);
+  // --- sən ---
+  const meet = seg(t, T.meet - .3, T.meet + .5);
+  const me = fig({ x: YX - 10, base: yt, dir: 1, t,
+    wave: seg(t, .35, .6) * (1 - seg(t, 1.9, 2.3)),
+    slump: .3 * seg(t, 3, 10.4) * (1 - seg(t, 10.4, 10.9)) + .35 * seg(t, 13.6, 14.6) * (1 - seg(t, T.send + .2, T.send + .8)),
+    phone: seg(t, T.phone, T.phone + .4) * (1 - seg(t, T.send + .3, T.send + .8)),
+    down: .8 * seg(t, T.phone, T.phone + .4) * (1 - seg(t, T.send + .3, T.send + .8)) + .5 * seg(t, T.send + .5, T.send + 1) * (1 - meet),
+    reach: [YX + 125, yt - 60, meet], col: WHITE,
+    glow: wm > .9 ? 'rgba(255,215,150,.85)' : 'rgba(255,255,255,.75)' });
+  // --- dost ---
+  const cl = seg(t, T.climb, T.meet), uu = lerp(.95, .12, ease(cl)), dp = deck(t, uu);
+  const climbing = t > T.climb && t < T.meet, fx = t > T.climb ? dp[0] : FX - 70, fb = t > T.climb ? dp[1] - 6 : GROUND;
+  const fa = 1 - .62 * seg(t, 3.5, 12) + .62 * seg(t, T.arrive, T.arrive + .5);
+  const fr = fig({ x: fx, base: fb, dir: -1, t, walk: climbing, up: climbing, ph: (t - T.climb) * 7.5, slope: .9,
+    wave: seg(t, .5, .75) * (1 - seg(t, 1.9, 2.3)) + seg(t, T.arrive + .5, T.arrive + .75) * (1 - seg(t, T.climb - .2, T.climb)),
+    slump: .45 * seg(t, 5, 12) * (1 - seg(t, T.arrive + .3, T.arrive + .8)),
+    phone: seg(t, T.arrive - .2, T.arrive + .1) * (1 - seg(t, T.arrive + .4, T.arrive + .7)),
+    down: .6 * seg(t, 5, 12) * (1 - seg(t, T.arrive + .3, T.arrive + .8)),
+    reach: [YX + 135, yt - 70, meet], alpha: fa, gl: fa,
+    glow: wm > .9 ? 'rgba(255,215,150,.85)' : 'rgba(255,255,255,.75)' });
+  // görüş: əl-ələ işıq
+  const mb = bump(t, T.meet + .45, .35) + .35 * seg(t, T.meet + .4, T.meet + 1.2);
+  if (mb > .02) { X.save(); X.globalCompositeOperation = 'lighter'; const mx = YX + 130, my = yt - 65;
+    let g = X.createRadialGradient(mx, my, 2, mx, my, 260); g.addColorStop(0, `rgba(255,220,150,${.75 * mb})`); g.addColorStop(1, 'rgba(255,150,50,0)'); X.fillStyle = g; X.fillRect(mx - 270, my - 270, 540, 540); X.restore(); }
+  // mesaj baloncukları
+  T.blocks.forEach(([bt, lab, msg]) => { if (!msg) return;
+    bubble(FX - 50, GROUND - 300, msg, seg(t, bt - .35, bt - .2) * (1 - seg(t, bt + .45, bt + .6)), false);
+    bubble(YX + 70, yTop(t) - 300, 'next week.', seg(t, bt + .05, bt + .2) * (1 - seg(t, bt + .7, bt + .85)), true); });
+  bubble(YX + 80, yt - 300, 'free tonight?', seg(t, T.phone + 1.0, T.phone + 1.2) * (1 - seg(t, T.send, T.send + .2)), false);
+  bubble(FX - 50, GROUND - 300, 'always.', seg(t, T.arrive + .25, T.arrive + .4) * (1 - seg(t, T.climb + .3, T.climb + .5)), false);
+  X.restore();
+  // vinyet + dənə
+  let vg = X.createRadialGradient(540, 1100, 450, 540, 1100, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.65)'); X.fillStyle = vg; X.fillRect(0, 0, W, H);
+  for (let i = 0; i < 800; i++) { X.fillStyle = `rgba(255,255,255,${.018 * R(i + Math.floor(t * 24) * 13)})`; X.fillRect(R(i * 3 + Math.floor(t * 24)) * W, R(i * 5 + 1 + Math.floor(t * 24)) * H, 2, 2); }
+  const ea = seg(t, T.end, T.end + .6); if (ea > 0) { let eg = X.createLinearGradient(0, 0, 0, 900); eg.addColorStop(0, `rgba(0,0,0,${.6 * ea})`); eg.addColorStop(1, 'rgba(0,0,0,0)'); X.fillStyle = eg; X.fillRect(0, 0, W, 900); }
+  hud(t); caption(t);
+  if (t >= T.end) { const a = seg(t, T.end + .6, T.end + 1.1); X.save(); X.globalAlpha = a; X.fillStyle = 'rgba(225,220,205,.92)'; X.font = '34px MO'; X.letterSpacing = '6px'; X.textAlign = 'center'; X.fillText('@constara.app', W / 2 + 3, 1790); X.restore(); }
+};
+document.fonts.ready.then(() => { window.READY = true; });
+['MO', 'IB'].forEach(f => document.fonts.load('40px ' + f));
+</script></body></html>

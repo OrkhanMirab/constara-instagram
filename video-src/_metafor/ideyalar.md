@@ -29,3 +29,4 @@ Qayda: ardıcıl 2 Metafor videosu eyni vizual dünyada olmasın (bankadan sonra
 | M12 | Masa ✅ 11-13 | «At 18, every chair is taken» | ad günü masası, boş stullar, ikinci lampa | Time shows who stayed | göndərmə |
 
 Qayda (11-14): metafor videoları DİKTORLU (am_michael 0.92, `--tts`), sonda «Send this to…» + `@constara.app`, LINK yox.
+| M13 | Körpü (önizləmə 11-14, render gözləyir) | «You don't lose friends in a fight» | iki sütun + kəndir körpü; hər «next week» = iş bloku, səni qaldırır, taxta düşür (−1); zirvədə tək; 1 mesaj → taxtalar qızılı (+1), dost qalxır | Work wants more hours, a friend only needs one | −1/+1, BRIDGE 12/12 sayğacı |
